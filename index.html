@@ -133,6 +133,53 @@ textarea{min-height:58px;resize:vertical}
 .vch{display:inline-block;font-size:12px;border:1px solid var(--line);border-radius:12px;padding:1px 8px;margin:2px 4px 2px 0;background:var(--card)}
 .vch.on{background:#e7f6ec;color:#16632f;border-color:#9fd3b0}
 button.rec{background:#c0392b;color:#fff;border-color:#c0392b}
+.dline{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}.dline:empty{display:none}
+.db{font-size:12px;border-radius:10px;padding:2px 9px;font-weight:700}.db.ok{background:#e7f6ec;color:#16632f}.db.new{background:#e3eeff;color:#1f5fbf}.db.warn{background:#fff1d6;color:#8a5a00}
+.upd{background:#e3eeff;color:#123a78;border:1px solid #9dbdf0;border-radius:10px;padding:8px 10px;margin-bottom:10px;display:flex;gap:8px;align-items:center}
+.ngbox{margin-top:10px;border:2px solid #f3b4b0;border-radius:10px;padding:8px;background:#fff6f5}
+@media (prefers-color-scheme:dark){.ngbox{background:#2a1c1c;border-color:#7a3a36}}
+.ngt{color:#b3261e}
+#ngImg{outline:3px solid #e53935;border-radius:8px}#ngImg img{max-height:26vh}
+.okng{display:grid;grid-template-columns:1fr;gap:8px;align-items:start}.okng.two{grid-template-columns:1fr 1fr}
+.pane{min-width:0;text-align:center}.pane .vwrap{margin:2px auto}.okng.two .pane .vwrap video,.okng.two .pane .vwrap img{max-height:38vh}
+.lab{display:none;font-weight:800;font-size:14px;padding:2px 10px;border-radius:8px;margin-bottom:2px}.okng.two .lab{display:inline-block}
+.lab.ok{background:#e7f6ec;color:#16632f}.lab.ng{background:#fde8e8;color:#b3261e}
+.pane.ng .vwrap{outline:3px solid #e53935;border-radius:8px}
+.ngtext{background:#fde8e8;color:#8c1d18;border-radius:10px;padding:8px 12px;font-size:18px;line-height:1.6;font-weight:700;margin:-4px 0 12px}
+.mk.sel{border-style:dashed;box-shadow:0 0 0 3px #ffd400}
+.mh{position:absolute;right:-14px;bottom:-14px;width:24px;height:24px;background:#ffd400;border:2px solid #000;border-radius:50%}
+.mkbar{margin:4px 0 0;gap:6px}.mtool.on{background:#fde8e8;border-color:#e53935;color:#b3261e;font-weight:700}
+.thumb{touch-action:none}
+.mk.x{border:none;box-shadow:none}.mk.x.sel{outline:2px dashed #ffd400;outline-offset:2px}.mk svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.mk.hid{display:none}.mk.tm{opacity:.5}
+.tt{font-style:normal}.mk .tt,.tt.pt{position:absolute;left:0;top:-19px;font-size:11px;font-style:normal;font-weight:700;background:#e53935;color:#fff;border-radius:4px;padding:0 4px;white-space:nowrap}
+.tvbar{gap:6px;margin-top:4px}.tvbar input[type=range]{flex:1;min-width:80px}
+.mkt{margin:4px 0;display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--sub)}.mkt:empty{display:none}
+.mkt select{width:auto;padding:4px 6px}
+.arw{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.lbl{position:absolute;left:50%;top:100%;transform:translate(-50%,4px);background:#e53935;color:#fff;font-style:normal;font-weight:800;font-size:13px;padding:1px 7px;border-radius:5px;white-space:nowrap;box-shadow:0 0 0 1px rgba(255,255,255,.8)}
+.lbl.pt,.tt.pt{position:absolute;transform:translate(-50%,8px)}.tt.pt{top:auto;transform:translate(-50%,-26px)}
+.mh.pt{position:absolute;right:auto;bottom:auto;transform:translate(-50%,-50%)}
+.pe{position:fixed;inset:0;z-index:45;background:var(--bg);overflow:auto;padding:0 10px 30px}
+.pe-top{position:sticky;top:0;z-index:3;background:var(--card);display:flex;gap:8px;align-items:center;padding:8px 4px;padding-top:max(8px,env(safe-area-inset-top));border-bottom:1px solid var(--line);margin:0 -10px}
+.pe-top b{padding-left:10px}.pe-top button{margin-right:10px}
+.pe-guide{background:#fff7d6;color:#3b2f00;border:1px solid #e8d77a;border-radius:10px;padding:8px 10px;margin:8px 0;font-size:15px;font-weight:700;line-height:1.5}
+.pe-stage .vwrap video,.pe-stage .vwrap img{max-height:46vh}
+.pe-wrap{touch-action:none;cursor:crosshair}
+.pe-bars{position:relative;height:18px;background:var(--line);border-radius:6px;overflow:hidden;margin-top:6px}
+.pe-bars i{position:absolute;border-radius:4px;opacity:.9}.pe-bars b{position:absolute;top:0;bottom:0;width:2px;background:#ff3b30}
+.pe-seek{width:100%;margin:4px 0}
+.pe-ctl{gap:6px}.pe-ctl button{flex:1;min-height:48px;font-size:15px;padding:4px}
+.pe-shapes{gap:6px;margin-top:8px}.pe-shapes button{flex:1;min-height:50px;font-size:16px;padding:4px}
+.pe-shapes button.on,.pe-sel button.on{background:#fde8e8;border-color:#e53935;color:#b3261e;font-weight:800}
+.pe-sel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px}
+.pe-sel .chips{gap:6px}.pe-sel .chips button{min-height:40px}
+.pe-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.pe-list button{font-size:13px;min-height:38px}.pe-list button.on{box-shadow:0 0 0 3px #ffd400}
+.ptsum{font-size:13px;color:var(--sub);margin:4px 0}
+.cam video{width:100%;max-height:52vh;background:#000;border-radius:10px;display:block}
+.cam .recdot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#e53935;margin-right:4px;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.2}}
+.cam .big{font-size:18px;min-height:56px;flex:1}
 [hidden]{display:none!important}
 @media (max-width:560px){.grid2{grid-template-columns:1fr}}
 </style>
@@ -167,9 +214,9 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const main=$('#main');
 const LANGS={ja:{name:'日本語',tts:'ja-JP'},vi:{name:'Tiếng Việt',tts:'vi-VN'},id:{name:'Bahasa Indonesia',tts:'id-ID'}};
 const UI={
-  ja:{step:'手順',prev:'◀ 前へ',next:'次へ ▶',speak:'🔊 読み上げ',none:'（説明なし）',list:'手順一覧',done:'✔ 最後の手順です',nav:'動画はこの手順の部分をくり返し再生します。赤丸が見る所。「次へ」で進み、右上で言語を切り替え、🔊で読み上げます。',navNo:'見方'},
-  vi:{step:'Bước',prev:'◀ Trước',next:'Tiếp ▶',speak:'🔊 Đọc',none:'(Chưa có giải thích)',list:'Danh sách bước',done:'✔ Bước cuối cùng',nav:'Video lặp lại phần của bước này. Vòng tròn đỏ là chỗ cần xem. Nhấn "Tiếp" để sang bước sau, đổi ngôn ngữ ở góc trên, nhấn 🔊 để nghe đọc.',navNo:'Hướng dẫn'},
-  id:{step:'Langkah',prev:'◀ Sebelumnya',next:'Berikutnya ▶',speak:'🔊 Bacakan',none:'(Belum ada penjelasan)',list:'Daftar langkah',done:'✔ Langkah terakhir',nav:'Video mengulang bagian langkah ini. Lingkaran merah = bagian yang harus dilihat. Tekan "Berikutnya" untuk lanjut, ganti bahasa di atas, tekan 🔊 untuk dibacakan.',navNo:'Panduan'}
+  ja:{step:'手順',prev:'◀ 前へ',next:'次へ ▶',speak:'🔊 読み上げ',none:'（説明なし）',list:'手順一覧',done:'✔ 最後の手順です',nav:'動画はこの手順の部分をくり返し再生します。赤丸が見る所。「次へ」で進み、右上で言語を切り替え、🔊で読み上げます。',navNo:'見方',ok:'⭕ OK（良い）',ng:'❌ NG（不良）'},
+  vi:{step:'Bước',prev:'◀ Trước',next:'Tiếp ▶',speak:'🔊 Đọc',none:'(Chưa có giải thích)',list:'Danh sách bước',done:'✔ Bước cuối cùng',nav:'Video lặp lại phần của bước này. Vòng tròn đỏ là chỗ cần xem. Nhấn "Tiếp" để sang bước sau, đổi ngôn ngữ ở góc trên, nhấn 🔊 để nghe đọc.',navNo:'Hướng dẫn',ok:'⭕ ĐÚNG',ng:'❌ SAI (lỗi)'},
+  id:{step:'Langkah',prev:'◀ Sebelumnya',next:'Berikutnya ▶',speak:'🔊 Bacakan',none:'(Belum ada penjelasan)',list:'Daftar langkah',done:'✔ Langkah terakhir',nav:'Video mengulang bagian langkah ini. Lingkaran merah = bagian yang harus dilihat. Tekan "Berikutnya" untuk lanjut, ganti bahasa di atas, tekan 🔊 untuk dibacakan.',navNo:'Panduan',ok:'⭕ BENAR',ng:'❌ SALAH (cacat)'}
 };
 const PAGES=[
   {k:'video',n:'① 撮る',s:['#sCap','#sPlayer']},
@@ -178,6 +225,10 @@ const PAGES=[
   {k:'fin',n:'④ 仕上げ・送る',s:['#sInfo','#sFin']}
 ];
 const ALLSEC=['#sCap','#sPlayer','#sCut','#sList','#sText','#sInfo','#sFin'];
+(function(){try{const h=location.hash;if(!/access_token=|error=/.test(h))return;const q=new URLSearchParams(h.slice(1));
+  if(q.get('access_token')&&q.get('state')===lsGet('kensa-gstate','x')){lsSet('kensa-gtok',q.get('access_token'));lsSet('kensa-gexp',String(Date.now()+(+q.get('expires_in')||3600)*1000));lsSet('kensa-gjust','1')}
+  else if(q.get('error'))lsSet('kensa-gerr',q.get('error'));
+  history.replaceState(null,'',location.pathname+lsGet('kensa-gsearch',''))}catch(e){}})();
 const forceView=/[?&]view\b/.test(location.search);
 let settings={apiKey:'',model:'claude-sonnet-5',glossary:[],ttsKey:'',ttsVoice:'coral'},lock=null,unlocked=false;
 let cur=null,curURL=null,view='list',page='video',tIdx=0,openRow=-1,lastId=null;
@@ -204,11 +255,32 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
 function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function fmt(t){if(t==null||isNaN(t))return'--';const m=Math.floor(t/60);return m+':'+(t-m*60).toFixed(1).padStart(4,'0')}
 function toast(msg,ms=2400){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),ms)}
-function marksHTML(ms){return (ms||[]).map(m=>`<div class="mk" style="left:${m.x}%;top:${m.y}%"></div>`).join('')}
+function markStyle(m){return`left:${m.x}%;top:${m.y}%;width:${m.w||13}%;${m.h?`height:${m.h}%;aspect-ratio:auto;`:''}border-radius:${m.s==='r'?'6px':'50%'}`}
+const XSVG='<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M6 6L94 94M94 6L6 94" stroke="rgba(255,255,255,.8)" stroke-width="10" vector-effect="non-scaling-stroke" stroke-linecap="round"/><path d="M6 6L94 94M94 6L6 94" stroke="#e53935" stroke-width="5" vector-effect="non-scaling-stroke" stroke-linecap="round"/></svg>';
+const visAt=(m,t)=>t==null||m.t0==null||(t>=m.t0-0.05&&t<=m.t1+0.05);
+function marksHTML(ms,sel,t,still,ar){ar=ar||16/9;let arrows='',h='';
+  (ms||[]).forEach((m,i)=>{const tm=m.t0!=null,vis=visAt(m,t),tt=tm&&(still||i===sel)?`⏱${fmt(m.t0)}〜${fmt(m.t1)}`:'';
+    if(m.s==='a'){if(!vis)return;const X1=m.x1*ar,X2=m.x2*ar,Y1=m.y1,Y2=m.y2,an=Math.atan2(Y2-Y1,X2-X1),hs=6,
+        a1x=X2-hs*Math.cos(an-0.45),a1y=Y2-hs*Math.sin(an-0.45),a2x=X2-hs*Math.cos(an+0.45),a2y=Y2-hs*Math.sin(an+0.45),sx=X2-hs*0.6*Math.cos(an),sy=Y2-hs*0.6*Math.sin(an),
+        ln=`M${X1.toFixed(2)} ${Y1}L${sx.toFixed(2)} ${sy.toFixed(2)}`,op=still&&tm?0.5:1;
+      arrows+=`<g opacity="${op}"><path d="${ln}" stroke="rgba(255,255,255,.85)" stroke-width="11" stroke-linecap="round" vector-effect="non-scaling-stroke" fill="none"/><path d="${ln}" stroke="#e53935" stroke-width="6" stroke-linecap="round" vector-effect="non-scaling-stroke" fill="none"/>`+
+        `<polygon points="${X2.toFixed(2)},${Y2} ${a1x.toFixed(2)},${a1y.toFixed(2)} ${a2x.toFixed(2)},${a2y.toFixed(2)}" fill="#e53935" stroke="rgba(255,255,255,.85)" stroke-width="2" vector-effect="non-scaling-stroke"/>`+
+        (i===sel?`<path d="M${X1.toFixed(2)} ${Y1}L${X2.toFixed(2)} ${Y2}" stroke="#ffd400" stroke-width="2" stroke-dasharray="5 4" vector-effect="non-scaling-stroke" fill="none"/>`:'')+`</g>`;
+      if(i===sel)h+=`<i class="mh pt" style="left:${m.x2}%;top:${m.y2}%"></i>`;
+      if(m.label)h+=`<i class="lbl pt" style="left:${m.x1}%;top:${m.y1}%">${esc(m.label)}</i>`;
+      if(tt)h+=`<i class="tt pt" style="left:${m.x1}%;top:${m.y1}%">${tt}</i>`;return}
+    h+=`<div class="mk${m.s==='x'?' x':''}${i===sel?' sel':''}${vis?'':' hid'}${still&&tm?' tm':''}" style="${markStyle(m)}">${m.s==='x'?XSVG:''}${tt?`<i class="tt">${tt}</i>`:''}${m.label?`<i class="lbl">${esc(m.label)}</i>`:''}${i===sel?'<i class="mh"></i>':''}</div>`});
+  return(arrows?`<svg class="arw" viewBox="0 0 ${(100*ar).toFixed(2)} 100" preserveAspectRatio="none">${arrows}</svg>`:'')+h}
+function arOf(el){if(!el)return 16/9;return(el.videoWidth&&el.videoWidth/el.videoHeight)||(el.naturalWidth&&el.naturalWidth/el.naturalHeight)||16/9}
+function paintMarks(layer,media,ms,t,still){if(!layer)return;const go=()=>{layer.innerHTML=marksHTML(ms,-1,t,still,arOf(media))};go();
+  if(media&&media.tagName==='IMG'&&!media.complete)media.addEventListener('load',go,{once:true});
+  if(media&&media.tagName==='VIDEO'&&!media.videoWidth)media.addEventListener('loadedmetadata',go,{once:true})}
 function setTitle(t){$('#hTitle').textContent=t}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function save(){if(!cur)return;cur.updatedAt=Date.now();await idb.put('manuals',cur)}
-function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(save,400)}
+let pendingSave=false;
+async function persist(){clearTimeout(saveTimer);if(!cur||view!=='edit')return;if(pendingSave){pendingSave=false;await save()}else await idb.put('manuals',cur)}
+function saveSoon(){clearTimeout(saveTimer);pendingSave=true;saveTimer=setTimeout(()=>{pendingSave=false;save()},400)}
 async function loadVideo(vid){if(curURL){URL.revokeObjectURL(curURL);curURL=null}
   if(!vid)return;const b=await idb.get('videos',vid);if(b)curURL=URL.createObjectURL(b)}
 function grab(v,w=640){try{if(!v.videoWidth)return'';const sc=Math.min(1,w/v.videoWidth);const c=document.createElement('canvas');
@@ -230,15 +302,157 @@ async function shareOrDownload(blob,name){
 function safeName(s){return s.replace(/[\\/:*?"<>|\s]+/g,'_')}
 function onceSeeked(v){return new Promise(r=>{let d=false;const f=()=>{if(!d){d=true;v.removeEventListener('seeked',f);r()}};v.addEventListener('seeked',f);setTimeout(f,2500)})}
 async function seekTo(v,t){v.currentTime=Math.max(0,Math.min(t,(isFinite(v.duration)?v.duration:t+1)-0.05));await onceSeeked(v)}
+async function fixDur(v){if(isFinite(v.duration)&&v.duration>0)return;await new Promise(r=>{const f=()=>{if(isFinite(v.duration)){v.removeEventListener('durationchange',f);r()}};v.addEventListener('durationchange',f);v.currentTime=1e7;setTimeout(r,4000)});v.currentTime=0;await onceSeeked(v)}
 async function withHiddenVideo(fn){
   const v=document.createElement('video');v.muted=true;v.playsInline=true;v.setAttribute('playsinline','');v.preload='auto';
   v.style.cssText='position:fixed;left:-9999px;top:0;width:4px;height:4px';document.body.appendChild(v);v.src=curURL;
   try{await new Promise((res,rej)=>{if(v.readyState>=1)return res();v.onloadedmetadata=res;v.onerror=()=>rej(new Error('動画を読み込めませんでした'))});
+    await fixDur(v);
     try{await v.play();v.pause()}catch(e){}
     return await fn(v)}finally{v.remove()}}
-function drawMarks(ctx,W,H,marks,ox=0,oy=0){(marks||[]).forEach(k=>{const x=ox+k.x/100*W,y=oy+k.y/100*H,r=0.065*W;
-  ctx.lineWidth=W*0.014;ctx.strokeStyle='rgba(255,255,255,.75)';ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.stroke();
-  ctx.lineWidth=W*0.008;ctx.strokeStyle='#e53935';ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.stroke()})}
+function drawLabel(ctx,txt,x,y,W){const fs=Math.max(13,Math.round(W*0.032));ctx.font=`800 ${fs}px ${FONT}`;const tw=ctx.measureText(txt).width+fs*0.8;
+  ctx.fillStyle='rgba(255,255,255,.85)';rrect(ctx,x-tw/2-2,y-2,tw+4,fs*1.4+4,fs*0.35);ctx.fill();ctx.fillStyle='#e53935';rrect(ctx,x-tw/2,y,tw,fs*1.4,fs*0.3);ctx.fill();
+  ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(txt,x,y+fs*0.72);ctx.textAlign='left'}
+function drawMarks(ctx,W,H,marks,ox=0,oy=0,t=null){(marks||[]).filter(k=>visAt(k,t)).forEach(k=>{
+  if(k.s==='a'){const x1=ox+k.x1/100*W,y1=oy+k.y1/100*H,x2=ox+k.x2/100*W,y2=oy+k.y2/100*H,an=Math.atan2(y2-y1,x2-x1),hs=Math.max(W,H)*0.04,lw=Math.max(3,W*0.01);
+    const shaft=()=>{ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2-Math.cos(an)*hs*0.6,y2-Math.sin(an)*hs*0.6)};
+    const head=()=>{ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-hs*Math.cos(an-0.45),y2-hs*Math.sin(an-0.45));ctx.lineTo(x2-hs*Math.cos(an+0.45),y2-hs*Math.sin(an+0.45));ctx.closePath()};
+    ctx.lineCap='round';ctx.lineJoin='round';ctx.lineWidth=lw*1.9;ctx.strokeStyle='rgba(255,255,255,.8)';shaft();ctx.stroke();head();ctx.stroke();
+    ctx.lineWidth=lw;ctx.strokeStyle='#e53935';shaft();ctx.stroke();ctx.fillStyle='#e53935';head();ctx.fill();
+    if(k.label)drawLabel(ctx,k.label,x1,y1+lw*2,W);return}
+  const cx=ox+k.x/100*W,cy=oy+k.y/100*H,w=(k.w||13)/100*W,h=k.h?k.h/100*H:w;
+  const path=()=>{ctx.beginPath();if(k.s==='x'){const a=0.44;ctx.moveTo(cx-w*a,cy-h*a);ctx.lineTo(cx+w*a,cy+h*a);ctx.moveTo(cx+w*a,cy-h*a);ctx.lineTo(cx-w*a,cy+h*a)}else if(k.s==='r'){if(ctx.roundRect)ctx.roundRect(cx-w/2,cy-h/2,w,h,Math.min(w,h)*0.06);else ctx.rect(cx-w/2,cy-h/2,w,h)}else ctx.ellipse(cx,cy,Math.max(1,w/2),Math.max(1,h/2),0,0,Math.PI*2)};
+  const lw=Math.max(3,W*(k.s==='x'?0.012:0.008));ctx.lineCap='round';ctx.lineWidth=lw*1.8;ctx.strokeStyle='rgba(255,255,255,.75)';path();ctx.stroke();ctx.lineWidth=lw;ctx.strokeStyle='#e53935';path();ctx.stroke();
+  if(k.label)drawLabel(ctx,k.label,cx,cy+h/2+lw*2,W)})}
+let markTool=lsGet('kensa-mtool','c');
+let markDur=+lsGet('kensa-mdur','3')||3;
+const MKBAR=`<div class="row mkbar"><button class="sm mtool" data-mt="c">○ 丸</button><button class="sm mtool" data-mt="r">□ 四角</button><button class="sm mtool" data-mt="x">× バツ</button><button class="sm danger" data-mdel disabled>🗑 選んだ印を消す</button></div>
+  <div class="mkt"></div>
+  <p class="sub small" style="margin:2px 0">画像を<b>なぞる</b>とその大きさで印を描けます（タップ＝標準サイズ）。印を押して選ぶ →黄色い●を引っぱって大きさ、中を引っぱって移動。</p>`;
+function markEditor(wrap,getMs,onSave,opt={}){
+  if(!wrap)return null;let sel=-1,mode=null,st=null;
+  const img=()=>wrap.querySelector('img');const vid=wrap.querySelector('video');
+  const vOn=()=>!!(vid&&!vid.hidden);const media=()=>vOn()?vid:img();const tNow=()=>vOn()?vid.currentTime:null;
+  const P=e=>{const r=media().getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*100,y:(e.clientY-r.top)/r.height*100,r}};
+  let bar=wrap.nextElementSibling;while(bar&&!bar.classList.contains('mkbar'))bar=bar.nextElementSibling;
+  const mkt=bar&&bar.nextElementSibling&&bar.nextElementSibling.classList.contains('mkt')?bar.nextElementSibling:null;
+  const r2=v=>+(+v).toFixed(2);
+  const drawT=()=>{if(!mkt||!opt.range){if(mkt)mkt.innerHTML='';return}const m=getMs()[sel];
+    if(!vOn()){mkt.innerHTML='⏱ 動画の場面ごとに印を出すには：「▶ 動きを見る」→ 画面をタップで一時停止 → なぞる';return}
+    mkt.innerHTML=`場面の印の長さ <select data-dur>${[1,2,3,5,0].map(n=>`<option value="${n}" ${n===markDur?'selected':''}>${n?n+'秒':'手順の最後まで'}</option>`).join('')}</select>`+
+      (m?(m.t0!=null?`<span>選んだ印：⏱${fmt(m.t0)}〜${fmt(m.t1)}</span><button class="sm" data-t="s">開始＝今</button><button class="sm" data-t="e">終了＝今</button><button class="sm" data-t="all">ずっと表示</button>`
+        :`<span>選んだ印：ずっと表示</span><button class="sm" data-t="here">この場面から出す</button>`):'');
+    mkt.querySelector('[data-dur]').onchange=e=>{markDur=+e.target.value;lsSet('kensa-mdur',String(markDur))};
+    mkt.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const m=getMs()[sel];if(!m)return;const t=r2(vid.currentTime),rg=opt.range();
+      if(b.dataset.t==='s'){m.t0=Math.min(t,m.t1-0.2)}else if(b.dataset.t==='e'){m.t1=Math.max(t,m.t0+0.2)}else if(b.dataset.t==='all'){delete m.t0;delete m.t1}
+      else{m.t0=t;m.t1=r2(markDur?Math.min(rg.end,t+markDur):rg.end)}draw();onSave()})};
+  const draw=()=>{const t=tNow();wrap.querySelector('.marks').innerHTML=marksHTML(getMs(),sel,t,t==null&&!!opt.range);if(bar)bar.querySelector('[data-mdel]').disabled=sel<0;if(!mode)drawT()};
+  const norm=(m,r)=>{if(!m.h){m.w=m.w||13;m.h=m.w*r.width/r.height}};
+  const cl=v=>Math.max(0,Math.min(100,v));
+  if(vid){let rf;const tick=()=>{draw();if(!vid.paused&&!vid.hidden)rf=requestAnimationFrame(tick)};vid.addEventListener('play',()=>{cancelAnimationFrame(rf);tick()});vid.addEventListener('pause',draw);vid.addEventListener('seeked',draw)}
+  wrap.onpointerdown=e=>{const im=media();if(!im||im.hidden)return;e.preventDefault();
+    if(vOn()&&!vid.paused){vid.pause();draw();return}
+    const p=P(e),ms=getMs(),t=tNow();
+    if(sel>=0&&ms[sel]){const m=ms[sel];norm(m,p.r);if(Math.hypot((p.x-(m.x+m.w/2))*p.r.width/100,(p.y-(m.y+m.h/2))*p.r.height/100)<26){mode='resize';st={m};try{wrap.setPointerCapture(e.pointerId)}catch(_){}return}}
+    for(let i=ms.length-1;i>=0;i--){const m=ms[i];if(!visAt(m,t))continue;norm(m,p.r);if(Math.abs(p.x-m.x)<=m.w/2+2&&Math.abs(p.y-m.y)<=m.h/2+2){sel=i;mode='move';st={m,dx:p.x-m.x,dy:p.y-m.y};draw();try{wrap.setPointerCapture(e.pointerId)}catch(_){}return}}
+    sel=-1;mode='new';st={x0:cl(p.x),y0:cl(p.y),m:null};draw();try{wrap.setPointerCapture(e.pointerId)}catch(_){}};
+  const stamp=m=>{if(vOn()&&opt.range){const t=r2(vid.currentTime),rg=opt.range();m.t0=t;m.t1=r2(markDur?Math.min(rg.end,t+markDur):rg.end)}};
+  wrap.onpointermove=e=>{if(!mode)return;e.preventDefault();const p=P(e);
+    if(mode==='resize'){st.m.w=Math.max(3,Math.abs(p.x-st.m.x)*2);st.m.h=Math.max(3,Math.abs(p.y-st.m.y)*2)}
+    else if(mode==='move'){st.m.x=cl(p.x-st.dx);st.m.y=cl(p.y-st.dy)}
+    else{const x=cl(p.x),y=cl(p.y),w=Math.abs(x-st.x0),h=Math.abs(y-st.y0);
+      if(!st.m&&(w>2.5||h>2.5)){st.m={s:markTool,x:0,y:0,w:0,h:0};stamp(st.m);getMs().push(st.m);sel=getMs().length-1}
+      if(st.m){st.m.x=(x+st.x0)/2;st.m.y=(y+st.y0)/2;st.m.w=Math.max(3,w);st.m.h=Math.max(3,h)}}
+    draw()};
+  wrap.onpointerup=wrap.onpointercancel=e=>{if(!mode)return;
+    if(mode==='new'&&!st.m){const p=P(e);if(p.x>=0&&p.x<=100&&p.y>=0&&p.y<=100){const m={s:markTool,x:p.x,y:p.y,w:14,h:14*p.r.width/p.r.height};stamp(m);getMs().push(m);sel=getMs().length-1}}
+    const ms=getMs();ms.forEach(m=>{['x','y','w','h'].forEach(k=>{if(m[k]!=null)m[k]=+(+m[k]).toFixed(1)})});
+    mode=null;st=null;draw();onSave()};
+  if(bar){bar.querySelectorAll('.mtool').forEach(b=>{b.classList.toggle('on',b.dataset.mt===markTool);b.onclick=()=>{markTool=b.dataset.mt;lsSet('kensa-mtool',markTool);$$('.mtool').forEach(x=>x.classList.toggle('on',x.dataset.mt===markTool))}});
+    bar.querySelector('[data-mdel]').onclick=()=>{if(sel<0)return;getMs().splice(sel,1);sel=-1;draw();onSave()}}
+  draw();return{draw}}
+/* ---------- 🎯 ポイント編集（専用画面） ---------- */
+const PTN={c:'○',r:'□',x:'×',a:'➡'},PTL={c:'○ 丸',r:'□ 四角',x:'× バツ',a:'➡ 矢印'};
+const ptCol=i=>`hsl(${(i*67+350)%360} 75% 48%)`;
+function openPts(o){
+  const ms=o.getMs(),V0=o.video;let sel=-1,mode=null,st=null,tool=PTN[markTool]?markTool:'c';
+  const d=document.createElement('div');d.className='pe';
+  d.innerHTML=`<div class="pe-top"><b class="grow">🎯 ${esc(o.title)}</b><button class="pri" id="peDone">✔ 完了</button></div>
+    <div class="pe-guide" id="peG"></div>
+    <div class="pe-stage"><div class="vwrap pe-wrap" id="peW">${V0?'<video id="peV" playsinline muted preload="auto"></video>':`<img src="${o.src}" alt="">`}<div class="marks"></div></div></div>
+    ${V0?`<div class="pe-bars" id="peBars"></div><input type="range" class="pe-seek" id="peSeek" min="${V0.start}" max="${V0.end}" step="0.05" value="${V0.start}">
+      <div class="row pe-ctl"><button data-mv="-0.5">◀◀0.5</button><button data-mv="-0.1">◀0.1</button><button class="pri" id="pePP">▶ 再生</button><button data-mv="0.1">0.1▶</button><button data-mv="0.5">0.5▶▶</button></div>`:''}
+    <div class="row pe-shapes">${Object.keys(PTL).map(k=>`<button data-tool="${k}" class="${k===tool?'on':''}">${PTL[k]}</button>`).join('')}</div>
+    <div class="pe-sel" id="peSel"></div><div class="pe-list" id="peList"></div>`;
+  document.body.appendChild(d);const bodyOv=document.body.style.overflow;document.body.style.overflow='hidden';
+  const W=d.querySelector('#peW'),V=d.querySelector('#peV'),I=W.querySelector('img'),layer=W.querySelector('.marks');
+  const media=()=>V||I,ar=()=>arOf(media()),tNow=()=>V?V.currentTime:null,cl=v=>Math.max(0,Math.min(100,v)),r2=v=>+(+v).toFixed(2);
+  const P=e=>{const r=media().getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*100,y:(e.clientY-r.top)/r.height*100,r}};
+  const isA=m=>m.s==='a';const norm=(m,r)=>{if(!isA(m)&&!m.h){m.w=m.w||13;m.h=m.w*r.width/r.height}};
+  const drawM=()=>{layer.innerHTML=marksHTML(ms,sel,tNow(),false,ar());if(V){const b=d.querySelector('#peBars b');if(b)b.style.left=((V.currentTime-V0.start)/((V0.end-V0.start)||1)*100)+'%'}};
+  const guide=()=>{d.querySelector('#peG').innerHTML=V&&!V.paused?'① 見せたい場面で「⏸ 止める」を押します（画面をタップしても止まります）'
+    :sel>=0?'③ 黄色い●を引っぱって大きさ・向き、印の中を引っぱって移動。下で「表示する時間」「文字」を決めます。'+(V?'次のポイントは ▶ で続きを再生。':'')
+    :`② 下で形（今は <b>${PTL[tool]}</b>）を選び、画面の見せたい所を<b>指でなぞる</b>（タップでも置けます）`+(V?'。場面を変えるときは ▶ や ◀◀ ▶▶':'')};
+  const bars=()=>{if(!V)return;const S=V0.start,L=(V0.end-S)||1;d.querySelector('#peBars').innerHTML=ms.map((m,i)=>{const a=m.t0==null?S:m.t0,z=m.t0==null?V0.end:m.t1;
+    return`<i style="left:${(a-S)/L*100}%;width:${Math.max(1.5,(z-a)/L*100)}%;background:${ptCol(i)};top:${m.t0==null?7:2}px;height:${m.t0==null?4:14}px"></i>`}).join('')+'<b></b>'};
+  const list=()=>{d.querySelector('#peList').innerHTML=ms.length?ms.map((m,i)=>`<button class="${i===sel?'on':''}" data-i="${i}" style="border-left:6px solid ${ptCol(i)}">${i+1}. ${PTN[m.s]||'○'} ${m.t0!=null?fmt(m.t0):'ずっと'}${m.label?' '+esc(m.label):''}</button>`).join(''):'<span class="sub small">まだポイントはありません</span>'};
+  const selPanel=()=>{const p=d.querySelector('#peSel'),m=ms[sel];
+    if(!m){p.innerHTML='<span class="sub small">ポイント（印）を押すと、ここで「表示する時間」「文字」「形」「削除」を設定できます。</span>';return}
+    p.innerHTML=`<div class="row"><b class="grow">選んだポイント：${sel+1}. ${PTL[m.s]}</b><button class="sm danger" id="peDel">🗑 消す</button></div>
+      ${V?`<div class="sub small mt">表示する時間：<b>${m.t0!=null?`${fmt(m.t0)} 〜 ${fmt(m.t1)}`:'手順の間ずっと'}</b></div>
+      <div class="row chips mt">${[1,2,3,5].map(n=>`<button class="sm ${m.t0!=null&&Math.abs(m.t1-m.t0-n)<0.06?'on':''}" data-d="${n}">${n}秒</button>`).join('')}<button class="sm ${m.t0!=null&&Math.abs(m.t1-V0.end)<0.06?'on':''}" data-d="end">最後まで</button><button class="sm ${m.t0==null?'on':''}" data-d="all">ずっと</button><button class="sm" data-d="here">今の場面から</button></div>`:''}
+      <label class="f">文字（任意）例：ここを見る／ゲート／NG</label><input type="text" id="peLbl" maxlength="20" value="${esc(m.label||'')}">
+      <div class="row chips mt">${Object.keys(PTL).map(k=>`<button class="sm ${m.s===k?'on':''}" data-sh="${k}">${PTL[k]}</button>`).join('')}</div>`;
+    p.querySelector('#peDel').onclick=()=>{ms.splice(sel,1);sel=-1;changed()};
+    p.querySelector('#peLbl').oninput=e=>{m.label=e.target.value.trim();drawM();list();saveSoonP()};
+    p.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{const dd=b.dataset.d,now=r2(V.currentTime);
+      if(dd==='all'){delete m.t0;delete m.t1}else if(dd==='here'){const len=m.t0!=null?m.t1-m.t0:(markDur||3);m.t0=now;m.t1=r2(Math.min(V0.end,now+len))}
+      else{if(m.t0==null)m.t0=now;m.t1=r2(dd==='end'?V0.end:Math.min(V0.end,m.t0+ +dd));if(dd!=='end'){markDur=+dd;lsSet('kensa-mdur',dd)}}changed()});
+    p.querySelectorAll('[data-sh]').forEach(b=>b.onclick=()=>{const k=b.dataset.sh;if(k===m.s)return;const r=media().getBoundingClientRect();
+      if(k==='a'&&!isA(m)){norm(m,r);const w=m.w,h=m.h;Object.assign(m,{x1:cl(m.x-w/2),y1:cl(m.y+h/2),x2:m.x,y2:m.y});delete m.x;delete m.y;delete m.w;delete m.h}
+      else if(k!=='a'&&isA(m)){const w=Math.max(8,Math.abs(m.x2-m.x1)),h=Math.max(8,Math.abs(m.y2-m.y1));Object.assign(m,{x:(m.x1+m.x2)/2,y:(m.y1+m.y2)/2,w,h});['x1','y1','x2','y2'].forEach(q=>delete m[q])}
+      m.s=k;changed()})};
+  let sT=null;const saveSoonP=()=>{clearTimeout(sT);sT=setTimeout(()=>o.save(),400)};
+  const refresh=()=>{drawM();guide();selPanel();list();bars();drawM()};
+  const changed=()=>{refresh();o.save()};
+  const stamp=m=>{if(V){const t=r2(V.currentTime);m.t0=t;m.t1=r2(markDur?Math.min(V0.end,t+markDur):V0.end)}};
+  const hit=(m,p)=>{if(!visAt(m,tNow()))return false;
+    if(isA(m)){const px=p.r.width/100,py=p.r.height/100,ax=m.x1*px,ay=m.y1*py,bx=m.x2*px,by=m.y2*py,qx=p.x*px,qy=p.y*py,L=(bx-ax)**2+(by-ay)**2||1;
+      let u=((qx-ax)*(bx-ax)+(qy-ay)*(by-ay))/L;u=Math.max(0,Math.min(1,u));return Math.hypot(qx-(ax+u*(bx-ax)),qy-(ay+u*(by-ay)))<20}
+    norm(m,p.r);return Math.abs(p.x-m.x)<=m.w/2+2&&Math.abs(p.y-m.y)<=m.h/2+2};
+  const onHandle=(m,p)=>{const hx=isA(m)?m.x2:m.x+m.w/2,hy=isA(m)?m.y2:m.y+m.h/2;return Math.hypot((p.x-hx)*p.r.width/100,(p.y-hy)*p.r.height/100)<28};
+  const cap=e=>{try{W.setPointerCapture(e.pointerId)}catch(_){}};
+  W.onpointerdown=e=>{e.preventDefault();if(V&&!V.paused){V.pause();return}const p=P(e);
+    if(sel>=0&&ms[sel]&&visAt(ms[sel],tNow())){norm(ms[sel],p.r);if(onHandle(ms[sel],p)){mode='resize';st={m:ms[sel]};cap(e);return}}
+    for(let i=ms.length-1;i>=0;i--)if(hit(ms[i],p)){sel=i;mode='move';st={m:ms[i],p0:p,o:{...ms[i]}};cap(e);refresh();return}
+    sel=-1;mode='new';st={x0:cl(p.x),y0:cl(p.y),m:null};cap(e);refresh()};
+  W.onpointermove=e=>{if(!mode)return;e.preventDefault();const p=P(e),x=cl(p.x),y=cl(p.y);
+    if(mode==='resize'){const m=st.m;if(isA(m)){m.x2=x;m.y2=y}else{m.w=Math.max(3,Math.abs(p.x-m.x)*2);m.h=Math.max(3,Math.abs(p.y-m.y)*2)}}
+    else if(mode==='move'){const dx=p.x-st.p0.x,dy=p.y-st.p0.y,q=st.o,m=st.m;if(isA(m)){m.x1=cl(q.x1+dx);m.y1=cl(q.y1+dy);m.x2=cl(q.x2+dx);m.y2=cl(q.y2+dy)}else{m.x=cl(q.x+dx);m.y=cl(q.y+dy)}}
+    else{const w=Math.abs(x-st.x0),h=Math.abs(y-st.y0);
+      if(!st.m&&(w>2.5||h>2.5)){st.m=tool==='a'?{s:'a',x1:st.x0,y1:st.y0,x2:x,y2:y}:{s:tool,x:0,y:0,w:0,h:0};stamp(st.m);ms.push(st.m);sel=ms.length-1}
+      if(st.m){if(isA(st.m)){st.m.x2=x;st.m.y2=y}else{st.m.x=(x+st.x0)/2;st.m.y=(y+st.y0)/2;st.m.w=Math.max(3,w);st.m.h=Math.max(3,h)}}}
+    drawM()};
+  W.onpointerup=W.onpointercancel=e=>{if(!mode)return;
+    if(mode==='new'&&!st.m){const p=P(e);if(p.x>=0&&p.x<=100&&p.y>=0&&p.y<=100){const a=ar();let m;
+      if(tool==='a')m={s:'a',x1:cl(p.x-14),y1:cl(p.y+14*a),x2:p.x,y2:p.y};else m={s:tool,x:p.x,y:p.y,w:14,h:14*a};stamp(m);ms.push(m);sel=ms.length-1}}
+    ms.forEach(m=>['x','y','w','h','x1','y1','x2','y2'].forEach(k=>{if(m[k]!=null)m[k]=+(+m[k]).toFixed(1)}));mode=null;st=null;changed()};
+  d.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{tool=b.dataset.tool;markTool=tool;lsSet('kensa-mtool',tool);d.querySelectorAll('[data-tool]').forEach(x=>x.classList.toggle('on',x===b));guide()});
+  d.querySelector('#peList').onclick=e=>{const b=e.target.closest('[data-i]');if(!b)return;sel=+b.dataset.i;const m=ms[sel];if(V){V.pause();if(m.t0!=null)V.currentTime=Math.min(m.t1,m.t0+0.05)}refresh()};
+  if(V){const S=V0.start,E=V0.end,pp=d.querySelector('#pePP'),sk=d.querySelector('#peSeek');let rf=0;
+    const upd=()=>{pp.textContent=V.paused?'▶ 再生':'⏸ 止める';sk.value=V.currentTime};
+    const tick=()=>{drawM();sk.value=V.currentTime;if(!V.paused)rf=requestAnimationFrame(tick)};
+    V.src=curURL;V.addEventListener('loadedmetadata',()=>{V.currentTime=S},{once:true});
+    V.addEventListener('play',()=>{upd();guide();cancelAnimationFrame(rf);tick()});V.addEventListener('pause',()=>{upd();refresh()});
+    V.addEventListener('seeked',()=>{drawM();upd()});V.addEventListener('loadeddata',refresh,{once:true});
+    V.addEventListener('timeupdate',()=>{if(!V.paused&&V.currentTime>=E-0.03){V.pause();V.currentTime=Math.max(S,E-0.03)}});
+    pp.onclick=()=>{if(V.paused){if(V.currentTime>=E-0.06)V.currentTime=S;V.play().catch(()=>{})}else V.pause()};
+    d.querySelectorAll('[data-mv]').forEach(b=>b.onclick=()=>{V.pause();V.currentTime=Math.max(S,Math.min(E,V.currentTime+ +b.dataset.mv))});
+    sk.oninput=e=>{V.pause();V.currentTime=+e.target.value}}
+  else if(I&&!I.complete)I.addEventListener('load',refresh,{once:true});
+  d.querySelector('#peDone').onclick=()=>{clearTimeout(sT);o.save();if(V)V.pause();document.body.style.overflow=bodyOv;d.remove();if(o.onClose)o.onClose()};
+  refresh()}
+
 function progressModal(title,msg){
   const d=document.createElement('div');d.className='modal';
   d.innerHTML=`<div class="mbox"><h3>${esc(title)}</h3><div class="sub" id="pmMsg">${esc(msg||'')}</div><div class="bar"><i></i></div>
@@ -300,7 +514,7 @@ function applyPage(){const show=onePage?PAGES.find(p=>p.k===page).s:ALLSEC;
   main.classList.toggle('cutpage',onePage&&page==='cut')}
 $('#tabbar').onclick=async e=>{const b=e.target.closest('button');if(!b)return;const v=b.dataset.v;
   if(tour)tourEnd();
-  if(view==='edit')await save();
+  if(view==='edit')await persist();
   const id=cur?.id||lastId,m=id?await idb.get('manuals',id):null;
   if(v==='list')showList();
   else if(v==='edit'){if(m)showEdit(m.id);else{await showList();toast('一覧から「編集」を押すか「＋ 新しい手順書」で作ります')}}
@@ -326,7 +540,7 @@ function guide(){
       return{no:'2/6 切る',pg:'cut',text:'動画を止めて「✂ ここで分ける」、または「⏱ 一定時間で区切る」で手順に分けます。1つのままでよければ「③ 説明」へ。',target:'#bSplit'};
     const ne=S.findIndex(s=>!s.text.ja.trim());
     if(ne>=0)return{no:'3/6 説明',pg:'text',step:ne,text:`手順${ne+1}の説明を入れます。「🤖 AIで説明を書く」で下書きもできます。`,target:'#tAi'};
-    const nt=S.findIndex(s=>!s.text.vi.trim()||!s.text.id.trim());
+    const nt=S.findIndex(s=>!s.text.vi.trim()||!s.text.id.trim()||(s.ng&&s.ng.text.ja.trim()&&(!s.ng.text.vi.trim()||!s.ng.text.id.trim())));
     if(nt>=0)return{no:'4/6 翻訳',pg:'fin',text:'「🌐 未翻訳をまとめて翻訳」を押します（手順ごとなら③の「🌐 翻訳」）。',target:'#bTrAll'};
     for(const [k,l] of [['title','手順書名'],['partNo','品番'],['approver','承認者']])
       if(!String(cur[k]||'').trim())return{no:'5/6 情報',pg:'fin',text:`${l}を入れます（ISOの文書管理・一覧・ファイル名に使われます）。`,target:`[data-meta="${k}"]`};
@@ -346,19 +560,21 @@ $('#hNav').onclick=()=>{navOn=!navOn;lsSet('kensa-nav',navOn?'1':'0');renderChro
 
 /* ---------- 一覧 ---------- */
 async function showList(){
-  if(view==='edit')await save();
+  if(view==='edit')await persist();
   view='list';stopTTS();setTitle('検査手順ムービー');
   const ms=(await idb.all('manuals')).sort((a,b)=>b.updatedAt-a.updatedAt);listCount=ms.length;const ed=isEditor();
   main.innerHTML=`<div class="card"><div class="row">${ed?'<button class="pri" id="bNew">＋ 新しい手順書</button>':''}
       <button id="bImp">📥 共有ファイルを読み込む</button><input type="file" id="fImp" accept=".json,application/json" hidden></div>
       <p class="sub small">${ed?'流れ：① 撮る → ② 切る → ③ 説明（AI） → ④ 仕上げ（翻訳・字幕動画・現場に配る）':'事務所から届いたファイルを「読み込む」で追加し、「見る」で手順を確認します。'}</p></div>
+    ${driveCardHTML()}
     ${ms.length>3?'<input type="search" id="q" placeholder="🔍 品番・手順書名で探す" style="margin-bottom:10px">':''}<div id="ml"></div>`;
   const draw=q=>{const f=ms.filter(m=>!q||(m.title+' '+m.partNo).toLowerCase().includes(q.toLowerCase()));
     $('#ml').innerHTML=f.length?f.map(m=>`<div class="card"><div class="row"><div class="grow"><b>${esc(m.title||'（無題）')}</b>
       <div class="sub">品番 ${esc(m.partNo||'-')}・第${esc(m.version||'1')}版・改訂 ${esc(m.revDate||'-')}・手順${m.steps.length}${m.approver?'':'・<span style="color:var(--warn)">未承認</span>'}</div></div>
-      <button class="pri" data-view="${m.id}">見る</button>${ed?`<button data-edit="${m.id}">編集</button>`:''}</div></div>`).join('')
+      <button class="pri" data-view="${m.id}">見る</button>${ed?`<button data-edit="${m.id}">編集</button>`:''}</div><div class="dline" data-dl="${m.id}"></div></div>`).join('')
       :`<p class="sub">${ms.length?'見つかりません。':'まだ手順書がありません。'}</p>`};
-  draw('');if($('#q'))$('#q').oninput=e=>draw(e.target.value.trim());
+  draw('');if($('#q'))$('#q').oninput=e=>{draw(e.target.value.trim());paintDrive()};
+  bindDriveCard();
   if($('#bNew'))$('#bNew').onclick=()=>showEdit(null);
   $('#bImp').onclick=()=>$('#fImp').click();
   $('#fImp').onchange=e=>{const f=e.target.files[0];if(f)importFile(f);e.target.value=''};
@@ -382,10 +598,10 @@ async function showEdit(id,pg){
   main.innerHTML=`
   <div class="card" id="sCap"><h3>① 撮る・取り込む</h3>
     <div class="row"><button class="pri" id="bCap">📷 撮影する</button><button id="bPick">🎞 動画を選ぶ</button></div>
-    <div class="row mt"><button id="bPhoto">🖼 写真で手順を追加</button><button id="bDoc">📄 既存の手順書を取り込む</button></div>
+    <div class="row mt"><button id="bPhoto">🖼 写真で手順を追加</button><button id="bCamPh">📸 カメラで写真を撮る</button><button id="bDoc">📄 既存の手順書を取り込む</button></div>
     <p class="sub small">コツ：スマホを固定し、手元を大きく・明るく。動画は1本1〜3分が目安（1080pか720p）。写真だけでも手順書を作れます。既存の手順書は Excel（.xlsx）・Word（.docx）・PDF に対応。パソコンでは、ファイルをこの画面にドラッグしても取り込めます。</p>
     <input type="file" id="fCap" accept="video/*" capture="environment" hidden><input type="file" id="fPick" accept="video/*" hidden>
-    <input type="file" id="fPhoto" accept="image/*" multiple hidden><input type="file" id="fDoc" accept=".xlsx,.docx,.pdf" hidden></div>
+    <input type="file" id="fPhoto" accept="image/*" multiple hidden><input type="file" id="fCamPh" accept="image/*" capture="environment" hidden><input type="file" id="fDoc" accept=".xlsx,.docx,.pdf" hidden></div>
   <div class="card" id="sPlayer"><div id="vArea"></div></div>
   <div class="card" id="sCut"><h3>② 切り分ける（タイムライン）</h3>
     <div class="tlw" id="tlw"></div>
@@ -408,9 +624,12 @@ async function showEdit(id,pg){
     <button class="pri" id="bPrev">▶ 閲覧モードで確認（現場の見え方）</button>
     <button id="bCapV">🎬 字幕入り動画を作る（LINEなどで送る）</button>
     <button id="bExp">📦 現場に配る（共有ファイルを書き出す）</button>
+    <button id="bDrive">☁ Googleドライブに保存（他の端末と共有）</button>
     <button class="danger" id="bDelM">🗑 この手順書を削除</button></div></div>`;
   main.querySelectorAll('[data-meta]').forEach(el=>el.oninput=()=>{cur[el.dataset.meta]=el.value;saveSoon();if(el.dataset.meta==='title')setTitle(el.value||'新しい手順書');updateNav()});
-  $('#bCap').onclick=()=>$('#fCap').click();$('#bPick').onclick=()=>$('#fPick').click();
+  $('#bCap').onclick=()=>{if(IS_MOBILE)$('#fCap').click();else openCam('video',b=>setVideo(b))};$('#bPick').onclick=()=>$('#fPick').click();
+  $('#bCamPh').onclick=()=>{if(IS_MOBILE)$('#fCamPh').click();else openCam('photo',d=>addPhotoData(d))};
+  $('#fCamPh').onchange=e=>{const fs=[...e.target.files];e.target.value='';if(fs.length)addPhotos(fs)};
   $('#fCap').onchange=$('#fPick').onchange=e=>{const f=e.target.files[0];if(f)setVideo(f);e.target.value=''};
   $('#bPhoto').onclick=()=>$('#fPhoto').click();$('#bDoc').onclick=()=>$('#fDoc').click();
   $('#fPhoto').onchange=e=>{const fs=[...e.target.files];e.target.value='';if(fs.length)addPhotos(fs)};
@@ -424,9 +643,10 @@ async function showEdit(id,pg){
   $('#stepList').onclick=listClick;
   $('#strip').onclick=e=>{const d=e.target.closest('[data-t]');if(d){tIdx=+d.dataset.t;renderText()}};
   $('#bRev').onclick=revise;$('#bAiAll').onclick=aiAll;$('#bTrAll').onclick=translateAll;$('#bTtsAll').onclick=ttsAllDialog;
-  $('#bPrev').onclick=async()=>{await save();showView(cur.id)};
-  $('#bCapV').onclick=async()=>{await save();openCapDialog()};
-  $('#bExp').onclick=async()=>{await save();exportPkg(cur)};
+  $('#bPrev').onclick=async()=>{await persist();showView(cur.id)};
+  $('#bCapV').onclick=async()=>{await persist();openCapDialog()};
+  $('#bDrive').onclick=async()=>{await persist();driveSaveUI(cur)};
+  $('#bExp').onclick=async()=>{await persist();exportPkg(cur)};
   $('#bDelM').onclick=async()=>{if(!confirm('この手順書と動画を削除します。元に戻せません。よろしいですか？'))return;
     if(cur.videoId)await idb.del('videos',cur.videoId);await idb.del('manuals',cur.id);cur=null;lastId=null;lsSet('kensa-last','');showList()};
   renderPlayer();renderList();renderText();renderHist();applyPage();renderChrome();renderTimeline();window.scrollTo(0,0);
@@ -449,7 +669,7 @@ function renderPlayer(){
   if(!curURL){a.innerHTML='<p class="sub">まだ動画がありません。「📷 撮影する」か「🎞 動画を選ぶ」から始めます。</p>';return}
   a.innerHTML='<div class="vwrap"><video id="ve" controls playsinline preload="auto"></video></div>';
   const v=$('#ve');v.src=curURL;v.ontimeupdate=()=>{if(segEnd!=null&&v.currentTime>=segEnd){v.pause();segEnd=null}updatePH()};
-  v.addEventListener('seeked',updatePH);v.addEventListener('loadedmetadata',()=>{if(!tlDur)renderTimeline()})}
+  v.addEventListener('seeked',updatePH);v.addEventListener('loadedmetadata',async()=>{if(!isFinite(v.duration)){await fixDur(v)}if(!tlDur)renderTimeline()})}
 async function addStep(){
   if(inPt==null||outPt==null){alert('「▶ 開始点」と「■ 終了点」を押してください');return}
   if(outPt<=inPt+0.2){alert('終了点は開始点より後にしてください');return}
@@ -489,30 +709,39 @@ function renderText(){
   const on=st.querySelector('.on');if(on)on.scrollIntoView({block:'nearest',inline:'center'});
   const ph=isPhoto(s),src=s.img||s.thumb;
   b.innerHTML=`<div class="row"><b class="grow">手順 ${tIdx+1} / ${cur.steps.length}</b><span class="sub">${ph?'🖼 写真':fmt(s.start)+'〜'+fmt(s.end)}</span></div>
-    <div class="vwrap thumb" id="tImg">${src?`<img src="${src}" alt="">`:'<div class="noimg">画像なし</div>'}<div class="marks">${marksHTML(s.marks)}</div>
+    <div class="vwrap" id="tImg">${src?`<img src="${src}" alt="">`:'<div class="noimg">画像なし</div>'}<div class="marks"></div>
       <video id="tv" playsinline muted hidden></video></div>
-    <div class="row">${ph?'':'<button class="sm" id="tPlay">▶ 動きを見る</button>'}<span class="sub small grow">画像をタップ＝赤丸（もう一度で消す）</span></div>
+    <div class="row">${ph?'':'<button class="sm" id="tPlay">▶ 動きを見る</button>'}<button class="pri grow" id="bPts">🎯 ポイント（○ □ × ➡）を入れる・直す</button></div>
+    <div class="ptsum">${s.marks.length?`ポイント ${s.marks.length}個：`+s.marks.map((m,i)=>`${i+1}.${PTN[m.s]||'○'}${m.t0!=null?fmt(m.t0):'ずっと'}${m.label?' '+esc(m.label):''}`).join('　'):'ポイントはまだありません。見せたい所に ○ □ × ➡ で印を付けると伝わりやすくなります。'}</div>
     <label class="f">日本語の説明</label><textarea id="tJa" data-t="ja" placeholder="例：ゲート部にバリがないか、指でなぞって確認する（メモだけ書いてAIに整えさせてもOK）">${esc(s.text.ja)}</textarea>
     <div class="row mt"><button class="pri sm" id="tAi">🤖 AIで説明を書く</button><button class="sm" id="tTr">🌐 翻訳</button><button class="sm" id="tGt">Google翻訳で確認</button></div>
     <label class="f">Tiếng Việt（ベトナム語）</label><textarea id="tVi" data-t="vi">${esc(s.text.vi)}</textarea>
     <label class="f">Bahasa Indonesia（インドネシア語）</label><textarea id="tId" data-t="id">${esc(s.text.id)}</textarea>
+    <div class="ngbox" id="ngBox">${s.ng?`<div class="row"><b class="ngt grow">❌ NG例（見る画面で左右2分割）</b></div>
+        <div class="vwrap" id="ngImg"><img src="${s.ng.img||s.ng.thumb}" alt=""><div class="marks"></div></div>
+        <div class="row"><button class="sm" id="ngPts">🎯 NGのポイント（○ □ × ➡）を入れる</button><span class="ptsum grow">${s.ng.marks.length?`${s.ng.marks.length}個`:''}</span></div>
+        <label class="f">NGの説明（日本語）</label><textarea data-n="ja" placeholder="例：ゲート部にバリが残っているものはNG">${esc(s.ng.text.ja)}</textarea>
+        <label class="f">Tiếng Việt</label><textarea data-n="vi">${esc(s.ng.text.vi)}</textarea>
+        <label class="f">Bahasa Indonesia</label><textarea data-n="id">${esc(s.ng.text.id)}</textarea>
+        <div class="row mt"><button class="sm" id="ngAi">🤖 AIでNGの説明</button><button class="sm" id="ngTr">🌐 翻訳</button><button class="sm" id="ngChg">📷 写真を変える</button><button class="sm danger" id="ngDel">NG例を消す</button></div>`
+      :`<div class="row"><b class="ngt grow">❌ NG例を追加（OKとNGを2分割で比べる）</b></div>
+        <p class="sub small" style="margin:4px 0">キズ・バリ・ショート・ヒケなど、不良の見本を並べて見せると、判断がそろいます。</p>
+        <div class="row"><button class="sm" id="ngAdd">📷 NGの写真を撮る・選ぶ</button>${IS_MOBILE?'':'<button class="sm" id="ngCam">📸 パソコンのカメラで撮る</button>'}${ph?'':'<button class="sm" id="ngFrame">🎞 動画のコマから</button>'}</div>`}
+      <input type="file" id="fNg" accept="image/*" hidden></div>
     <div class="vbox"><div class="row"><b class="sub small">🎤 読み上げ音声</b><span class="grow">${['ja','vi','id'].map(L=>`<span class="vch ${s.voice&&s.voice[L]?'on':''}">${VLN[L]}${s.voice&&s.voice[L]?' ✓':'：なし'}</span>`).join('')}</span></div>
       <div class="row mt"><select id="vL" style="width:auto">${['ja','vi','id'].map(L=>`<option value="${L}" ${L===vLang?'selected':''}>${VLN[L]}</option>`).join('')}</select>
       <button class="sm" id="vRec">● 録音</button><button class="sm" id="vAi">🔊 AI音声</button><button class="sm" id="vPlay">▶ 聞く</button><button class="sm danger" id="vDel">消す</button></div>
       <p class="sub small" style="margin:6px 0 0">録音＝自分の声（無料）。AI音声＝説明文を自動で読み上げ（⚙ 設定でAI音声のキーが必要）。字幕入り動画に入れられます。</p></div>
     <div class="row mt"><button id="tPv" ${tIdx===0?'disabled':''}>◀ 前の手順</button><button class="pri grow" id="tNx">${last?'④ 仕上げへ ▶':'次の手順 ▶'}</button></div>`;
   b.querySelectorAll('textarea').forEach(t=>t.oninput=()=>{cur.steps[tIdx].text[t.dataset.t]=t.value;saveSoon();updateNav()});
-  $('#tImg').onclick=e=>{const tv=$('#tv');if(!tv.hidden)return;const img=$('#tImg img');if(!img)return;
-    const r=img.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100,ms=cur.steps[tIdx].marks;
-    if(x<0||x>100||y<0||y>100)return;
-    const near=ms.findIndex(m=>Math.hypot(m.x-x,(m.y-y)*r.height/r.width)<7);
-    if(near>=0)ms.splice(near,1);else ms.push({x:+x.toFixed(1),y:+y.toFixed(1)});
-    $('#tImg .marks').innerHTML=marksHTML(ms);save()};
-  if($('#tPlay'))$('#tPlay').onclick=()=>{const tv=$('#tv'),img=$('#tImg img'),mk=$('#tImg .marks'),bt=$('#tPlay');if(!curURL)return;
-    if(tv.hidden){if(!tv.src)tv.src=curURL;tv.hidden=false;if(img)img.hidden=true;mk.hidden=true;bt.textContent='■ 画像に戻る';
+  paintMarks($('#tImg .marks'),$('#tImg img'),s.marks,null,true);
+  $('#bPts').onclick=()=>openPts({title:`手順 ${tIdx+1} のポイント`,getMs:()=>s.marks,save:()=>save(),src:s.img||s.thumb,video:!ph&&curURL?{start:s.start,end:s.end}:null,onClose:()=>renderText()});
+  if($('#tPlay'))$('#tPlay').onclick=()=>{const tv=$('#tv'),img=$('#tImg img'),bt=$('#tPlay'),lay=$('#tImg .marks');if(!curURL)return;
+    if(tv.hidden){if(!tv.src)tv.src=curURL;tv.hidden=false;if(img)img.hidden=true;bt.textContent='■ 画像に戻る';
       const go=()=>{tv.currentTime=s.start;tv.play().catch(()=>{})};if(tv.readyState>=1)go();else tv.onloadedmetadata=go;
-      tv.ontimeupdate=()=>{if(tv.currentTime>=s.end)go()}}
-    else{tv.pause();tv.hidden=true;if(img)img.hidden=false;mk.hidden=false;bt.textContent='▶ 動きを見る'}};
+      tv.ontimeupdate=()=>{if(!tv.paused&&tv.currentTime>=s.end)go()};
+      const tk=()=>{if(tv.hidden||!lay.isConnected)return;lay.innerHTML=marksHTML(s.marks,-1,tv.currentTime,false,arOf(tv));requestAnimationFrame(tk)};tk()}
+    else{tv.pause();tv.hidden=true;if(img)img.hidden=false;bt.textContent='▶ 動きを見る';paintMarks(lay,img,s.marks,null,true)}};
   $('#tAi').onclick=async()=>{const bt=$('#tAi');const has=s.text.ja.trim();
     if(has&&!confirm('今の日本語をメモとして、AIが整えた文に置き換えます。よろしいですか？'))return;
     bt.disabled=true;bt.textContent='🤖 考え中…';
@@ -524,6 +753,7 @@ function renderText(){
     try{await trStep(s);renderText();toast('翻訳しました')}catch(err){aiErr(err);bt.disabled=false;bt.textContent='🌐 翻訳'}};
   $('#tGt').onclick=()=>{if(!s.text.ja.trim()){alert('先に日本語の説明を入れてください');return}
     window.open('https://translate.google.com/?sl=ja&tl=vi&op=translate&text='+encodeURIComponent(s.text.ja),'_blank')};
+  bindNg(s);
   $('#vL').onchange=e=>{vLang=e.target.value;lsSet('kensa-vl',vLang)};
   $('#vRec').onclick=e=>toggleRec(s,$('#vL').value,e.currentTarget);
   $('#vPlay').onclick=()=>{const d=s.voice&&s.voice[$('#vL').value];if(!d){toast('この言語の音声はまだありません');return}playVoice(d)};
@@ -576,7 +806,10 @@ ${gl?'【用語集】\n'+gl+'\n':''}【原文】
 ${text}`;
   const out=await claude(prompt,2000);const m=out.match(/\{[\s\S]*\}/);if(!m)throw new Error('翻訳結果を読み取れませんでした');
   return JSON.parse(m[0])}
-async function trStep(s){const r=await translate(s.text.ja);s.text.vi=(r.vi||'').trim();s.text.id=(r.id||'').trim();await save()}
+async function trStep(s){if(s.text.ja.trim()&&(!s.text.vi.trim()||!s.text.id.trim()||!trOnlyNg)){const r=await translate(s.text.ja);s.text.vi=(r.vi||'').trim();s.text.id=(r.id||'').trim()}
+  if(s.ng&&s.ng.text.ja.trim()&&(!s.ng.text.vi.trim()||!s.ng.text.id.trim()))await trNg(s);await save()}
+let trOnlyNg=false;
+const needTr=s=>(s.text.ja.trim()&&(!s.text.vi.trim()||!s.text.id.trim()))||(s.ng&&s.ng.text.ja.trim()&&(!s.ng.text.vi.trim()||!s.ng.text.id.trim()));
 async function grabFrames(times,w,marks){return withHiddenVideo(async v=>{const out=[];
   for(let k=0;k<times.length;k++){await seekTo(v,times[k]);if(!v.videoWidth)continue;const sc=Math.min(1,w/v.videoWidth);const c=document.createElement('canvas');
     c.width=Math.round(v.videoWidth*sc);c.height=Math.round(v.videoHeight*sc);const ctx=c.getContext('2d');ctx.drawImage(v,0,0,c.width,c.height);
@@ -611,13 +844,44 @@ async function aiAll(){
     m.close();renderList();renderText();toast('下書きしました。「③ 説明」で内容を確認してください',3600)}
   catch(e){m.close();renderText();aiErr(e)}}
 async function translateAll(){
-  const ts=cur.steps.filter(s=>s.text.ja.trim()&&(!s.text.vi.trim()||!s.text.id.trim()));
+  const ts=cur.steps.filter(needTr);
   if(!ts.length){toast('未翻訳の手順はありません');return}
+  trOnlyNg=true;
   if(!settings.apiKey)return aiErr(new Error('NOKEY'));
   const m=progressModal('🌐 翻訳中',`${ts.length}件`);
   try{for(let k=0;k<ts.length;k++){if(m.cancelled)break;m.set(k/ts.length,`${k+1}/${ts.length}`);await trStep(ts[k])}
-    m.close();renderText();toast('翻訳しました')}
+    m.close();trOnlyNg=false;renderText();toast('翻訳しました')}
   catch(e){m.close();renderText();aiErr(e)}}
+
+/* ---------- OK/NG 2分割 ---------- */
+function bindNg(s){
+  const f=$('#fNg');
+  const setImg=async src=>{const im=await loadImage(src);s.ng=s.ng||{text:{ja:'',vi:'',id:''},marks:[]};s.ng.img=toJpeg(im,1280);s.ng.thumb=toJpeg(im,400,0.7);s.ng.marks=[];await save();renderText();
+    setTimeout(()=>{const t=$('#ngBox textarea');if(t){t.scrollIntoView({block:'center'});}},50);toast('NG例を入れました。不良の箇所をタップで赤丸、説明を書きます',3200)};
+  f.onchange=async e=>{const file=e.target.files[0];e.target.value='';if(!file)return;const u=URL.createObjectURL(file);try{await setImg(u)}catch(err){alert('写真を読み込めませんでした')}finally{URL.revokeObjectURL(u)}};
+  if($('#ngAdd'))$('#ngAdd').onclick=()=>f.click();
+  if($('#ngCam'))$('#ngCam').onclick=()=>openCam('photo',d=>setImg(d));
+  if($('#ngChg'))$('#ngChg').onclick=()=>f.click();
+  if($('#ngFrame'))$('#ngFrame').onclick=async()=>{const tv=$('#tv');
+    if(tv.hidden){$('#tPlay').click();toast('動画が流れます。NGの場面で一時停止（■）してから、もう一度「🎞 動画のコマから」を押します',4200);return}
+    if(!tv.paused){tv.pause();toast('一時停止しました。この場面でよければ、もう一度押します',2800);return}
+    const d=grab(tv,1280);if(!d){toast('コマを取り出せませんでした');return}await setImg(d)};
+  if($('#ngDel'))$('#ngDel').onclick=async()=>{if(!confirm('このNG例を消しますか？'))return;delete s.ng;await save();renderText()};
+  $$('#ngBox textarea[data-n]').forEach(t=>t.oninput=()=>{s.ng.text[t.dataset.n]=t.value;saveSoon()});
+  if($('#ngImg')){paintMarks($('#ngImg .marks'),$('#ngImg img'),s.ng.marks,null,false);
+    $('#ngPts').onclick=()=>openPts({title:'NG例のポイント',getMs:()=>s.ng.marks,save:()=>save(),src:s.ng.img||s.ng.thumb,video:null,onClose:()=>renderText()})}
+  if($('#ngTr'))$('#ngTr').onclick=async e=>{if(!s.ng.text.ja.trim()){alert('先にNGの説明（日本語）を入れてください');return}const b=e.currentTarget;b.disabled=true;b.textContent='🌐 翻訳中…';
+    try{await trNg(s);renderText();toast('翻訳しました')}catch(err){aiErr(err);b.disabled=false;b.textContent='🌐 翻訳'}};
+  if($('#ngAi'))$('#ngAi').onclick=async e=>{const b=e.currentTarget;if(s.ng.text.ja.trim()&&!confirm('今の説明をメモとして、AIが整えた文に置き換えます。よろしいですか？'))return;
+    b.disabled=true;b.textContent='🤖 考え中…';try{s.ng.text.ja=await aiNg(s);s.ng.text.vi='';s.ng.text.id='';await save();renderText();toast('AIの下書きです。必ず確認してください',3000)}catch(err){aiErr(err);b.disabled=false;b.textContent='🤖 AIでNGの説明'}}}
+async function trNg(s){const r=await translate(s.ng.text.ja);s.ng.text.vi=(r.vi||'').trim();s.ng.text.id=(r.id||'').trim();await save()}
+async function aiNg(s){if(!settings.apiKey)throw new Error('NOKEY');
+  const im=await loadImage(s.ng.img||s.ng.thumb),sc=Math.min(1,1024/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);
+  const x=c.getContext('2d');x.drawImage(im,0,0,c.width,c.height);drawMarks(x,c.width,c.height,s.ng.marks);const hint=s.ng.text.ja.trim();
+  const txt=`あなたはプラスチック射出成形工場の品質管理の専門家です。検査手順書「${cur.title||''}」の手順（正しいやり方：${s.text.ja||'不明'}）の、NG（不良）見本の写真です。${s.ng.marks.length?'赤丸が不良の箇所です。':''}
+どんな不良か、どう見分けるかを日本語1〜2文・60字以内で書いてください。「〜があるものはNG」「〜はNG」の形。外国人作業者にも分かるやさしい言葉で。画像から確実に分からないことは書かない。
+${hint?'【作成者のメモ（最優先）】\n'+hint+'\n':''}出力は文だけ。`;
+  return(await claude([{type:'image',source:{type:'base64',media_type:'image/jpeg',data:c.toDataURL('image/jpeg',0.82).split(',')[1]}},{type:'text',text:txt}],300)).trim().replace(/^["「]|["」]$/g,'')}
 
 /* ---------- 読み上げ音声（録音・AI音声） ---------- */
 const VLN={ja:'日本語',vi:'ベトナム語',id:'インドネシア語'};
@@ -787,7 +1051,7 @@ async function autoSplit(){
 
 /* ---------- 見る（現場用） ---------- */
 async function showView(id){
-  if(view==='edit')await save();
+  if(view==='edit')await persist();
   stopTTS();const m=await idb.get('manuals',id);if(!m){showList();return}
   cur=m;lastId=m.id;lsSet('kensa-last',m.id);view='view';await loadVideo(cur.videoId);
   vIdx=0;lang=lsGet('kensa-lang','ja');if(!LANGS[lang])lang='ja';
@@ -799,8 +1063,10 @@ async function showView(id){
     <button class="sm" id="bCapV2" aria-label="字幕入り動画">🎬</button>
     <select id="lang" style="width:auto">${Object.entries(LANGS).map(([k,v])=>`<option value="${k}" ${k===lang?'selected':''}>${v.name}</option>`).join('')}</select></div></div>
   <div class="card"><b id="stepNo"></b>
-    <div class="vwrap" id="vv">${curURL?'<video id="vp" playsinline muted controls preload="auto"></video>':''}<img id="vimg" alt="" hidden><div class="marks" id="vmarks"></div></div>
-    <div class="big" id="vtext"></div>
+    <div class="okng" id="okng"><div class="pane"><span class="lab ok" id="labOk"></span>
+      <div class="vwrap" id="vv">${curURL?'<video id="vp" playsinline muted controls preload="auto"></video>':''}<img id="vimg" alt="" hidden><div class="marks" id="vmarks"></div></div></div>
+      <div class="pane ng" id="ngPane" hidden><span class="lab ng" id="labNg"></span><div class="vwrap"><img id="ngv" alt=""><div class="marks" id="ngm"></div></div></div></div>
+    <div class="big" id="vtext"></div><div class="ngtext" id="ngtext" hidden></div>
     <div class="row"><button id="bPv"></button><button id="bSp"></button><button class="pri grow" id="bNx"></button></div></div>
   <div class="card"><h3 id="tlTitle"></h3><div class="tl" id="tl"></div></div>`;
   $('#lang').onchange=e=>{lang=e.target.value;lsSet('kensa-lang',lang);renderViewStep()};
@@ -810,13 +1076,20 @@ async function showView(id){
   $('#tl').onclick=e=>{const d=e.target.closest('[data-i]');if(d){vIdx=+d.dataset.i;renderViewStep();window.scrollTo({top:0,behavior:'smooth'})}};
   const v=$('#vp');
   if(v){v.src=curURL;v.ontimeupdate=()=>{const s=cur.steps[vIdx];if(!s||isPhoto(s))return;if(v.currentTime>=s.end||v.currentTime<s.start-0.5){v.currentTime=s.start;v.play().catch(()=>{})}}}
-  renderViewStep();renderChrome();window.scrollTo(0,0)}
+  renderViewStep();renderChrome();window.scrollTo(0,0);checkViewUpdate();viewMarksLoop()}
+let vmRaf=0;
+function viewMarksLoop(){cancelAnimationFrame(vmRaf);let key='';const tick=()=>{if(view!=='view'||!cur)return;const s=cur.steps[vIdx],v=$('#vp');
+  if(s&&v&&!isPhoto(s)&&!v.hidden&&s.marks.length){const k=vIdx+':'+arOf(v).toFixed(2)+':'+s.marks.map(m=>visAt(m,v.currentTime)?1:0).join('');if(k!==key){key=k;$('#vmarks').innerHTML=marksHTML(s.marks,-1,v.currentTime,false,arOf(v))}}
+  vmRaf=requestAnimationFrame(tick)};tick()}
 function renderViewStep(){
   stopTTS();const s=cur.steps[vIdx],u=UI[lang],last=vIdx===cur.steps.length-1;
   $('#stepNo').textContent=`${u.step} ${vIdx+1} / ${cur.steps.length}`;
   const t=(s.text[lang]||'').trim();
   $('#vtext').innerHTML=t?esc(t).replace(/\n/g,'<br>'):(lang!=='ja'&&s.text.ja?`<span class="sub">${u.none}</span><br>${esc(s.text.ja).replace(/\n/g,'<br>')}`:`<span class="sub">${u.none}</span>`);
-  $('#vmarks').innerHTML=marksHTML(s.marks);
+  const hasNg=!!(s.ng&&(s.ng.img||s.ng.thumb));$('#okng').classList.toggle('two',hasNg);$('#ngPane').hidden=!hasNg;$('#ngtext').hidden=true;
+  $('#labOk').textContent=u.ok;$('#labNg').textContent=u.ng;
+  if(hasNg){$('#ngv').src=s.ng.img||s.ng.thumb;paintMarks($('#ngm'),$('#ngv'),s.ng.marks,null,false);const nt=(s.ng.text[lang]||s.ng.text.ja||'').trim();
+    if(nt){$('#ngtext').hidden=false;$('#ngtext').innerHTML='❌ '+esc(nt).replace(/\n/g,'<br>')}}
   const v=$('#vp'),im=$('#vimg');
   if(v&&!isPhoto(s)){im.hidden=true;v.hidden=false;const go=()=>{v.currentTime=s.start;v.play().catch(()=>{})};if(v.readyState>=1)go();else v.onloadedmetadata=go}
   else{if(v){v.pause();v.hidden=true}const src=s.img||s.thumb||'';im.hidden=!src;if(src)im.src=src;$('#vmarks').hidden=!src}
@@ -825,11 +1098,13 @@ function renderViewStep(){
   $('#bNx').textContent=last?u.done:u.next;$('#bNx').disabled=last;
   $('#bSp').textContent=u.speak;$('#tlTitle').textContent=u.list;
   $('#tl').innerHTML=cur.steps.map((x,i)=>`<div data-i="${i}" class="${i===vIdx?'on':''}">${x.thumb?`<img src="${x.thumb}" alt="">`:''}${u.step} ${i+1}</div>`).join('');
+  paintMarks($('#vmarks'),v&&!isPhoto(s)?v:$('#vimg'),s.marks,isPhoto(s)?null:s.start,false);
   updateNav()}
 function speakStep(){
   const s=cur.steps[vIdx];if(s.voice&&s.voice[lang]){stopTTS();playVoice(s.voice[lang]);return}
   let L=lang,text=(s.text[lang]||'').trim();
   if(!text){text=s.text.ja;L='ja'}if(!text)return;
+  if(s.ng){const nt=(s.ng.text[L]||'').trim();if(nt)text+='。 '+nt}
   if(!('speechSynthesis' in window)){alert('この端末は読み上げに対応していません');return}
   stopTTS();const code=LANGS[L].tts,u=new SpeechSynthesisUtterance(text);u.lang=code;u.rate=0.9;
   const vs=speechSynthesis.getVoices();
@@ -850,13 +1125,18 @@ function rrect(ctx,x,y,w,h,r){ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y
 const FONT='"Hiragino Sans","Noto Sans JP","Noto Sans","Segoe UI",Arial,sans-serif';
 function capLayout(ctx,W,H,s,langs){
   const blocks=langs.map(L=>{let t=(s.text[L]||'').trim();if(!t&&L!=='ja')t=(s.text.ja||'').trim();return t}).filter(Boolean);
-  const uniq=blocks.filter((b,i)=>blocks.indexOf(b)===i);
+  const uniq=blocks.filter((b,i)=>blocks.indexOf(b)===i).map((t,i)=>({t,col:i===0?'#fff':'#ffe082'}));
+  if(s.ng){const nb=langs.map(L=>(s.ng.text[L]||(L!=='ja'?s.ng.text.ja:'')||'').trim()).filter(Boolean);nb.filter((b,i)=>nb.indexOf(b)===i).forEach(t=>uniq.push({t:'❌ '+t,col:'#ff9e9e'}))}
   let fs=Math.round(Math.min(W,H)*0.058),lines;
-  for(;;){ctx.font=`700 ${fs}px ${FONT}`;lines=[];uniq.forEach((b,bi)=>wrapLines(ctx,b,W*0.9).forEach(l=>lines.push({l,bi})));
+  for(;;){ctx.font=`700 ${fs}px ${FONT}`;lines=[];uniq.forEach(b=>wrapLines(ctx,b.t,W*0.9).forEach(l=>lines.push({l,col:b.col})));
     if(lines.length*fs*1.35<=H*0.42||fs<=14)break;fs=Math.round(fs*0.88)}
   return{fs,lines}}
-function drawStepOverlay(ctx,W,H,m,si,langs,lay,r){
-  const s=m.steps[si],u=UI[langs[0]];r=r||{x:0,y:0,w:W,h:H};drawMarks(ctx,r.w,r.h,s.marks,r.x,r.y);
+function fitIn(w,h,b){const k=Math.min(b.w/w,b.h/h),rw=w*k,rh=h*k;return{x:b.x+(b.w-rw)/2,y:b.y+(b.h-rh)/2,w:rw,h:rh}}
+function drawLab(ctx,t,x,y,bg,fs){ctx.font=`800 ${fs}px ${FONT}`;const w=ctx.measureText(t).width+fs;ctx.fillStyle=bg;rrect(ctx,x-w,y,w,fs*1.5,fs*0.35);ctx.fill();ctx.fillStyle='#fff';ctx.textBaseline='middle';ctx.fillText(t,x-w+fs/2,y+fs*0.75)}
+function drawStepOverlay(ctx,W,H,m,si,langs,lay,r,rn,t){
+  const s=m.steps[si],u=UI[langs[0]];r=r||{x:0,y:0,w:W,h:H};drawMarks(ctx,r.w,r.h,s.marks,r.x,r.y,t==null?null:t);
+  if(rn){drawMarks(ctx,rn.w,rn.h,s.ng.marks,rn.x,rn.y);const lf=Math.round(Math.min(W,H)*0.042);
+    ctx.fillStyle='#fff';ctx.fillRect(W/2-2,0,4,H);drawLab(ctx,u.ok,W/2-lf*0.6,lf*0.6,'rgba(30,142,62,.95)',lf);drawLab(ctx,u.ng,W-lf*0.6,lf*0.6,'rgba(211,47,47,.95)',lf)}
   const bf=Math.round(Math.min(W,H)*0.05);ctx.font=`700 ${bf}px ${FONT}`;
   const bt=`${u.step} ${si+1} / ${m.steps.length}`,bw=ctx.measureText(bt).width+bf*1.2;
   ctx.fillStyle='rgba(31,95,191,.92)';rrect(ctx,bf*0.5,bf*0.5,bw,bf*1.6,bf*0.4);ctx.fill();
@@ -865,7 +1145,7 @@ function drawStepOverlay(ctx,W,H,m,si,langs,lay,r){
   const lh=lay.fs*1.35,pad=lay.fs*0.5,bh=lay.lines.length*lh+pad*2;
   ctx.fillStyle='rgba(0,0,0,.66)';ctx.fillRect(0,H-bh,W,bh);
   ctx.font=`700 ${lay.fs}px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';
-  lay.lines.forEach((o,i)=>{ctx.fillStyle=o.bi===0?'#fff':'#ffe082';ctx.fillText(o.l,W/2,H-bh+pad+lh*(i+0.5))});
+  lay.lines.forEach((o,i)=>{ctx.fillStyle=o.col;ctx.fillText(o.l,W/2,H-bh+pad+lh*(i+0.5))});
   ctx.textAlign='left'}
 function drawTitle(ctx,W,H,m){
   ctx.fillStyle='#1f5fbf';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';
@@ -874,7 +1154,7 @@ function drawTitle(ctx,W,H,m){
   const f2=Math.round(fs*0.5);ctx.font=`${f2}px ${FONT}`;
   ctx.fillText(`品番 ${m.partNo||'-'}　第${m.version||'1'}版　改訂 ${m.revDate||'-'}`,W/2,H*0.62);
   ctx.fillText(`作成 ${m.author||'-'}　承認 ${m.approver||'-'}`,W/2,H*0.62+f2*1.6);ctx.textAlign='left'}
-function photoSecs(s,langs){const t=langs.map(L=>s.text[L]||s.text.ja||'').join('');return Math.min(10,Math.max(4,3+t.length*0.06))}
+function photoSecs(s,langs){const t=langs.map(L=>(s.text[L]||s.text.ja||'')+(s.ng?(s.ng.text[L]||s.ng.text.ja||''):'')).join('');return Math.min(12,Math.max(4,3+t.length*0.06))}
 async function makeCaptionVideo(m,langs,withTitle,prog,cancel,opt={}){
   let v=null,rec,raf,wake;const ac=opt.ac||null;
   try{
@@ -904,12 +1184,14 @@ async function makeCaptionVideo(m,langs,withTitle,prog,cancel,opt={}){
     const hold=async sec=>{const until=Date.now()+sec*1000;while(Date.now()<until&&!cancel.c)await sleep(100)};
     const chunks=[];rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
     const stopped=new Promise(r=>rec.onstop=r);
-    let mode='title',si=0,lay=null,pim=null;
-    const frame=()=>{if(mode==='title')drawTitle(ctx,W,H,m);
-      else if(mode==='photo'){ctx.fillStyle='#000';ctx.fillRect(0,0,W,H);let r={x:0,y:0,w:W,h:H};
-        if(pim){const k=Math.min(W/pim.width,H/pim.height);r={w:pim.width*k,h:pim.height*k};r.x=(W-r.w)/2;r.y=(H-r.h)/2;ctx.drawImage(pim,r.x,r.y,r.w,r.h)}
-        drawStepOverlay(ctx,W,H,m,si,langs,lay,r)}
-      else{ctx.drawImage(v,0,0,W,H);drawStepOverlay(ctx,W,H,m,si,langs,lay)}};
+    let mode='title',si=0,lay=null,pim=null,ngim=null;
+    const frame=()=>{if(mode==='title'){drawTitle(ctx,W,H,m);return}
+      ctx.fillStyle='#000';ctx.fillRect(0,0,W,H);
+      const box=ngim?{x:0,y:0,w:W/2-2,h:H}:{x:0,y:0,w:W,h:H};let r=box,rn=null;
+      if(mode==='photo'){if(pim){r=fitIn(pim.width,pim.height,box);ctx.drawImage(pim,r.x,r.y,r.w,r.h)}}
+      else{r=ngim?fitIn(v.videoWidth,v.videoHeight,box):box;ctx.drawImage(v,r.x,r.y,r.w,r.h)}
+      if(ngim){rn=fitIn(ngim.width,ngim.height,{x:W/2+2,y:0,w:W/2-2,h:H});ctx.drawImage(ngim,rn.x,rn.y,rn.w,rn.h)}
+      drawStepOverlay(ctx,W,H,m,si,langs,lay,r,rn,mode==='step'?v.currentTime:null)};
     const loop=()=>{frame();raf=requestAnimationFrame(loop)};
     const go=()=>{if(rec.state==='inactive')rec.start(500);else if(rec.state==='paused')rec.resume()};
     if(withTitle){frame();loop();go();await sleep(2500)}
@@ -917,6 +1199,7 @@ async function makeCaptionVideo(m,langs,withTitle,prog,cancel,opt={}){
       if(cancel.c)throw new Error('CANCEL');
       const s=m.steps[si];prog(si,m.steps.length);
       if(rec.state==='recording')rec.pause();
+      ngim=null;if(s.ng&&(s.ng.img||s.ng.thumb)){try{ngim=await loadImage(s.ng.img||s.ng.thumb)}catch(e){}}
       if(isPhoto(s)||!v){pim=null;const src=s.img||s.thumb;if(src){try{pim=await loadImage(src)}catch(e){}}
         mode='photo';lay=capLayout(ctx,W,H,s,langs);frame();if(!raf)loop();go();
         const nd=narr(s);await hold(Math.max(photoSecs(s,langs),nd?nd+0.6:0));continue}
@@ -927,7 +1210,9 @@ async function makeCaptionVideo(m,langs,withTitle,prog,cancel,opt={}){
       if(ob&&og){osn=ac.createBufferSource();osn.buffer=ob;osn.connect(og);osn.start(0,Math.min(s.start,ob.duration),Math.max(0.05,s.end-s.start))}
       const nd=narr(s);
       await new Promise(res=>{const chk=()=>{if(cancel.c||v.currentTime>=s.end||v.ended||v.paused)res();else setTimeout(chk,30)};chk()});
-      v.pause();if(osn){try{osn.stop()}catch(e){}osn=null}if(nd){const rest=nd+0.4-(Date.now()-t0)/1000;if(rest>0)await hold(rest)}}
+      v.pause();if(osn){try{osn.stop()}catch(e){}osn=null}
+      if(ngim){const need=photoSecs(s,langs)-(Date.now()-t0)/1000;if(need>0)await hold(need)}
+      if(nd){const rest=nd+0.4-(Date.now()-t0)/1000;if(rest>0)await hold(rest)}}
     si=m.steps.length-1;
     if(cancel.c)throw new Error('CANCEL');
     await sleep(300);rec.stop();await stopped;
@@ -1027,6 +1312,55 @@ async function restoreBackup(pkg){
   await adoptLock(pkg.lock);toast('バックアップから戻しました');showList()}
 
 /* ---------- 取り込み（写真・ドラッグ・Excel/Word/PDF） ---------- */
+async function addPhotoData(d){if(!cur||view!=='edit')return;try{const im=await loadImage(d);cur.steps.push(newPhotoStep(toJpeg(im,1280),toJpeg(im,400,0.7)));await save();
+  tIdx=cur.steps.length-1;renderList();toast('写真を手順に追加しました');setPage('text')}catch(e){alert('写真を取り込めませんでした')}}
+/* ---------- アプリ内カメラ（パソコンのカメラ・USBカメラ） ---------- */
+const IS_MOBILE=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)||(navigator.maxTouchPoints>1&&/Macintosh/.test(navigator.userAgent));
+async function openCam(kind,done){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){alert('このブラウザではカメラを使えません。ChromeかEdgeの最新版で開いてください。');return}
+  const isV=kind==='video';
+  const d=document.createElement('div');d.className='modal';
+  d.innerHTML=`<div class="mbox cam"><div class="row"><h3 class="grow" style="margin:0">${isV?'🎥 カメラで録画':'📸 カメラで写真'}</h3><button class="sm" id="camX">閉じる</button></div>
+    <div class="row mt"><select id="camSel" style="flex:1"></select>${isV?'<select id="camRes" style="width:auto"><option value="1280x720">720p</option><option value="1920x1080">1080p</option></select>':''}</div>
+    <div class="mt" style="position:relative"><video id="camV" playsinline muted autoplay></video><div id="camOut"></div></div>
+    <p class="sub small" id="camMsg">カメラを準備しています…（許可を求められたら「許可」を押します）</p>
+    <div class="row mt" id="camBtns"><button class="pri big" id="camGo" disabled>${isV?'● 録画開始':'📸 撮る'}</button><span id="camT" class="sub" style="min-width:52px;text-align:center"></span></div></div>`;
+  document.body.appendChild(d);
+  const V=d.querySelector('#camV'),sel=d.querySelector('#camSel'),msg=d.querySelector('#camMsg'),go=d.querySelector('#camGo'),out=d.querySelector('#camOut');
+  let stream=null,rec=null,chunks=[],t0=0,timer=0,blob=null;
+  const stop=()=>{try{if(rec&&rec.state!=='inactive')rec.stop()}catch(e){}if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;clearInterval(timer)};
+  const close=()=>{stop();d.remove()};d.querySelector('#camX').onclick=close;
+  const start=async()=>{stop();go.disabled=true;
+    const [w,h]=(isV&&d.querySelector('#camRes')?d.querySelector('#camRes').value:'1920x1080').split('x').map(Number);
+    const vc={width:{ideal:w},height:{ideal:h}};if(sel.value)vc.deviceId={exact:sel.value};else vc.facingMode='environment';
+    try{try{stream=await navigator.mediaDevices.getUserMedia({video:vc,audio:isV})}catch(e){if(isV)stream=await navigator.mediaDevices.getUserMedia({video:vc,audio:false});else throw e}}
+    catch(e){msg.textContent=/NotAllowed|Permission/i.test(e.name+e.message)?'カメラの使用が許可されていません。アドレス欄の🔒（カメラ）から「許可」にして、もう一度開いてください。':'カメラが見つかりません。つながっているか確認してください。（'+e.name+'）';return}
+    V.srcObject=stream;V.hidden=false;out.innerHTML='';go.disabled=false;
+    const tr=stream.getVideoTracks()[0],st=tr.getSettings?tr.getSettings():{};
+    msg.textContent=`${tr.label||'カメラ'}（${st.width||'?'}×${st.height||'?'}）${isV?(stream.getAudioTracks().length?'・マイクあり':'・マイクなし（音声は入りません）'):''}`;
+    if(!sel.options.length||sel.dataset.filled!=='1'){try{const ds=(await navigator.mediaDevices.enumerateDevices()).filter(x=>x.kind==='videoinput');
+      sel.innerHTML=ds.map((x,i)=>`<option value="${x.deviceId}" ${x.deviceId===st.deviceId?'selected':''}>${esc(x.label||'カメラ'+(i+1))}</option>`).join('');sel.dataset.filled='1'}catch(e){}}};
+  sel.onchange=start;if(d.querySelector('#camRes'))d.querySelector('#camRes').onchange=start;
+  go.onclick=()=>{
+    if(!isV){const c=document.createElement('canvas');c.width=V.videoWidth;c.height=V.videoHeight;if(!c.width){toast('まだ映像が出ていません');return}
+      c.getContext('2d').drawImage(V,0,0);const url=c.toDataURL('image/jpeg',0.9);V.hidden=true;
+      out.innerHTML=`<img src="${url}" style="width:100%;border-radius:10px">`;
+      d.querySelector('#camBtns').innerHTML='<button class="pri big" id="camUse">✔ この写真を使う</button><button class="big" id="camRe">↺ 撮り直す</button>';
+      d.querySelector('#camUse').onclick=()=>{close();done(url)};d.querySelector('#camRe').onclick=()=>{close();openCam(kind,done)};return}
+    if(!rec||rec.state==='inactive'){
+      const mt=pickRecMime(stream.getAudioTracks().length>0);chunks=[];
+      try{rec=new MediaRecorder(stream,mt?{mimeType:mt,videoBitsPerSecond:5e6}:undefined)}catch(e){rec=new MediaRecorder(stream)}
+      rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+      rec.onstop=()=>{blob=new Blob(chunks,{type:(rec.mimeType||mt||'video/webm').split(';')[0]});const u=URL.createObjectURL(blob);
+        stream&&stream.getTracks().forEach(t=>t.stop());V.hidden=true;out.innerHTML=`<video src="${u}" controls playsinline style="width:100%;max-height:52vh;border-radius:10px;background:#000"></video>`;
+        msg.textContent=`録画しました（${((Date.now()-t0)/1000).toFixed(1)}秒・約${(blob.size/1048576).toFixed(1)}MB）。確認して「この動画を使う」を押します。`;
+        d.querySelector('#camBtns').innerHTML='<button class="pri big" id="camUse">✔ この動画を使う</button><button class="big" id="camRe">↺ 撮り直す</button>';
+        d.querySelector('#camUse').onclick=()=>{close();done(blob)};d.querySelector('#camRe').onclick=()=>{close();openCam(kind,done)}};
+      rec.start(1000);t0=Date.now();go.textContent='■ 停止';go.classList.remove('pri');go.classList.add('danger');sel.disabled=true;
+      timer=setInterval(()=>{const s=Math.floor((Date.now()-t0)/1000);d.querySelector('#camT').innerHTML=`<span class="recdot"></span>${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`},500)}
+    else{clearInterval(timer);rec.stop()}};
+  await start()}
+
 async function addPhotos(files){
   if(!cur||view!=='edit')return;
   files=files.slice().sort((a,b)=>a.name.localeCompare(b.name,'ja',{numeric:true}));
@@ -1174,6 +1508,145 @@ async function importDoc(file){
       <div class="dprev">${result.steps.map((st,i)=>`<div>${st.im?`<img src="${st.im.thumb}" alt="">`:'<span class="ni"></span>'}<span><b>${i+1}.</b> ${esc(st.text||'（説明なし）')}</span></div>`).join('')}</div>`;
     d.querySelectorAll('input[name=dm]').forEach(x=>x.disabled=true);bt.disabled=false;bt.textContent='✔ 追加する'}}
 
+/* ---------- Googleドライブ連携 ---------- */
+const GAPI='https://www.googleapis.com/drive/v3/files',GUP='https://www.googleapis.com/upload/drive/v3/files',DSCOPE='https://www.googleapis.com/auth/drive';
+let dRemote=null,dTime=0;
+function gToken(){const t=lsGet('kensa-gtok',''),e=+lsGet('kensa-gexp','0')||0;return t&&Date.now()<e-60000?t:null}
+function fieldLink(){const b=location.origin+location.pathname.replace(/index\.html$/,'');return settings.gClientId?`${b}?view&g=${encodeURIComponent(settings.gClientId)}${settings.gFolder?'&f='+settings.gFolder:''}`:''}
+function gLogin(after){
+  if(!settings.gClientId){alert('先に「⚙ 設定」→「☁ Googleドライブ連携」でクライアントIDを入れてください（編集する人の端末）。現場の端末は、事務所から届いた「現場用リンク」を開きます。');return}
+  if(location.protocol==='file:'){alert('いま開いているのは、パソコンにダウンロードしたファイルです。\nこの状態ではGoogleに接続できません。\n\nChromeのアドレス欄に次のアドレスを入れて開き直してください：\nhttps://arakumi335062-create.github.io/kensa/\n\n※開き直したら、クライアントIDをもう一度入れて保存してください。');return}
+  if(view==='edit')persist();
+  const st=uid();lsSet('kensa-gstate',st);lsSet('kensa-gsearch',forceView?'?view':'');lsSet('kensa-gafter',after||'list');
+  location.href='https://accounts.google.com/o/oauth2/v2/auth?'+new URLSearchParams({client_id:settings.gClientId,redirect_uri:location.origin+location.pathname.replace(/index\.html$/,''),
+    response_type:'token',scope:DSCOPE,include_granted_scopes:'true',state:st})}
+function gLogout(){const t=lsGet('kensa-gtok','');lsSet('kensa-gtok','');lsSet('kensa-gexp','0');dRemote=null;
+  if(t)fetch('https://oauth2.googleapis.com/revoke?token='+encodeURIComponent(t),{method:'POST'}).catch(()=>{});toast('ドライブとの接続を切りました')}
+function gMsg(st,t){
+  if(st===403&&/storageQuota/i.test(t))return'Googleドライブの容量がいっぱいです。不要なファイルを消すか、容量を増やしてください。';
+  if(st===403&&/insufficient|forbidden|permission/i.test(t))return'このGoogleアカウントには、共有フォルダを変更する権限がありません（見るだけの権限です）。';
+  if(st===404)return'共有フォルダまたはファイルが見つかりません。フォルダが共有されているか、リンクが正しいか確認してください。';
+  if(st===403&&/accessNotConfigured|has not been used|disabled/i.test(t))return'Google Drive APIが有効になっていません。Google Cloudで「Google Drive API」を有効にしてください。';
+  if(st===429||st>=500)return'Googleが混み合っています。少し待ってからもう一度。';
+  return`Googleドライブでエラーが起きました（${st}）：`+String(t).slice(0,150)}
+async function gfetch(url,opt={}){const t=gToken();if(!t)throw new Error('GAUTH');opt.headers={...(opt.headers||{}),Authorization:'Bearer '+t};
+  let r;try{r=await fetch(url,opt)}catch(e){throw new Error(NETMSG)}
+  if(r.status===401){lsSet('kensa-gtok','');throw new Error('GAUTH')}
+  if(!r.ok){const tx=await r.text();throw new Error(gMsg(r.status,tx))}return r}
+function driveErr(e,after){if(e.message==='GAUTH'){if(confirm('Googleドライブへの接続が必要です（1時間ごとに確認が入ります）。接続しますか？'))gLogin(after);return}if(e.message!=='CANCEL')alert(e.message)}
+async function ensureFolder(){
+  if(settings.gFolder)return settings.gFolder;
+  const q=encodeURIComponent("name='検査手順ムービー' and mimeType='application/vnd.google-apps.folder' and trashed=false");
+  const j=await(await gfetch(`${GAPI}?q=${q}&fields=files(id)&supportsAllDrives=true&includeItemsFromAllDrives=true`)).json();
+  let id=j.files&&j.files[0]&&j.files[0].id;
+  if(!id){if(!isEditor())throw new Error('共有フォルダが見つかりません。事務所から届いた「現場用リンク」を開き直してください。');
+    id=(await(await gfetch(`${GAPI}?supportsAllDrives=true&fields=id`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'検査手順ムービー',mimeType:'application/vnd.google-apps.folder'})})).json()).id}
+  settings.gFolder=id;await idb.put('kv',settings,'settings');return id}
+function xhrPut(url,blob,onp){return new Promise((res,rej)=>{const x=new XMLHttpRequest();x.open('PUT',url);x.setRequestHeader('Authorization','Bearer '+gToken());
+  x.setRequestHeader('Content-Type',blob.type||'application/octet-stream');x.upload.onprogress=e=>{if(e.lengthComputable&&onp)onp(e.loaded/e.total)};
+  x.onload=()=>{if(x.status>=200&&x.status<300){try{res(JSON.parse(x.responseText))}catch(e){res({})}}else rej(new Error(x.status===401?'GAUTH':gMsg(x.status,x.responseText)))};
+  x.onerror=()=>rej(new Error(NETMSG));x.send(blob)})}
+async function gUpload(fileId,meta,blob,onp){
+  const r=await gfetch(`${GUP}${fileId?'/'+fileId:''}?uploadType=resumable&supportsAllDrives=true&fields=id,modifiedTime`,{method:fileId?'PATCH':'POST',
+    headers:{'Content-Type':'application/json; charset=UTF-8','X-Upload-Content-Type':blob.type||'application/octet-stream','X-Upload-Content-Length':String(blob.size)},body:JSON.stringify(meta)});
+  const loc=r.headers.get('Location');if(!loc)throw new Error('アップロードを開始できませんでした');return xhrPut(loc,blob,onp)}
+async function gUploadSafe(fileId,meta,parents,blob,onp){
+  if(fileId){try{return await gUpload(fileId,meta,blob,onp)}catch(e){if(!/見つかりません/.test(e.message))throw e}}
+  return gUpload(null,{...meta,parents},blob,onp)}
+async function driveSave(m,pm){
+  const folder=await ensureFolder();m.sync=m.sync||{};
+  if(m.videoId){if(m.sync.vidOf!==m.videoId||!m.sync.vid){const vb=await idb.get('videos',m.videoId);
+    if(vb){pm&&pm.set(0.02,'動画をアップロード中…（大きい動画は時間がかかります）');
+      const r=await gUploadSafe(m.sync.vid,{name:`${m.id}_video`,appProperties:{kind:'video',kmId:m.id}},[folder],vb,p=>pm&&pm.set(0.02+p*0.9,`動画をアップロード中… ${Math.round(p*100)}%`));
+      m.sync.vid=r.id;m.sync.vidMod=r.modifiedTime||'';m.sync.vidOf=m.videoId}}}
+  else{m.sync.vid=null;m.sync.vidOf=null}
+  pm&&pm.set(0.95,'手順書を保存中…');
+  const man={...m};delete man.sync;
+  const body={format:'kensa-drive-v1',manual:man,videoFileId:m.sync.vid||null,videoMod:m.sync.vidMod||'',lock:lock||null};
+  const meta={name:safeName(`${m.partNo||''}_${m.title||'無題'}_${m.id}.json`),mimeType:'application/json',
+    appProperties:{kind:'manual',kmId:m.id,kmUp:String(m.updatedAt),kmVer:String(m.version||'1').slice(0,10),kmTitle:(m.title||'').slice(0,28),kmPart:(m.partNo||'').slice(0,28)}};
+  const r=await gUploadSafe(m.sync.json,meta,[folder],new Blob([JSON.stringify(body)],{type:'application/json'}));
+  m.sync.json=r.id;m.sync.remoteUp=m.updatedAt;await idb.put('manuals',m);dRemote=null}
+async function driveSaveUI(m){
+  if(!isEditor())return;if(!gToken())return driveErr(new Error('GAUTH'),'save:'+m.id);
+  const pm=progressModal('☁ ドライブに保存中',m.title||'');
+  try{await driveSave(m,pm);pm.close();toast('☁ ドライブに保存しました。他の端末で「🔄 同期する」を押すと届きます',3600);if(view==='list')showList()}
+  catch(e){pm.close();driveErr(e,'save:'+m.id)}}
+async function driveList(force){
+  if(dRemote&&!force&&Date.now()-dTime<30000)return dRemote;
+  const folder=await ensureFolder();
+  const q=encodeURIComponent(`'${folder}' in parents and trashed=false and appProperties has { key='kind' and value='manual' }`);
+  const j=await(await gfetch(`${GAPI}?q=${q}&pageSize=300&fields=files(id,name,modifiedTime,appProperties,lastModifyingUser(displayName))&supportsAllDrives=true&includeItemsFromAllDrives=true`)).json();
+  dRemote=j.files||[];dTime=Date.now();return dRemote}
+async function driveGet(f,pm){
+  const body=await(await gfetch(`${GAPI}/${f.id}?alt=media&supportsAllDrives=true`)).json();
+  if(body.format!=='kensa-drive-v1'||!body.manual)throw new Error('手順書のファイルではありません');
+  const m=body.manual,ex=await idb.get('manuals',m.id);
+  m.sync={json:f.id,vid:body.videoFileId||null,remoteUp:m.updatedAt,vidMod:body.videoMod||''};
+  if(body.videoFileId){
+    if(ex&&ex.videoId&&ex.sync&&ex.sync.vid===body.videoFileId&&ex.sync.vidMod&&ex.sync.vidMod===body.videoMod&&await idb.get('videos',ex.videoId)){m.videoId=ex.videoId}
+    else{pm&&pm.set(0.1,'動画をダウンロード中…');const vb=await(await gfetch(`${GAPI}/${body.videoFileId}?alt=media&supportsAllDrives=true`)).blob();
+      if(ex&&ex.videoId&&ex.videoId!==m.videoId)await idb.del('videos',ex.videoId);
+      m.videoId=m.videoId||uid();await idb.put('videos',vb,m.videoId)}
+    m.sync.vidOf=m.videoId}
+  else{if(ex&&ex.videoId)await idb.del('videos',ex.videoId);m.videoId=null}
+  await idb.put('manuals',m);await adoptLock(body.lock);return m}
+function dStatus(m,f){
+  if(!m)return{t:'☁ ドライブにあり（この端末にない）',c:'new',act:'get'};
+  if(!f)return{t:m.sync&&m.sync.json?'ドライブから消えています':'ドライブ未保存',c:'warn',act:isEditor()?'put':null};
+  const ru=+f.appProperties.kmUp||0,loc=m.updatedAt||0;
+  if(!m.sync||!m.sync.json){if(Math.abs(ru-loc)<2)return{t:'✓ 最新',c:'ok',act:'link'};return ru>loc?{t:'新しい版あり',c:'new',act:'get'}:{t:'未保存の変更',c:'warn',act:isEditor()?'put':null}}
+  const last=m.sync.remoteUp||0,rch=ru>last+1,lch=loc>last+1;
+  if(rch&&lch)return{t:'この端末とドライブの両方で変更あり',c:'warn',act:'both'};
+  if(rch)return{t:'新しい版あり',c:'new',act:'get'};
+  if(lch)return{t:'未保存の変更あり',c:'warn',act:isEditor()?'put':null};
+  return{t:'✓ 最新',c:'ok',act:null}}
+function driveCardHTML(){
+  if(!settings.gClientId)return isEditor()?'<div class="card sub small">☁ Googleドライブ連携を設定すると、スマホ・パソコン・タブレットで同じ手順書を使えます（⚙ 設定 →「☁ Googleドライブ連携」）。</div>':'';
+  const on=!!gToken();
+  return`<div class="card" id="drv"><div class="row"><b class="grow">☁ Googleドライブ</b>${on?'<button class="sm" id="dSync">🔄 同期する</button>':'<button class="sm pri" id="dCon">☁ 接続する</button>'}${on&&isEditor()?'<button class="sm" id="dUpAll">⬆ 変更を全部保存</button>':''}</div>
+    <div id="dMsg" class="sub small">${on?'確認中…':'接続すると、ドライブの手順書との違い（新しい版など）が表示されます。'}</div><div id="dRemote"></div></div>`}
+let dLocal=[];
+function bindDriveCard(){const c=$('#drv');if(!c)return;
+  if($('#dCon'))$('#dCon').onclick=()=>gLogin('list');
+  if($('#dSync'))$('#dSync').onclick=()=>driveRefresh(true);
+  if($('#dUpAll'))$('#dUpAll').onclick=driveUpAll;
+  c.onclick=dActClick;$('#ml').addEventListener('click',dActClick);
+  if(gToken())driveRefresh(false)}
+async function driveRefresh(force){const msg=$('#dMsg');if(!msg)return;
+  try{if(force)msg.textContent='確認中…';const fs=await driveList(force);dLocal=await idb.all('manuals');paintDrive();
+    const d=new Date(dTime);msg.textContent=`ドライブ ${fs.length}件・${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')} に確認`}
+  catch(e){msg.textContent='';driveErr(e,'list')}}
+function paintDrive(){if(!dRemote)return;const byId={};dRemote.forEach(f=>{if(f.appProperties&&f.appProperties.kmId)byId[f.appProperties.kmId]=f});
+  const btn=(st,id,fid)=>st.act==='get'?`<button class="sm" data-dget="${fid}">⬇ ${st.c==='new'&&!dLocal.find(x=>x.id===id)?'取り込む':'更新する'}</button>`
+    :st.act==='put'?`<button class="sm" data-dput="${id}">⬆ ドライブに保存</button>`
+    :st.act==='both'?`<button class="sm" data-dget="${fid}">⬇ ドライブの版にする</button>${isEditor()?`<button class="sm" data-dput="${id}">⬆ この端末の版で上書き</button>`:''}`:'';
+  $$('[data-dl]').forEach(el=>{const id=el.dataset.dl,m=dLocal.find(x=>x.id===id),f=byId[id],st=dStatus(m,f);
+    el.innerHTML=`<span class="db ${st.c}">${st.t}</span>${btn(st,id,f&&f.id)}`;if(st.act==='link'&&m&&f){m.sync={json:f.id,remoteUp:+f.appProperties.kmUp};idb.put('manuals',m)}});
+  const only=dRemote.filter(f=>f.appProperties&&!dLocal.find(x=>x.id===f.appProperties.kmId));
+  const r=$('#dRemote');if(r)r.innerHTML=only.length?`<div class="sub small mt">この端末にない手順書：</div>`+only.map(f=>`<div class="row mt"><span class="grow"><b>${esc(f.appProperties.kmTitle||f.name)}</b> <span class="sub small">品番 ${esc(f.appProperties.kmPart||'-')}・第${esc(f.appProperties.kmVer||'1')}版</span></span><button class="sm pri" data-dget="${f.id}">⬇ 取り込む</button></div>`).join(''):''}
+async function dActClick(e){const b=e.target.closest('[data-dget],[data-dput]');if(!b)return;e.stopPropagation();
+  if(b.dataset.dget){const f=(dRemote||[]).find(x=>x.id===b.dataset.dget);if(!f)return;const m=dLocal.find(x=>x.id===f.appProperties.kmId);
+    if(m&&m.sync&&m.updatedAt>(m.sync.remoteUp||0)+1&&!confirm('この端末で変更した内容は、ドライブの版で置き換わります。よろしいですか？'))return;
+    const pm=progressModal('☁ ドライブから取り込み中',f.appProperties.kmTitle||'');
+    try{await driveGet(f,pm);pm.close();toast('最新版にしました');showList()}catch(err){pm.close();driveErr(err,'list')}}
+  else{const m=await idb.get('manuals',b.dataset.dput);if(m)driveSaveUI(m)}}
+async function driveUpAll(){
+  const fs=await driveList(true).catch(e=>{driveErr(e,'list');return null});if(!fs)return;dLocal=await idb.all('manuals');
+  const todo=dLocal.filter(m=>{const f=fs.find(x=>x.appProperties&&x.appProperties.kmId===m.id);const st=dStatus(m,f);return st.act==='put'});
+  if(!todo.length){toast('保存が必要な手順書はありません');return}
+  if(!confirm(`${todo.length}件の手順書をドライブに保存します。よろしいですか？`))return;
+  const pm=progressModal('☁ まとめて保存中','');
+  try{for(let i=0;i<todo.length;i++){if(pm.cancelled)break;pm.set(i/todo.length,`${i+1} / ${todo.length}：${todo[i].title||''}`);await driveSave(todo[i],null)}
+    pm.close();toast('まとめて保存しました');showList()}catch(e){pm.close();driveErr(e,'list')}}
+async function checkViewUpdate(){if(!gToken()||!cur||!cur.sync||!cur.sync.json)return;const id=cur.id;
+  try{const f=await(await gfetch(`${GAPI}/${cur.sync.json}?fields=id,appProperties&supportsAllDrives=true`)).json();
+    if(!cur||cur.id!==id||view!=='view')return;
+    if((+f.appProperties.kmUp||0)>(cur.sync.remoteUp||0)+1){const d=document.createElement('div');d.className='upd';
+      d.innerHTML=`<span class="grow">☁ この手順書の<b>新しい版</b>があります（第${esc(f.appProperties.kmVer||'')}版）</span><button class="sm pri">⬇ 更新</button>`;
+      main.prepend(d);d.querySelector('button').onclick=async()=>{const pm=progressModal('☁ 更新中','');try{await driveGet(f,pm);pm.close();showView(id);toast('最新版にしました')}catch(e){pm.close();driveErr(e,'list')}}}}
+  catch(e){}}
+
 /* ---------- 設定（編集者のみ） ---------- */
 function parseCSV(text){
   const rows=[];let row=[],f='',q=false;
@@ -1187,10 +1660,19 @@ function parseCSV(text){
   return rows.filter(r=>r.some(x=>x.trim()))}
 async function showSettings(){
   if(!isEditor()){toast('設定は編集モードで開けます');return}
-  if(view==='edit')await save();
+  if(view==='edit')await persist();
   view='settings';stopTTS();setTitle('設定');
   const viewURL=location.origin+location.pathname+'?view';
   main.innerHTML=`
+  <div class="card" id="sDrv"><h3>☁ Googleドライブ連携（端末どうしで共有）</h3>
+    <p class="sub small">スマホ・タブレット・パソコンで同じ手順書を使えます。最初に一度だけGoogle側の準備が必要です（取扱説明書「☁ ドライブ連携の準備」）。</p>
+    <label class="f">クライアントID</label><input type="text" id="gId" value="${esc(settings.gClientId||'')}" placeholder="xxxx.apps.googleusercontent.com" autocomplete="off">
+    <label class="f">共有フォルダ（ドライブのフォルダのリンク。空なら「検査手順ムービー」フォルダを自動で作ります）</label><input type="text" id="gFol" value="${esc(settings.gFolder?'https://drive.google.com/drive/folders/'+settings.gFolder:'')}" autocomplete="off">
+    <div class="row mt"><button class="pri" id="gSave">保存</button><button id="gCon">${gToken()?'✓ 接続中（切断する）':'☁ 接続する'}</button></div>
+    <label class="f">現場の端末用リンク（開くだけで、ドライブの設定と閲覧モードが入ります）</label>
+    <div class="row"><input type="text" id="gLink" readonly value="${esc(fieldLink())}" style="flex:1"><button class="sm" id="gCopy">コピー</button></div>
+    <label class="f">共有フォルダを見られる人を追加（Googleアカウントのメール）</label>
+    <div class="row"><input type="text" id="gMail" placeholder="example@gmail.com" style="flex:1" autocomplete="off"><select id="gRole" style="width:auto"><option value="reader">見るだけ</option><option value="writer">編集もできる</option></select><button class="sm" id="gShare">追加</button></div></div>
   <div class="card" id="sAi"><h3>🤖 AI（説明の下書き・自動翻訳）</h3>
     <p class="sub small">APIキーは事務所の作成用端末にだけ入れます。現場の端末には不要です。キーはこの端末の中だけに保存され、配布ファイルには入りません。</p>
     <label class="f">Claude APIキー</label><input type="password" id="sKey" value="${esc(settings.apiKey)}" placeholder="sk-ant-…" autocomplete="off">
@@ -1222,6 +1704,15 @@ async function showSettings(){
   <div class="card"><h3>この端末の保存容量</h3><div id="quota" class="sub">確認中…</div></div>`;
   const gInfo=()=>{const g=settings.glossary;$('#gInfo').innerHTML=g.length?`登録 ${g.length} 語　例：`+g.slice(0,3).map(e=>esc(e.ja)+' → '+esc(e.vi)+' / '+esc(e.id)).join('、'):'未登録'};gInfo();
   $('#pinSt').textContent=lock?'PIN：設定済み（この端末と配布先は、PINで編集モードになります）':'PIN：未設定（この端末はいつでも編集できます）';
+  const parseFol=v=>{v=v.trim();const m=v.match(/folders\/([\w-]{10,})/);return m?m[1]:(/^[\w-]{10,}$/.test(v)?v:'')};
+  $('#gSave').onclick=async()=>{settings.gClientId=$('#gId').value.trim();const f=$('#gFol').value.trim();settings.gFolder=f?parseFol(f):'';
+    if(f&&!settings.gFolder){alert('フォルダのリンクを読み取れませんでした。ドライブでフォルダを開いた時のアドレスを貼ってください');return}
+    await idb.put('kv',settings,'settings');$('#gLink').value=fieldLink();toast('保存しました')};
+  $('#gCon').onclick=async()=>{if(gToken()){gLogout();showSettings();return}settings.gClientId=$('#gId').value.trim();await idb.put('kv',settings,'settings');gLogin('settings')};
+  $('#gCopy').onclick=async()=>{const v=$('#gLink').value;if(!settings.gClientId){alert('先にクライアントIDを保存してください');return}try{await navigator.clipboard.writeText(v);toast('コピーしました。LINEなどで現場の端末に送ります')}catch(e){$('#gLink').select();toast('長押しでコピーしてください')}};
+  $('#gShare').onclick=async()=>{const em=$('#gMail').value.trim();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){alert('メールアドレスを確認してください');return}
+    try{const fid=await ensureFolder();await gfetch(`https://www.googleapis.com/drive/v3/files/${fid}/permissions?supportsAllDrives=true&sendNotificationEmail=true`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({role:$('#gRole').value,type:'user',emailAddress:em})});
+      $('#gMail').value='';toast(`${em} に共有しました`,3200)}catch(e){driveErr(e,'settings')}};
   $('#tSave').onclick=async()=>{settings.ttsKey=$('#tKey').value.trim();settings.ttsVoice=$('#tVoice').value;await idb.put('kv',settings,'settings');toast('保存しました')};
   $('#tTest').onclick=async()=>{settings.ttsKey=$('#tKey').value.trim();settings.ttsVoice=$('#tVoice').value;const b=$('#tTest');b.disabled=true;b.textContent='作成中…';
     try{const d=await tts('Kiểm tra xem có ba via ở cổng không.','vi');await idb.put('kv',settings,'settings');playVoice(d);toast('ベトナム語のテスト音声を再生します')}
@@ -1276,7 +1767,7 @@ const TOURS=[
   {scr:'edit',pg:'cut',s:'#bFix',t:'② 一気に区切る',x:'「⏱ 一定時間で区切る」で5秒ごと・10秒ごとなどに一気に分けられます。「🎬 画面の変化で区切る」も使えます。'},
   {scr:'edit',pg:'cut',s:'#bMerge',t:'② 調整する',x:'帯をタップして選び、両端の黄色い●をドラッグで長さ調整（隣とくっついている境目は、両方が一緒に動きます）。「🔗 前とつなぐ」で1つに、「使わない」で外せます。'},
   {scr:'edit',pg:'cut',s:'#stepList',t:'区間の調整',x:'行を押すと道具が出ます。「開始＝今の位置」などで直したり、↑↓で並べ替え、削除ができます。'},
-  {scr:'edit',pg:'text',s:'#tImg',t:'③ 見る所に赤丸',x:'画像をタップすると赤丸が付きます。もう一度押すと消えます。',need:'手順を作ると出ます'},
+  {scr:'edit',pg:'text',s:'#bPts',t:'③ ポイント（○ □ × ➡）',x:'「🎯 ポイントを入れる」で専用画面が開きます。見せたい場面で止めて、形を選んでなぞるだけ。文字や表示する時間も付けられます。',need:'手順を作ると出ます'},
   {scr:'edit',pg:'text',s:'#tAi',t:'③ AIで説明を書く',x:'AIが動画の画像を見て説明を下書きします。先にメモ（例：バリ確認 指で）を書いてから押すと、それを整えてくれます。必ず人が確認します。'},
   {scr:'edit',pg:'text',s:'#tTr',t:'③ 翻訳',x:'ベトナム語・インドネシア語に翻訳します。辞書の用語が優先されます。'},
   {scr:'edit',pg:'fin',s:'#sInfo',t:'④ 情報を入れる',x:'手順書名・品番・作成者・承認者を入れます。ISOの文書管理に使えます。'},
@@ -1368,8 +1859,9 @@ const HELP=[
  {s:'#hHelp',t:'使い方',x:'ガイド（画面を光らせて案内）と取扱説明書を開きます。',a:'hajime'},
  {s:'#bNew',t:'新しい手順書',x:'空の手順書を作り「① 撮る」から始めます。',a:'tsukuru'},
  {s:'#bImp',t:'共有ファイルを読み込む',x:'事務所から届いた手順書ファイル（.json）や、バックアップを読み込みます。',a:'kubaru'},
- {s:'#bCap',t:'撮影する',x:'カメラで撮ります。スマホは固定し、手元を大きく・明るく。',a:'toru'},
+ {s:'#bCap',t:'撮影する',x:'スマホはカメラアプリ、パソコンはアプリ内のカメラ画面（内蔵・USBカメラ）で録画します。手元を大きく・明るく。',a:'toru'},
  {s:'#bPick',t:'動画を選ぶ',x:'撮影済みの動画をアルバムやファイルから選びます。',a:'toru'},
+ {s:'#bCamPh',t:'カメラで写真を撮る',x:'スマホはカメラアプリ、パソコンは内蔵カメラ・USBカメラで写真を撮って、手順に追加します。',a:'torikomi'},
  {s:'#bPhoto',t:'写真で手順を追加',x:'写真を選ぶと、1枚＝1手順で追加されます（複数選択OK・ファイル名順）。',a:'torikomi'},
  {s:'#bDoc',t:'既存の手順書を取り込む',x:'Excel（.xlsx）・Word（.docx）・PDFから、文字と画像を読み取って手順にします。AIがあれば手順に整理します。',a:'torikomi'},
  {s:'#bSplit',t:'ここで分ける',x:'動画を止めた位置（赤い線）で、今の手順を2つに分けます。',a:'kiru'},
@@ -1383,6 +1875,14 @@ const HELP=[
  {s:'#tAi',t:'AIで説明を書く',x:'AIが画像（開始・中間・終了）を見て下書きします。メモがあればそれを整えます。必ず人が確認してください。',a:'setsumei'},
  {s:'#tTr',t:'翻訳',x:'この手順をベトナム語・インドネシア語に翻訳します。辞書の用語が優先されます。',a:'honyaku'},
  {s:'#tGt',t:'Google翻訳で確認',x:'APIキーがなくても使えます。訳をコピーして貼り付けます。',a:'honyaku'},
+ {s:'#bPts',t:'ポイント編集',x:'専用の画面で、動画を止めた場面に ○ □ × ➡ の印と文字を入れます。表示する時間もボタンで選べます。',a:'setsumei'},
+ {s:'#ngPts',t:'NGのポイント',x:'NG例の写真に ○ □ × ➡ の印と文字を入れます。',a:'okng'},
+ {s:'.mtool',t:'印の形',x:'○ 丸・□ 四角・× バツ を選びます。画像をなぞるとその大きさで描けます。動画を止めた場面で描くと、その場面だけに出ます。',a:'setsumei'},
+ {s:'#tvBar',t:'動画の場面を選ぶ',x:'⏯で再生／停止、±0.2秒やバーで場面を合わせます。止めた場面でなぞると、その場面の印になります。',a:'setsumei'},
+ {s:'[data-mdel]',t:'選んだ印を消す',x:'印を押して選んでから押すと、その印を消します。',a:'setsumei'},
+ {s:'#ngAdd',t:'NG例を追加',x:'不良の見本の写真を入れます。見る画面と字幕入り動画で、OKとNGが左右2分割で並びます。',a:'okng'},
+ {s:'#ngFrame',t:'動画のコマから',x:'この手順の動画を流し、NGの場面で一時停止してから押すと、そのコマをNG例にします。',a:'okng'},
+ {s:'#ngAi',t:'AIでNGの説明',x:'NGの写真（赤丸つき）をAIが見て、不良の見分け方を下書きします。',a:'okng'},
  {s:'#vRec',t:'録音',x:'選んだ言語の読み上げを、自分の声で録音します。もう一度押すと止まります（最大60秒）。',a:'onsei'},
  {s:'#vAi',t:'AI音声',x:'説明文をAIの声で読み上げた音声を作ります（⚙ 設定でAI音声のキーが必要）。',a:'onsei'},
  {s:'#vPlay',t:'聞く',x:'入っている音声を再生します。',a:'onsei'},
@@ -1399,6 +1899,9 @@ const HELP=[
  {s:'#bSp',t:'読み上げ',x:'選んだ言語で説明を読み上げます。',a:'miru'},
  {s:'#lang',t:'言語',x:'日本語・ベトナム語・インドネシア語を切り替えます。',a:'miru'},
  {s:'#pSet',t:'編集者PIN',x:'4〜8けたの数字。決めると配布先は閲覧専用になります。',a:'kengen'},
+ {s:'#dSync',t:'同期する',x:'ドライブの手順書とこの端末を比べて、新しい版・未保存の変更を表示します。',a:'drive'},
+ {s:'#dCon',t:'ドライブに接続',x:'Googleアカウントでログインして、共有フォルダを使えるようにします（1時間ごとに確認が入ります）。',a:'drive'},
+ {s:'#bDrive',t:'ドライブに保存',x:'この手順書と動画を共有フォルダに保存します。他の端末で「同期する」を押すと届きます。',a:'drive'},
  {s:'#tabbar [data-v="list"]',t:'一覧',x:'手順書の一覧。探す・見る・編集する。',a:'hajime'},
  {s:'#tabbar [data-v="edit"]',t:'作る・直す',x:'いま開いている手順書を編集します（編集モードのみ）。',a:'tsukuru'},
  {s:'#tabbar [data-v="view"]',t:'見る',x:'いま開いている手順書を現場用の画面で見ます。',a:'miru'},
@@ -1421,14 +1924,20 @@ function showTip(h,el){const tip=$('#tip');
   clearTimeout(tip._h);tip._h=setTimeout(()=>tip.hidden=true,7000)}
 
 /* ---------- 起動 ---------- */
-window.addEventListener('pagehide',()=>{if(view==='edit')save()});
+window.addEventListener('pagehide',()=>{if(view==='edit')persist()});
 (async()=>{
   navOn=lsGet('kensa-nav','1')==='1';onePage=lsGet('kensa-onepage','1')==='1';lastId=lsGet('kensa-last','')||null;
   try{await openDB()}catch(e){main.innerHTML='<div class="card">この端末（またはプライベートブラウズ）では保存機能が使えません。</div>';return}
   const s=await idb.get('kv','settings');if(s)settings={...settings,...s};
+  {const up=new URLSearchParams(location.search);let ch=false;if(up.get('g')){settings.gClientId=up.get('g');ch=true}if(up.get('f')){settings.gFolder=up.get('f');ch=true}
+   if(ch){await idb.put('kv',settings,'settings');history.replaceState(null,'',location.pathname+(forceView?'?view':''));setTimeout(()=>toast('ドライブ連携の設定を読み込みました。「☁ 接続する」を押してください',4000),800)}}
   lock=(await idb.get('kv','lock'))||null;unlocked=ssGet('kensa-unlocked')==='1';
   try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
-  await showList();
+  const gerr=lsGet('kensa-gerr','');if(gerr){lsSet('kensa-gerr','');setTimeout(()=>alert('Googleへの接続ができませんでした（'+gerr+'）。もう一度「☁ 接続する」を押してください。'),500)}
+  const after=lsGet('kensa-gjust','')?lsGet('kensa-gafter',''):'';lsSet('kensa-gjust','');lsSet('kensa-gafter','');
+  if(after==='settings'&&isEditor())await showSettings();else await showList();
+  if(after)toast('☁ Googleドライブに接続しました');
+  if(after.startsWith('save:')){const m=await idb.get('manuals',after.slice(5));if(m)driveSaveUI(m)}
   if(!lsGet('kensa-hello','')){lsSet('kensa-hello','1');const h=document.createElement('div');h.id='hello';
     h.innerHTML='<span class="grow">はじめての方は右上の「？」→ ガイドへ。ボタンを<b>長押し</b>すると説明が出ます。</span><button>OK</button>';
     document.body.appendChild(h);h.querySelector('button').onclick=()=>h.remove();setTimeout(()=>h.remove(),15000)}
