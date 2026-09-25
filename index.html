@@ -129,6 +129,10 @@ textarea{min-height:58px;resize:vertical}
 .ph{position:absolute;top:0;bottom:0;width:2px;background:#ff3b30;z-index:4;pointer-events:none}
 .ph::before{content:'';position:absolute;top:0;left:-6px;border:7px solid transparent;border-top-color:#ff3b30}
 .ival{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.vbox{margin-top:10px;border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--soft)}
+.vch{display:inline-block;font-size:12px;border:1px solid var(--line);border-radius:12px;padding:1px 8px;margin:2px 4px 2px 0;background:var(--card)}
+.vch.on{background:#e7f6ec;color:#16632f;border-color:#9fd3b0}
+button.rec{background:#c0392b;color:#fff;border-color:#c0392b}
 [hidden]{display:none!important}
 @media (max-width:560px){.grid2{grid-template-columns:1fr}}
 </style>
@@ -175,7 +179,7 @@ const PAGES=[
 ];
 const ALLSEC=['#sCap','#sPlayer','#sCut','#sList','#sText','#sInfo','#sFin'];
 const forceView=/[?&]view\b/.test(location.search);
-let settings={apiKey:'',model:'claude-sonnet-5',glossary:[]},lock=null,unlocked=false;
+let settings={apiKey:'',model:'claude-sonnet-5',glossary:[],ttsKey:'',ttsVoice:'coral'},lock=null,unlocked=false;
 let cur=null,curURL=null,view='list',page='video',tIdx=0,openRow=-1,lastId=null;
 let inPt=null,outPt=null,inThumb='',segEnd=null,saveTimer=null,vIdx=0,lang='ja',listCount=0;
 let navOn=true,onePage=true;
@@ -210,7 +214,7 @@ async function loadVideo(vid){if(curURL){URL.revokeObjectURL(curURL);curURL=null
 function grab(v,w=640){try{if(!v.videoWidth)return'';const sc=Math.min(1,w/v.videoWidth);const c=document.createElement('canvas');
   c.width=Math.round(v.videoWidth*sc);c.height=Math.round(v.videoHeight*sc);c.getContext('2d').drawImage(v,0,0,c.width,c.height);
   return c.toDataURL('image/jpeg',0.72)}catch(e){return''}}
-function stopTTS(){try{speechSynthesis.cancel()}catch(e){}}
+function stopTTS(){try{speechSynthesis.cancel()}catch(e){}try{if(player)player.pause()}catch(e){}}
 function blobToDataURL(b){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error);r.readAsDataURL(b)})}
 const isPhoto=s=>s.kind==='photo'||s.start==null;
 function loadImage(src){return new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>rej(new Error('画像を読み込めません'));im.src=src})}
@@ -400,6 +404,7 @@ async function showEdit(id,pg){
   <div class="card" id="sFin"><h3>④ 仕上げ・送る</h3><div class="fin">
     <button id="bAiAll">🤖 説明が空の手順をAIで下書き</button>
     <button id="bTrAll">🌐 未翻訳をまとめて翻訳</button>
+    <button id="bTtsAll">🔊 AI音声をまとめて作る（読み上げ）</button>
     <button class="pri" id="bPrev">▶ 閲覧モードで確認（現場の見え方）</button>
     <button id="bCapV">🎬 字幕入り動画を作る（LINEなどで送る）</button>
     <button id="bExp">📦 現場に配る（共有ファイルを書き出す）</button>
@@ -418,7 +423,7 @@ async function showEdit(id,pg){
     v.currentTime=Math.max(0,Math.min(isFinite(v.duration)?v.duration:1e9,v.currentTime+d))});
   $('#stepList').onclick=listClick;
   $('#strip').onclick=e=>{const d=e.target.closest('[data-t]');if(d){tIdx=+d.dataset.t;renderText()}};
-  $('#bRev').onclick=revise;$('#bAiAll').onclick=aiAll;$('#bTrAll').onclick=translateAll;
+  $('#bRev').onclick=revise;$('#bAiAll').onclick=aiAll;$('#bTrAll').onclick=translateAll;$('#bTtsAll').onclick=ttsAllDialog;
   $('#bPrev').onclick=async()=>{await save();showView(cur.id)};
   $('#bCapV').onclick=async()=>{await save();openCapDialog()};
   $('#bExp').onclick=async()=>{await save();exportPkg(cur)};
@@ -491,6 +496,10 @@ function renderText(){
     <div class="row mt"><button class="pri sm" id="tAi">🤖 AIで説明を書く</button><button class="sm" id="tTr">🌐 翻訳</button><button class="sm" id="tGt">Google翻訳で確認</button></div>
     <label class="f">Tiếng Việt（ベトナム語）</label><textarea id="tVi" data-t="vi">${esc(s.text.vi)}</textarea>
     <label class="f">Bahasa Indonesia（インドネシア語）</label><textarea id="tId" data-t="id">${esc(s.text.id)}</textarea>
+    <div class="vbox"><div class="row"><b class="sub small">🎤 読み上げ音声</b><span class="grow">${['ja','vi','id'].map(L=>`<span class="vch ${s.voice&&s.voice[L]?'on':''}">${VLN[L]}${s.voice&&s.voice[L]?' ✓':'：なし'}</span>`).join('')}</span></div>
+      <div class="row mt"><select id="vL" style="width:auto">${['ja','vi','id'].map(L=>`<option value="${L}" ${L===vLang?'selected':''}>${VLN[L]}</option>`).join('')}</select>
+      <button class="sm" id="vRec">● 録音</button><button class="sm" id="vAi">🔊 AI音声</button><button class="sm" id="vPlay">▶ 聞く</button><button class="sm danger" id="vDel">消す</button></div>
+      <p class="sub small" style="margin:6px 0 0">録音＝自分の声（無料）。AI音声＝説明文を自動で読み上げ（⚙ 設定でAI音声のキーが必要）。字幕入り動画に入れられます。</p></div>
     <div class="row mt"><button id="tPv" ${tIdx===0?'disabled':''}>◀ 前の手順</button><button class="pri grow" id="tNx">${last?'④ 仕上げへ ▶':'次の手順 ▶'}</button></div>`;
   b.querySelectorAll('textarea').forEach(t=>t.oninput=()=>{cur.steps[tIdx].text[t.dataset.t]=t.value;saveSoon();updateNav()});
   $('#tImg').onclick=e=>{const tv=$('#tv');if(!tv.hidden)return;const img=$('#tImg img');if(!img)return;
@@ -515,6 +524,16 @@ function renderText(){
     try{await trStep(s);renderText();toast('翻訳しました')}catch(err){aiErr(err);bt.disabled=false;bt.textContent='🌐 翻訳'}};
   $('#tGt').onclick=()=>{if(!s.text.ja.trim()){alert('先に日本語の説明を入れてください');return}
     window.open('https://translate.google.com/?sl=ja&tl=vi&op=translate&text='+encodeURIComponent(s.text.ja),'_blank')};
+  $('#vL').onchange=e=>{vLang=e.target.value;lsSet('kensa-vl',vLang)};
+  $('#vRec').onclick=e=>toggleRec(s,$('#vL').value,e.currentTarget);
+  $('#vPlay').onclick=()=>{const d=s.voice&&s.voice[$('#vL').value];if(!d){toast('この言語の音声はまだありません');return}playVoice(d)};
+  $('#vDel').onclick=async()=>{const L=$('#vL').value;if(!(s.voice&&s.voice[L]))return;if(!confirm(`${VLN[L]}の音声を消しますか？`))return;delete s.voice[L];await save();renderText()};
+  $('#vAi').onclick=async e=>{const L=$('#vL').value,t=(s.text[L]||'').trim(),bt=e.currentTarget;
+    if(!t){alert(`先に${VLN[L]}の説明文を入れてください（翻訳でもOK）`);return}
+    if(s.voice&&s.voice[L]&&!confirm('今の音声を置き換えますか？'))return;
+    bt.disabled=true;bt.textContent='🔊 作成中…';
+    try{s.voice=s.voice||{};s.voice[L]=await tts(t,L);await save();renderText();playVoice(s.voice[L]);toast('AI音声を作りました')}
+    catch(err){ttsErr(err);bt.disabled=false;bt.textContent='🔊 AI音声'}};
   $('#tPv').onclick=()=>{tIdx--;renderText();window.scrollTo(0,0)};
   $('#tNx').onclick=()=>{if(last)setPage('fin');else{tIdx++;renderText();window.scrollTo(0,0)}};
   updateNav()}
@@ -528,12 +547,19 @@ async function revise(){
   toast(`第${nv}版にしました。承認者を入れ直してください`,3200)}
 
 /* ---------- AI（説明の下書き・翻訳） ---------- */
+const NETMSG='インターネットにつながっていないようです。電波・Wi-Fiを確認して、もう一度押してください。';
+function apiMsg(st,t,svc){
+  if(st===401)return`${svc}のAPIキーが正しくありません。「⚙ 設定」でキーを貼り直してください（期限切れ・削除したキーも使えません）。`;
+  if(/credit|balance|billing|quota|insufficient/i.test(t))return`${svc}のクレジット（残高）が足りません。管理画面でクレジットを追加してください。`;
+  if(st===429)return`${svc}の利用が集中しています。1分ほど待ってからもう一度押してください。`;
+  if(st===529||st>=500)return`${svc}のサーバーが混み合っています。少し待ってからもう一度押してください。`;
+  return`${svc}でエラーが起きました（${st}）。内容：`+String(t).slice(0,150)}
 async function claude(content,max=1500){
   if(!settings.apiKey)throw new Error('NOKEY');
-  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{
+  let r;try{r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{
     'content-type':'application/json','x-api-key':settings.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:settings.model,max_tokens:max,messages:[{role:'user',content}]})});
-  if(!r.ok){const t=await r.text();throw new Error('AIエラー（'+r.status+'）：'+t.slice(0,200))}
+    body:JSON.stringify({model:settings.model,max_tokens:max,messages:[{role:'user',content}]})})}catch(e){throw new Error(NETMSG)}
+  if(!r.ok){const t=await r.text();throw new Error(apiMsg(r.status,t,'Claude（AI）'))}
   const j=await r.json();return(j.content||[]).map(c=>c.text||'').join('')}
 function aiErr(err){
   if(err.message==='NOKEY'){if(confirm('AIを使うにはAPIキーの設定が必要です。設定画面を開きますか？\n（キーがなくても、説明は手で書け、訳は「Google翻訳で確認」から貼り付けられます）'))showSettings()}
@@ -592,6 +618,47 @@ async function translateAll(){
   try{for(let k=0;k<ts.length;k++){if(m.cancelled)break;m.set(k/ts.length,`${k+1}/${ts.length}`);await trStep(ts[k])}
     m.close();renderText();toast('翻訳しました')}
   catch(e){m.close();renderText();aiErr(e)}}
+
+/* ---------- 読み上げ音声（録音・AI音声） ---------- */
+const VLN={ja:'日本語',vi:'ベトナム語',id:'インドネシア語'};
+let vLang=lsGet('kensa-vl','ja'),recState=null,player=null;
+function playVoice(d){try{if(player)player.pause();player=new Audio(d);player.play().catch(()=>toast('再生できませんでした'))}catch(e){}}
+async function toggleRec(s,L,btn){
+  if(recState){recState.rec.stop();return}
+  let stream;try{stream=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){alert('マイクを使えません。ブラウザのマイクの許可を確認してください。');return}
+  const mt=['audio/mp4','audio/webm;codecs=opus','audio/webm'].find(t=>{try{return MediaRecorder.isTypeSupported(t)}catch(e){return false}})||'';
+  const rec=new MediaRecorder(stream,mt?{mimeType:mt}:undefined),ch=[];rec.ondataavailable=e=>{if(e.data&&e.data.size)ch.push(e.data)};
+  rec.onstop=async()=>{stream.getTracks().forEach(t=>t.stop());clearTimeout(recState&&recState.to);recState=null;
+    const b=new Blob(ch,{type:(rec.mimeType||mt||'audio/webm').split(';')[0]});
+    if(b.size<800){toast('録音が短すぎます');renderText();return}
+    s.voice=s.voice||{};s.voice[L]=await blobToDataURL(b);await save();renderText();toast(`${VLN[L]}の音声を録音しました`)};
+  rec.start();recState={rec,to:setTimeout(()=>{try{rec.stop()}catch(e){}},60000)};
+  btn.textContent='■ 停止（録音中）';btn.classList.add('rec');toast('録音中… 話し終わったら「■ 停止」',2500)}
+async function tts(text,L){
+  if(!settings.ttsKey)throw new Error('NOTTS');
+  let r;try{r=await fetch('https://api.openai.com/v1/audio/speech',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+settings.ttsKey},
+    body:JSON.stringify({model:'gpt-4o-mini-tts',voice:settings.ttsVoice||'coral',input:text,response_format:'mp3',
+      instructions:`Speak in natural ${({ja:'Japanese',vi:'Vietnamese',id:'Indonesian'})[L]}. You are explaining a work step to a factory worker: speak slowly, clearly and calmly.`})})}
+  catch(e){throw new Error(NETMSG)}
+  if(!r.ok){const t=await r.text();throw new Error(apiMsg(r.status,t,'AI音声（OpenAI）'))}
+  return blobToDataURL(new Blob([await r.arrayBuffer()],{type:'audio/mpeg'}))}
+function ttsErr(err){
+  if(err.message==='NOTTS'){if(confirm('AI音声を使うには「⚙ 設定」でAI音声のキーを入れる必要があります。設定を開きますか？\n（キーがなくても「● 録音」で自分の声を入れられます）'))showSettings()}
+  else alert(err.message)}
+function ttsAllDialog(){
+  if(!cur.steps.length){toast('手順がありません');return}
+  const d=document.createElement('div');d.className='modal';
+  d.innerHTML=`<div class="mbox"><h3>🔊 AI音声をまとめて作る</h3><p class="sub small">説明文があって、まだ音声がない手順に、AI音声を作ります。</p>
+    ${['ja','vi','id'].map(L=>{const n=cur.steps.filter(x=>(x.text[L]||'').trim()&&!(x.voice&&x.voice[L])).length;
+      return`<label class="opt"><input type="checkbox" value="${L}" ${n?'checked':''} ${n?'':'disabled'}><span>${VLN[L]}（${n}件）</span></label>`}).join('')}
+    <div class="row mt"><button class="pri" id="taGo">作る</button><button id="taX">やめる</button></div></div>`;
+  document.body.appendChild(d);d.querySelector('#taX').onclick=()=>d.remove();
+  d.querySelector('#taGo').onclick=async()=>{const Ls=[...d.querySelectorAll('input:checked')].map(x=>x.value);d.remove();if(!Ls.length)return;
+    if(!settings.ttsKey)return ttsErr(new Error('NOTTS'));
+    const jobs=[];cur.steps.forEach(x=>Ls.forEach(L=>{if((x.text[L]||'').trim()&&!(x.voice&&x.voice[L]))jobs.push([x,L])}));
+    const m=progressModal('🔊 AI音声を作成中',`${jobs.length}件`);
+    try{for(let k=0;k<jobs.length;k++){if(m.cancelled)break;const[x,L]=jobs[k];m.set(k/jobs.length,`${k+1} / ${jobs.length}（${VLN[L]}）`);x.voice=x.voice||{};x.voice[L]=await tts(x.text[L].trim(),L);await save()}
+      m.close();renderText();toast('AI音声を作りました')}catch(e){m.close();renderText();ttsErr(e)}}}
 
 /* ---------- タイムライン（② 切る） ---------- */
 let pps=0,selId=null,tlDur=0,drag=null,tlJust=false;const stripCache={};
@@ -760,7 +827,8 @@ function renderViewStep(){
   $('#tl').innerHTML=cur.steps.map((x,i)=>`<div data-i="${i}" class="${i===vIdx?'on':''}">${x.thumb?`<img src="${x.thumb}" alt="">`:''}${u.step} ${i+1}</div>`).join('');
   updateNav()}
 function speakStep(){
-  const s=cur.steps[vIdx];let L=lang,text=(s.text[lang]||'').trim();
+  const s=cur.steps[vIdx];if(s.voice&&s.voice[lang]){stopTTS();playVoice(s.voice[lang]);return}
+  let L=lang,text=(s.text[lang]||'').trim();
   if(!text){text=s.text.ja;L='ja'}if(!text)return;
   if(!('speechSynthesis' in window)){alert('この端末は読み上げに対応していません');return}
   stopTTS();const code=LANGS[L].tts,u=new SpeechSynthesisUtterance(text);u.lang=code;u.rate=0.9;
@@ -772,7 +840,7 @@ try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{}}catch(e){
 
 /* ---------- 字幕入り動画 ---------- */
 const CAPOPT=[['ja','日本語'],['vi','ベトナム語'],['id','インドネシア語'],['ja+vi','日本語＋ベトナム語'],['ja+id','日本語＋インドネシア語']];
-function pickRecMime(){for(const t of['video/mp4;codecs=avc1.42E01E','video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm']){try{if(MediaRecorder.isTypeSupported(t))return t}catch(e){}}return''}
+function pickRecMime(au){const L=au?['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4;codecs=avc1,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm']:['video/mp4;codecs=avc1.42E01E','video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'];for(const t of L){try{if(MediaRecorder.isTypeSupported(t))return t}catch(e){}}return''}
 function wrapLines(ctx,text,maxW){const out=[];
   for(const para of String(text).split('\n')){let line='';const toks=/\s/.test(para.trim())?para.split(/(\s+)/):[...para];
     for(const t of toks){const test=line+t;if(ctx.measureText(test).width>maxW&&line.trim()){out.push(line.trim());line=t.trimStart()}else line=test}
@@ -807,8 +875,8 @@ function drawTitle(ctx,W,H,m){
   ctx.fillText(`品番 ${m.partNo||'-'}　第${m.version||'1'}版　改訂 ${m.revDate||'-'}`,W/2,H*0.62);
   ctx.fillText(`作成 ${m.author||'-'}　承認 ${m.approver||'-'}`,W/2,H*0.62+f2*1.6);ctx.textAlign='left'}
 function photoSecs(s,langs){const t=langs.map(L=>s.text[L]||s.text.ja||'').join('');return Math.min(10,Math.max(4,3+t.length*0.06))}
-async function makeCaptionVideo(m,langs,withTitle,prog,cancel){
-  let v=null,rec,raf,wake;
+async function makeCaptionVideo(m,langs,withTitle,prog,cancel,opt={}){
+  let v=null,rec,raf,wake;const ac=opt.ac||null;
   try{
     if(curURL&&m.steps.some(s=>!isPhoto(s))){v=document.createElement('video');v.muted=true;v.playsInline=true;v.setAttribute('playsinline','');v.preload='auto';
       v.style.cssText='position:fixed;left:-9999px;top:0;width:4px;height:4px';document.body.appendChild(v);v.src=curURL;
@@ -819,8 +887,21 @@ async function makeCaptionVideo(m,langs,withTitle,prog,cancel){
     const sc=Math.min(1,1280/Math.max(bw,bh));
     const W=Math.max(2,Math.round(bw*sc/2)*2),H=Math.max(2,Math.round(bh*sc/2)*2);
     const c=document.createElement('canvas');c.width=W;c.height=H;const ctx=c.getContext('2d');
-    const mime=pickRecMime(),stream=c.captureStream(30);
+    let dest=null,og=null;const nb={};
+    let ob=null,osn=null;
+    if(ac){try{if(ac.state!=='running')await ac.resume()}catch(e){}
+      dest=ac.createMediaStreamDestination();
+      if(v&&opt.orig){og=ac.createGain();og.gain.value=1;og.connect(dest);
+        try{const vb=await idb.get('videos',m.videoId);if(vb)ob=await ac.decodeAudioData(await vb.arrayBuffer())}catch(e){ob=null}
+        if(!ob){try{v.muted=false;v.volume=1;ac.createMediaElementSource(v).connect(og)}catch(e){og=null}}}
+      if(opt.narr)for(const x of m.steps){const d=x.voice&&x.voice[opt.narr];if(d){try{nb[x.id]=await ac.decodeAudioData(await(await fetch(d)).arrayBuffer())}catch(e){}}}}
+    const hasAu=!!(dest&&(og||Object.keys(nb).length));
+    const tracks=[...c.captureStream(30).getVideoTracks()];if(hasAu)tracks.push(...dest.stream.getAudioTracks());
+    const mime=pickRecMime(hasAu),stream=new MediaStream(tracks);
     rec=new MediaRecorder(stream,mime?{mimeType:mime,videoBitsPerSecond:4e6}:{videoBitsPerSecond:4e6});
+    const narr=x=>{const b=nb[x.id];if(!b)return 0;const sn=ac.createBufferSource();sn.buffer=b;sn.connect(dest);sn.start();
+      if(og){og.gain.setTargetAtTime(0.25,ac.currentTime,0.05);sn.onended=()=>og.gain.setTargetAtTime(1,ac.currentTime,0.1)}return b.duration};
+    const hold=async sec=>{const until=Date.now()+sec*1000;while(Date.now()<until&&!cancel.c)await sleep(100)};
     const chunks=[];rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
     const stopped=new Promise(r=>rec.onstop=r);
     let mode='title',si=0,lay=null,pim=null;
@@ -838,16 +919,19 @@ async function makeCaptionVideo(m,langs,withTitle,prog,cancel){
       if(rec.state==='recording')rec.pause();
       if(isPhoto(s)||!v){pim=null;const src=s.img||s.thumb;if(src){try{pim=await loadImage(src)}catch(e){}}
         mode='photo';lay=capLayout(ctx,W,H,s,langs);frame();if(!raf)loop();go();
-        const until=Date.now()+photoSecs(s,langs)*1000;while(Date.now()<until&&!cancel.c)await sleep(100);continue}
+        const nd=narr(s);await hold(Math.max(photoSecs(s,langs),nd?nd+0.6:0));continue}
       v.currentTime=s.start;await onceSeeked(v);
       mode='step';lay=capLayout(ctx,W,H,s,langs);frame();if(!raf)loop();go();
+      const t0=Date.now();
       await v.play();
+      if(ob&&og){osn=ac.createBufferSource();osn.buffer=ob;osn.connect(og);osn.start(0,Math.min(s.start,ob.duration),Math.max(0.05,s.end-s.start))}
+      const nd=narr(s);
       await new Promise(res=>{const chk=()=>{if(cancel.c||v.currentTime>=s.end||v.ended||v.paused)res();else setTimeout(chk,30)};chk()});
-      v.pause()}
+      v.pause();if(osn){try{osn.stop()}catch(e){}osn=null}if(nd){const rest=nd+0.4-(Date.now()-t0)/1000;if(rest>0)await hold(rest)}}
     si=m.steps.length-1;
     if(cancel.c)throw new Error('CANCEL');
     await sleep(300);rec.stop();await stopped;
-    return new Blob(chunks,{type:(rec.mimeType||mime||'video/webm').split(';')[0]})
+    const out=new Blob(chunks,{type:(rec.mimeType||mime||'video/webm').split(';')[0]});out.hasAu=hasAu;return out
   }finally{cancelAnimationFrame(raf);try{if(rec&&rec.state!=='inactive')rec.stop()}catch(e){}try{wake&&wake.release()}catch(e){}if(v)v.remove()}}
 function openCapDialog(){
   if(!cur||!cur.steps.length){alert('手順がある手順書で使えます');return}
@@ -859,30 +943,38 @@ function openCapDialog(){
     <p class="sub small">各手順の区間をつなぎ、説明文・赤丸・手順番号を動画に焼き込みます。できた動画はLINEなどでそのまま送れます。</p>
     <label class="f">字幕の言語</label><select id="capL">${CAPOPT.map(([k,l])=>`<option value="${k}" ${k===(UI[lang]?lang:'ja')?'selected':''}>${l}</option>`).join('')}</select>
     <label class="f" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="capT" checked> 最初に表紙（手順書名・品番・版数）を入れる</label>
+    <label class="f" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="capA" ${curURL&&cur.steps.some(x=>!isPhoto(x))?'checked':'disabled'}> 🎥 元の動画の音声を入れる</label>
+    <label class="f">🔊 読み上げ音声（録音・AI音声）</label><select id="capN"><option value="">入れない</option>${['ja','vi','id'].map(L=>{const n=cur.steps.filter(x=>x.voice&&x.voice[L]).length;return`<option value="${L}" ${n?'':'disabled'}>${VLN[L]}（${n}/${cur.steps.length} 手順に音声あり）</option>`}).join('')}</select>
+    <p class="sub small" style="margin:2px 0 0">読み上げの間は、元の音声を小さくします。読み上げが長い手順は、その分だけ長く表示します。</p>
     <p class="sub small">作成には実際の再生と同じ時間（約${Math.ceil(total+3)}秒）かかります。作成中はこの画面を開いたままにしてください。</p>
     <div id="capP" class="sub"></div><div class="bar" id="capBar" hidden><i></i></div><div id="capOut"></div>
     <div class="row mt"><button class="pri" id="capGo">作成する</button><button id="capX">閉じる</button></div></div>`;
   document.body.appendChild(d);
+  const syncN=()=>{const ls=d.querySelector('#capL').value.split('+'),want=ls[ls.length-1],o=d.querySelector(`#capN option[value="${want}"]`);if(o&&!o.disabled)d.querySelector('#capN').value=want};
+  d.querySelector('#capL').onchange=syncN;syncN();
   const cancel={c:false};let busy=false,outURL=null;
   const close=()=>{cancel.c=true;if(outURL)URL.revokeObjectURL(outURL);d.remove()};
   d.querySelector('#capX').onclick=()=>{if(busy&&!confirm('作成を中止しますか？'))return;close()};
   d.querySelector('#capGo').onclick=async()=>{
     const key=d.querySelector('#capL').value,langs=key.split('+');
+    const orig=d.querySelector('#capA').checked,narrL=d.querySelector('#capN').value;
+    let ac=null;if(orig||narrL){try{ac=new(window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){ac=null}}
     const miss=cur.steps.filter(s=>langs.some(L=>L!=='ja'&&!(s.text[L]||'').trim())).length;
     if(miss&&!confirm(`${miss}件の手順が未翻訳です（その部分は日本語で表示されます）。このまま作成しますか？`))return;
     busy=true;cancel.c=false;const gb=d.querySelector('#capGo');gb.disabled=true;d.querySelector('#capOut').innerHTML='';
     const bar=d.querySelector('#capBar');bar.hidden=false;
     const prog=(i,n)=>{d.querySelector('#capP').textContent=`作成中… 手順 ${i+1} / ${n}`;bar.firstChild.style.width=Math.round(i/n*100)+'%'};
     try{
-      const blob=await makeCaptionVideo(cur,langs,d.querySelector('#capT').checked,prog,cancel);
+      const blob=await makeCaptionVideo(cur,langs,d.querySelector('#capT').checked,prog,cancel,{ac,orig,narr:narrL});
       bar.firstChild.style.width='100%';
       const ext=blob.type.includes('mp4')?'mp4':'webm';
       const name=safeName(`${cur.partNo||''}_${cur.title||'手順書'}_${key}_第${cur.version||'1'}版.${ext}`);
       outURL=URL.createObjectURL(blob);
-      d.querySelector('#capP').textContent=`できました（約${(blob.size/1048576).toFixed(1)}MB・${ext.toUpperCase()}）。再生して確認してください。`;
+      d.querySelector('#capP').textContent=`できました（約${(blob.size/1048576).toFixed(1)}MB・${ext.toUpperCase()}・音声${blob.hasAu?'あり':'なし'}）。再生して確認してください。`+(!blob.hasAu&&(orig||narrL)?'　※音声を入れられませんでした。元の動画に音が入っているか確認するか、パソコンのChromeで作ってください。':'');
       d.querySelector('#capOut').innerHTML=`<video controls playsinline src="${outURL}"></video><div class="row mt"><button class="pri" id="capSave">📤 保存・共有（LINEなど）</button></div>`;
       d.querySelector('#capSave').onclick=()=>shareOrDownload(blob,name);
     }catch(e){if(e.message!=='CANCEL'){d.querySelector('#capP').textContent='作成できませんでした：'+e.message;bar.hidden=true}}
+    try{if(ac)ac.close()}catch(e){}
     busy=false;gb.disabled=false;gb.textContent='作り直す'}}
 
 /* ---------- 配る・読み込む・バックアップ ---------- */
@@ -1097,6 +1189,11 @@ async function showSettings(){
       <option value="claude-sonnet-5" ${settings.model==='claude-sonnet-5'?'selected':''}>高精度（Claude Sonnet 5）おすすめ</option>
       <option value="claude-haiku-4-5-20251001" ${settings.model==='claude-haiku-4-5-20251001'?'selected':''}>低コスト・高速（Claude Haiku 4.5）</option></select>
     <div class="row mt"><button class="pri" id="sSave">保存</button><button id="sTest">翻訳テスト</button></div></div>
+  <div class="card" id="sTts"><h3>🔊 AI音声（読み上げ・任意）</h3>
+    <p class="sub small">説明文を日本語・ベトナム語・インドネシア語の声で読み上げる音声を作ります（OpenAIの音声API）。platform.openai.com でキーを作り、クレジットを入れて貼り付けます。料金は1分の音声で数円程度。キーがなくても「● 録音」で自分の声を入れられます。</p>
+    <label class="f">OpenAI APIキー</label><input type="password" id="tKey" value="${esc(settings.ttsKey||'')}" placeholder="sk-…" autocomplete="off">
+    <label class="f">声の種類</label><select id="tVoice">${[['coral','coral（女性・明るい）'],['sage','sage（女性・落ち着き）'],['nova','nova（女性）'],['ash','ash（男性）'],['onyx','onyx（男性・低め）'],['alloy','alloy（中性）']].map(([k,l])=>`<option value="${k}" ${settings.ttsVoice===k?'selected':''}>${l}</option>`).join('')}</select>
+    <div class="row mt"><button class="pri" id="tSave">保存</button><button id="tTest">声のテスト</button></div></div>
   <div class="card" id="sGl"><h3>📖 用語集（3言語辞書）</h3>
     <p class="sub small">Excelの辞書を「CSV UTF-8（コンマ区切り）」で保存して読み込みます。列：A 日本語／B ベトナム語／C インドネシア語。説明に含まれる用語は、必ずこの訳語で翻訳されます。</p>
     <div class="row"><button id="gImp">CSVを読み込む</button><button class="danger" id="gClr">用語集を消す</button></div>
@@ -1116,6 +1213,10 @@ async function showSettings(){
   <div class="card"><h3>この端末の保存容量</h3><div id="quota" class="sub">確認中…</div></div>`;
   const gInfo=()=>{const g=settings.glossary;$('#gInfo').innerHTML=g.length?`登録 ${g.length} 語　例：`+g.slice(0,3).map(e=>esc(e.ja)+' → '+esc(e.vi)+' / '+esc(e.id)).join('、'):'未登録'};gInfo();
   $('#pinSt').textContent=lock?'PIN：設定済み（この端末と配布先は、PINで編集モードになります）':'PIN：未設定（この端末はいつでも編集できます）';
+  $('#tSave').onclick=async()=>{settings.ttsKey=$('#tKey').value.trim();settings.ttsVoice=$('#tVoice').value;await idb.put('kv',settings,'settings');toast('保存しました')};
+  $('#tTest').onclick=async()=>{settings.ttsKey=$('#tKey').value.trim();settings.ttsVoice=$('#tVoice').value;const b=$('#tTest');b.disabled=true;b.textContent='作成中…';
+    try{const d=await tts('Kiểm tra xem có ba via ở cổng không.','vi');await idb.put('kv',settings,'settings');playVoice(d);toast('ベトナム語のテスト音声を再生します')}
+    catch(e){alert(e.message==='NOTTS'?'キーを入れてください':e.message)}b.disabled=false;b.textContent='声のテスト'};
   $('#sSave').onclick=async()=>{settings.apiKey=$('#sKey').value.trim();settings.model=$('#sModel').value;await idb.put('kv',settings,'settings');toast('保存しました')};
   $('#sTest').onclick=async()=>{settings.apiKey=$('#sKey').value.trim();settings.model=$('#sModel').value;
     const b=$('#sTest');b.disabled=true;b.textContent='テスト中…';
@@ -1174,6 +1275,7 @@ const TOURS=[
  {id:'send',cat:'本番の流れ',who:'all',name:'字幕入り動画をLINEで送る',time:'約1分',steps:[
   {scr:'editOrView',pg:'fin',s:'#bCapV,#bCapV2',t:'字幕入り動画を作る',x:'説明文・赤丸・手順番号を焼き込んだ動画を作ります。',a:'tap',need:'手順書を開くと出ます'},
   {scr:'any',s:'#capL',t:'言語を選ぶ',x:'「日本語＋ベトナム語」のように2言語も選べます。',need:'「🎬 字幕入り動画」を押すと出ます'},
+  {scr:'any',s:'#capN',t:'音声を選ぶ',x:'「元の動画の音声」と「読み上げ音声（録音・AI音声）」を入れられます。読み上げの言語を選びます。',need:'「🎬 字幕入り動画」を押すと出ます'},
   {scr:'any',s:'#capGo',t:'作成する',x:'再生と同じ時間がかかります。画面を開いたままにします。',a:'tap',need:'「🎬 字幕入り動画」を押すと出ます'},
   {scr:'any',s:'#capSave',t:'保存・共有',x:'できた動画を再生して確認し、LINEなどで送ります。',need:'作成が終わると出ます'}]},
  {id:'deliver',cat:'本番の流れ',who:'ed',name:'現場に配る（閲覧専用）',time:'約2分',steps:[
@@ -1272,6 +1374,10 @@ const HELP=[
  {s:'#tAi',t:'AIで説明を書く',x:'AIが画像（開始・中間・終了）を見て下書きします。メモがあればそれを整えます。必ず人が確認してください。',a:'setsumei'},
  {s:'#tTr',t:'翻訳',x:'この手順をベトナム語・インドネシア語に翻訳します。辞書の用語が優先されます。',a:'honyaku'},
  {s:'#tGt',t:'Google翻訳で確認',x:'APIキーがなくても使えます。訳をコピーして貼り付けます。',a:'honyaku'},
+ {s:'#vRec',t:'録音',x:'選んだ言語の読み上げを、自分の声で録音します。もう一度押すと止まります（最大60秒）。',a:'onsei'},
+ {s:'#vAi',t:'AI音声',x:'説明文をAIの声で読み上げた音声を作ります（⚙ 設定でAI音声のキーが必要）。',a:'onsei'},
+ {s:'#vPlay',t:'聞く',x:'入っている音声を再生します。',a:'onsei'},
+ {s:'#bTtsAll',t:'AI音声をまとめて作る',x:'説明文があって音声がない手順に、まとめてAI音声を作ります。',a:'onsei'},
  {s:'#tPlay',t:'動きを見る',x:'この手順の区間をくり返し再生します。',a:'setsumei'},
  {s:'#bAiAll',t:'AIでまとめて下書き',x:'説明が空の手順を、AIで一度に下書きします。',a:'setsumei'},
  {s:'#bTrAll',t:'まとめて翻訳',x:'未翻訳の手順を一度に翻訳します。',a:'honyaku'},
