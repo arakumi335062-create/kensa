@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="手順ムービー">
+<meta name="theme-color" content="#1f5fbf">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>検査手順ムービー</title>
+<style>
+:root{--bg:#f4f6f9;--card:#fff;--ink:#1c2230;--sub:#5d6778;--line:#dde1e8;--pri:#1f5fbf;--pri-ink:#fff;--warn:#c0392b;--mark:#e53935;--soft:#eef3fb}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12151b;--card:#1b2029;--ink:#e8ecf2;--sub:#9aa5b5;--line:#2c3340;--pri:#4d8ff0;--pri-ink:#fff;--soft:#1f2a3d}}
+:root[data-theme="dark"]{--bg:#12151b;--card:#1b2029;--ink:#e8ecf2;--sub:#9aa5b5;--line:#2c3340;--pri:#4d8ff0;--pri-ink:#fff;--soft:#1f2a3d}
+*{box-sizing:border-box}
+html,body{overscroll-behavior-y:none}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"Hiragino Sans","Noto Sans JP","Segoe UI",sans-serif;font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%}
+a{color:var(--pri)}
+.top{position:sticky;top:0;z-index:20}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:8px 12px;padding-top:max(8px,env(safe-area-inset-top));display:flex;align-items:center;gap:6px}
+header h1{font-size:17px;margin:0;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 12px;cursor:pointer;min-height:44px;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+header button{min-height:38px;padding:5px 10px}
+button.pri{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+button.danger{color:var(--warn)}
+button:disabled{opacity:.45;cursor:default}
+button.sm{min-height:38px;padding:5px 10px;font-size:14px}
+.role{font-size:14px;font-weight:700}
+.role.ed{background:#e7f6ec;color:#16632f;border-color:#9fd3b0}
+.role.vw{background:#eef1f6;color:#44506a}
+#hNav.on{background:#fff7d6;color:#3b2f00;border-color:#e0a800}
+#pbar{display:flex;gap:6px;overflow-x:auto;background:var(--card);border-bottom:1px solid var(--line);padding:6px 12px;scrollbar-width:none}
+#pbar::-webkit-scrollbar{display:none}
+#pbar button{flex:0 0 auto;min-height:34px;padding:3px 14px;font-size:14px;border-radius:18px}
+#pbar button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+#nav{background:#fff7d6;color:#3b2f00;border-bottom:1px solid #e8d77a;padding:6px 12px}
+#nav .navin{max-width:820px;margin:0 auto;display:flex;gap:8px;align-items:center}
+#nav .navno{background:#e0a800;color:#fff;font-weight:700;font-size:12px;border-radius:14px;padding:2px 9px;white-space:nowrap}
+#nav .navtx{flex:1;font-size:13.5px;line-height:1.4}
+#nav button{min-height:34px;padding:4px 10px;background:#fff;color:#3b2f00;border-color:#d9c35a;white-space:nowrap}
+main{max-width:820px;margin:0 auto;padding:12px 12px 150px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
+h3{margin:0 0 8px;font-size:16px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mt{margin-top:8px}
+.grow{flex:1;min-width:0}
+.sub{color:var(--sub);font-size:14px}
+.small{font-size:12px;margin:4px 0}
+.one{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+label.f{display:block;font-size:13px;color:var(--sub);margin:8px 0 2px}
+input[type=text],input[type=password],input[type=date],input[type=search],textarea,select{width:100%;font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+textarea{min-height:58px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.vwrap{position:relative;width:fit-content;max-width:100%;margin:6px auto}
+.vwrap video,.vwrap img{display:block;max-width:100%;max-height:48vh;border-radius:8px;background:#000}
+.cutpage #sPlayer .vwrap video{max-height:32vh}
+#tImg img,#tImg video{max-height:30vh}
+.thumb{cursor:crosshair}
+.marks{position:absolute;inset:0;pointer-events:none}
+.mk{position:absolute;width:13%;aspect-ratio:1;border:4px solid var(--mark);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 2px rgba(255,255,255,.6)}
+.noimg{padding:30px;text-align:center;background:#000;color:#aaa;border-radius:8px}
+.srow{border-top:1px solid var(--line);padding:6px 0}
+.srow:first-child{border-top:0}
+.srow-m{display:flex;gap:8px;align-items:center;cursor:pointer}
+.srow-m img,.nothumb{width:72px;height:44px;object-fit:cover;border-radius:6px;background:#000;flex:0 0 auto}
+.srow .tools{margin:6px 0 2px;gap:6px}
+.chev{color:var(--sub);font-size:12px;width:16px;text-align:center}
+.strip{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:6px;border-bottom:1px solid var(--line)}
+.strip div{flex:0 0 64px;border:2px solid transparent;border-radius:8px;padding:1px;cursor:pointer;font-size:12px;text-align:center}
+.strip div.on{border-color:var(--pri)}
+.strip div.empty span{color:var(--warn);font-weight:700}
+.strip img{width:100%;height:36px;object-fit:cover;border-radius:6px;background:#000;display:block}
+.fin{display:grid;gap:8px}
+.fin button{width:100%;text-align:left}
+.big{font-size:20px;line-height:1.65;margin:12px 0}
+.tl{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+.tl div{border:2px solid transparent;border-radius:8px;padding:2px;cursor:pointer;font-size:12px;text-align:center}
+.tl div.on{border-color:var(--pri)}
+.tl img{width:100%;border-radius:6px;aspect-ratio:16/9;object-fit:cover;background:#000;display:block}
+.pg-off{display:none!important}
+#tabbar{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--card);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom)}
+#tabbar button{flex:1;border:0;border-radius:0;background:none;min-height:56px;font-size:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;color:var(--sub);padding:4px 0}
+#tabbar button b{font-size:20px;line-height:1.1;font-weight:400}
+#tabbar button.on{color:var(--pri);font-weight:700}
+#tabbar button[hidden]{display:none}
+#pnext{position:fixed;left:0;right:0;bottom:calc(56px + env(safe-area-inset-bottom));z-index:24;display:flex;gap:8px;padding:6px 12px;background:linear-gradient(rgba(0,0,0,0),var(--bg) 35%)}
+#pnext button{flex:1;min-height:42px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:40;display:flex;align-items:center;justify-content:center;padding:16px}
+.mbox{background:var(--card);color:var(--ink);border-radius:14px;padding:16px;width:100%;max-width:480px;max-height:90vh;overflow:auto}
+.mbox video{width:100%;max-height:48vh;border-radius:8px;background:#000;margin-top:8px}
+.modal.sheet{align-items:flex-end;padding:0}
+.modal.sheet .mbox{border-radius:16px 16px 0 0;max-width:640px;padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+.tlist button{width:100%;text-align:left;margin-top:6px;display:flex;gap:8px;align-items:center}
+.tlist .cat{font-size:12px;color:var(--sub);margin:12px 0 0;font-weight:700}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;width:0;background:var(--pri);transition:width .3s}
+.linkbtn{display:inline-flex;align-items:center;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;text-decoration:none;color:var(--ink);background:var(--soft)}
+#tHole{position:fixed;z-index:60;border:3px solid #ffd400;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,.42);pointer-events:none;transition:left .2s,top .2s,width .2s,height .2s}
+#tCard{position:fixed;left:8px;right:8px;z-index:61;background:var(--card);color:var(--ink);border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.35);padding:10px 12px;max-width:560px;margin:0 auto}
+#tCard h4{margin:6px 0 2px;font-size:16px}
+#tCard p{margin:2px 0 8px;font-size:14px;line-height:1.5}
+.tprog{height:5px;background:var(--line);border-radius:3px;overflow:hidden}.tprog i{display:block;height:100%;background:#e0a800}
+.tnote{background:#fff3cd;color:#5a4300;border-radius:8px;padding:6px 8px;font-size:13px;margin-bottom:8px}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(224,168,0,.9)}100%{box-shadow:0 0 0 14px rgba(224,168,0,0)}}
+.pulse{animation:pulse 1s ease-out 3;outline:3px solid #e0a800;outline-offset:2px}
+#tip{position:fixed;z-index:70;max-width:300px;background:#20252f;color:#fff;border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.5;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+#tip b{display:block;margin-bottom:2px}#tip a{color:#9cc3ff;display:inline-block;margin-top:4px}
+#hello{position:fixed;left:12px;right:12px;bottom:calc(66px + env(safe-area-inset-bottom));z-index:30;background:#20252f;color:#fff;border-radius:12px;padding:10px 12px;font-size:14px;display:flex;gap:8px;align-items:center;max-width:560px;margin:0 auto}
+#hello button{min-height:34px;padding:3px 10px;background:#fff;color:#20252f;border:0}
+.toast{position:fixed;left:50%;bottom:calc(120px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#222;color:#fff;padding:10px 18px;border-radius:20px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:80;max-width:90vw;text-align:center}
+.toast.on{opacity:1}
+#drop{position:fixed;inset:0;z-index:90;background:rgba(31,95,191,.16);border:4px dashed var(--pri);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:var(--pri);pointer-events:none}
+.dprev{max-height:42vh;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:6px;margin-top:8px}
+.dprev div{display:flex;gap:8px;align-items:center;border-top:1px solid var(--line);padding:4px 0;font-size:13px}.dprev div:first-child{border-top:0}
+.dprev img,.dprev .ni{width:64px;height:40px;object-fit:cover;border-radius:4px;background:#ccc;flex:0 0 auto}
+.opt{display:flex;gap:8px;align-items:flex-start;margin:6px 0;font-size:14px}.opt input{margin-top:4px}
+[hidden]{display:none!important}
+@media (max-width:560px){.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top">
+  <header>
+    <h1 id="hTitle">検査手順ムービー</h1>
+    <button id="hRole" class="role">🔓 編集</button>
+    <button id="hNav" aria-label="手順ナビ">🧭</button>
+    <button id="hHelp" aria-label="使い方">？</button>
+  </header>
+  <div id="pbar" hidden></div>
+  <div id="nav" hidden></div>
+</div>
+<main id="main"></main>
+<div id="pnext" hidden></div>
+<nav id="tabbar">
+  <button data-v="list"><b>📚</b>一覧</button>
+  <button data-v="edit" id="tbEdit"><b>✏️</b>作る・直す</button>
+  <button data-v="view"><b>▶️</b>見る</button>
+  <button data-v="set" id="tbSet"><b>⚙️</b>設定</button>
+</nav>
+<div id="tHole" hidden></div>
+<div id="tCard" hidden></div>
+<div id="tip" hidden></div>
+<div class="toast" id="toast"></div>
+<div id="drop" hidden>ここに離すと取り込みます</div>
+<script>
+'use strict';
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const main=$('#main');
+const LANGS={ja:{name:'日本語',tts:'ja-JP'},vi:{name:'Tiếng Việt',tts:'vi-VN'},id:{name:'Bahasa Indonesia',tts:'id-ID'}};
+const UI={
+  ja:{step:'手順',prev:'◀ 前へ',next:'次へ ▶',speak:'🔊 読み上げ',none:'（説明なし）',list:'手順一覧',done:'✔ 最後の手順です',nav:'動画はこの手順の部分をくり返し再生します。赤丸が見る所。「次へ」で進み、右上で言語を切り替え、🔊で読み上げます。',navNo:'見方'},
+  vi:{step:'Bước',prev:'◀ Trước',next:'Tiếp ▶',speak:'🔊 Đọc',none:'(Chưa có giải thích)',list:'Danh sách bước',done:'✔ Bước cuối cùng',nav:'Video lặp lại phần của bước này. Vòng tròn đỏ là chỗ cần xem. Nhấn "Tiếp" để sang bước sau, đổi ngôn ngữ ở góc trên, nhấn 🔊 để nghe đọc.',navNo:'Hướng dẫn'},
+  id:{step:'Langkah',prev:'◀ Sebelumnya',next:'Berikutnya ▶',speak:'🔊 Bacakan',none:'(Belum ada penjelasan)',list:'Daftar langkah',done:'✔ Langkah terakhir',nav:'Video mengulang bagian langkah ini. Lingkaran merah = bagian yang harus dilihat. Tekan "Berikutnya" untuk lanjut, ganti bahasa di atas, tekan 🔊 untuk dibacakan.',navNo:'Panduan'}
+};
+const PAGES=[
+  {k:'video',n:'① 撮る',s:['#sCap','#sPlayer']},
+  {k:'cut',n:'② 切る',s:['#sPlayer','#sCut','#sList']},
+  {k:'text',n:'③ 説明',s:['#sText']},
+  {k:'fin',n:'④ 仕上げ・送る',s:['#sInfo','#sFin']}
+];
+const ALLSEC=['#sCap','#sPlayer','#sCut','#sList','#sText','#sInfo','#sFin'];
+const forceView=/[?&]view\b/.test(location.search);
+let settings={apiKey:'',model:'claude-sonnet-5',glossary:[]},lock=null,unlocked=false;
+let cur=null,curURL=null,view='list',page='video',tIdx=0,openRow=-1,lastId=null;
+let inPt=null,outPt=null,inThumb='',segEnd=null,saveTimer=null,vIdx=0,lang='ja',listCount=0;
+let navOn=true,onePage=true;
+
+/* ---------- 保存（IndexedDB：動画と手順書、localStorage：表示の好み） ---------- */
+let db;
+function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open('kensa-movie',1);
+  r.onupgradeneeded=()=>{const d=r.result;d.createObjectStore('manuals',{keyPath:'id'});d.createObjectStore('videos');d.createObjectStore('kv')};
+  r.onsuccess=()=>{db=r.result;res()};r.onerror=()=>rej(r.error)})}
+function tx(store,mode,fn){return new Promise((res,rej)=>{const t=db.transaction(store,mode);const req=fn(t.objectStore(store));
+  t.oncomplete=()=>res(req?req.result:undefined);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)})}
+const idb={get:(st,k)=>tx(st,'readonly',s=>s.get(k)),all:st=>tx(st,'readonly',s=>s.getAll()),
+  put:(st,v,k)=>tx(st,'readwrite',s=>k===undefined?s.put(v):s.put(v,k)),del:(st,k)=>tx(st,'readwrite',s=>s.delete(k))};
+function lsGet(k,d){try{return localStorage.getItem(k)??d}catch(e){return d}}
+function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function ssGet(k){try{return sessionStorage.getItem(k)}catch(e){return null}}
+function ssSet(k,v){try{sessionStorage.setItem(k,v)}catch(e){}}
+
+/* ---------- 共通 ---------- */
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function fmt(t){if(t==null||isNaN(t))return'--';const m=Math.floor(t/60);return m+':'+(t-m*60).toFixed(1).padStart(4,'0')}
+function toast(msg,ms=2400){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),ms)}
+function marksHTML(ms){return (ms||[]).map(m=>`<div class="mk" style="left:${m.x}%;top:${m.y}%"></div>`).join('')}
+function setTitle(t){$('#hTitle').textContent=t}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function save(){if(!cur)return;cur.updatedAt=Date.now();await idb.put('manuals',cur)}
+function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(save,400)}
+async function loadVideo(vid){if(curURL){URL.revokeObjectURL(curURL);curURL=null}
+  if(!vid)return;const b=await idb.get('videos',vid);if(b)curURL=URL.createObjectURL(b)}
+function grab(v,w=640){try{if(!v.videoWidth)return'';const sc=Math.min(1,w/v.videoWidth);const c=document.createElement('canvas');
+  c.width=Math.round(v.videoWidth*sc);c.height=Math.round(v.videoHeight*sc);c.getContext('2d').drawImage(v,0,0,c.width,c.height);
+  return c.toDataURL('image/jpeg',0.72)}catch(e){return''}}
+function stopTTS(){try{speechSynthesis.cancel()}catch(e){}}
+function blobToDataURL(b){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=()=>rej(r.error);r.readAsDataURL(b)})}
+const isPhoto=s=>s.kind==='photo'||s.start==null;
+function loadImage(src){return new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>rej(new Error('画像を読み込めません'));im.src=src})}
+function toJpeg(im,max,q=0.82){const w0=im.naturalWidth||im.width,h0=im.naturalHeight||im.height,sc=Math.min(1,max/Math.max(w0,h0));const c=document.createElement('canvas');
+  c.width=Math.round(w0*sc);c.height=Math.round(h0*sc);const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);return c.toDataURL('image/jpeg',q)}
+function newPhotoStep(img,thumb,text=''){return{id:uid(),kind:'photo',start:null,end:null,img:img||'',thumb:thumb||'',text:{ja:text,vi:'',id:''},marks:[]}}
+function newManual(){return{id:uid(),title:'',partNo:'',version:'1',revDate:today(),author:'',approver:'',videoId:null,steps:[],history:[{ver:'1',date:today(),note:'制定'}],updatedAt:Date.now()}}
+function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},3000)}
+async function shareOrDownload(blob,name){
+  try{const f=new File([blob],name,{type:blob.type});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:name});return}}
+  catch(e){if(e&&e.name==='AbortError')return}
+  download(blob,name)}
+function safeName(s){return s.replace(/[\\/:*?"<>|\s]+/g,'_')}
+function onceSeeked(v){return new Promise(r=>{let d=false;const f=()=>{if(!d){d=true;v.removeEventListener('seeked',f);r()}};v.addEventListener('seeked',f);setTimeout(f,2500)})}
+async function seekTo(v,t){v.currentTime=Math.max(0,Math.min(t,(isFinite(v.duration)?v.duration:t+1)-0.05));await onceSeeked(v)}
+async function withHiddenVideo(fn){
+  const v=document.createElement('video');v.muted=true;v.playsInline=true;v.setAttribute('playsinline','');v.preload='auto';
+  v.style.cssText='position:fixed;left:-9999px;top:0;width:4px;height:4px';document.body.appendChild(v);v.src=curURL;
+  try{await new Promise((res,rej)=>{if(v.readyState>=1)return res();v.onloadedmetadata=res;v.onerror=()=>rej(new Error('動画を読み込めませんでした'))});
+    try{await v.play();v.pause()}catch(e){}
+    return await fn(v)}finally{v.remove()}}
+function drawMarks(ctx,W,H,marks,ox=0,oy=0){(marks||[]).forEach(k=>{const x=ox+k.x/100*W,y=oy+k.y/100*H,r=0.065*W;
+  ctx.lineWidth=W*0.014;ctx.strokeStyle='rgba(255,255,255,.75)';ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.stroke();
+  ctx.lineWidth=W*0.008;ctx.strokeStyle='#e53935';ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.stroke()})}
+function progressModal(title,msg){
+  const d=document.createElement('div');d.className='modal';
+  d.innerHTML=`<div class="mbox"><h3>${esc(title)}</h3><div class="sub" id="pmMsg">${esc(msg||'')}</div><div class="bar"><i></i></div>
+    <div class="row mt"><button id="pmX">中止</button></div></div>`;
+  document.body.appendChild(d);const o={cancelled:false,
+    set(p,m){d.querySelector('.bar i').style.width=Math.round(p*100)+'%';if(m)d.querySelector('#pmMsg').textContent=m},
+    close(){d.remove()}};
+  d.querySelector('#pmX').onclick=()=>{o.cancelled=true;d.remove()};return o}
+
+/* ---------- 権限（編集／閲覧） ---------- */
+function isEditor(){if(!lock&&!forceView)return true;return unlocked}
+async function hashPIN(pin,salt){const s=salt+':'+pin;
+  try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+  catch(e){let h=2166136261;for(const c of s){h^=c.codePointAt(0);h=Math.imul(h,16777619)>>>0}return'f'+h.toString(16)}}
+function askPIN(title,msg){return new Promise(res=>{const d=document.createElement('div');d.className='modal';
+  d.innerHTML=`<div class="mbox"><h3>${esc(title)}</h3><p class="sub small">${esc(msg||'')}</p>
+    <input type="password" inputmode="numeric" maxlength="8" id="pinIn" autocomplete="off" style="font-size:24px;letter-spacing:.3em;text-align:center">
+    <div class="row mt"><button class="pri grow" id="pinOk">OK</button><button id="pinNo">やめる</button></div></div>`;
+  document.body.appendChild(d);const i=d.querySelector('#pinIn');setTimeout(()=>i.focus(),60);
+  const done=v=>{d.remove();res(v)};d.querySelector('#pinOk').onclick=()=>done(i.value.trim());d.querySelector('#pinNo').onclick=()=>done(null);
+  i.onkeydown=e=>{if(e.key==='Enter')done(i.value.trim())}})}
+async function checkPIN(title){if(!lock)return true;const p=await askPIN(title,'編集者PINを入れてください');if(p==null)return false;
+  if(await hashPIN(p,lock.salt)!==lock.hash){alert('PINが違います');return false}return true}
+$('#hRole').onclick=async()=>{
+  if(isEditor()){
+    if(!lock&&!forceView){toast('編集者PINが未設定なので、この端末はいつでも編集できます（⚙ 設定でPINを決められます）',3600);return}
+    unlocked=false;ssSet('kensa-unlocked','0');
+    if(view==='edit'||view==='settings'){await save();await showList()}else if(view==='list')await showList();
+    renderChrome();toast('🔒 閲覧モードにしました');return}
+  if(lock){if(!await checkPIN('🔓 編集モードにする'))return}
+  else if(!confirm('編集モードにしますか？'))return;
+  unlocked=true;ssSet('kensa-unlocked','1');if(view==='list')await showList();renderChrome();toast('🔓 編集モードにしました')};
+
+/* ---------- 画面の枠（タブ・ページ・ナビ） ---------- */
+function renderChrome(){
+  const ed=isEditor(),rb=$('#hRole');
+  rb.textContent=ed?'🔓 編集':'🔒 閲覧';rb.className='role '+(ed?'ed':'vw');
+  $('#tbEdit').hidden=!ed;$('#tbSet').hidden=!ed;
+  $$('#tabbar button').forEach(b=>b.classList.toggle('on',b.dataset.v===(view==='settings'?'set':view)));
+  const pb=$('#pbar'),pn=$('#pnext');
+  if(view==='edit'){
+    pb.hidden=false;pb.innerHTML=PAGES.map(p=>`<button data-pg="${p.k}" class="${p.k===page?'on':''}">${p.n}</button>`).join('');
+    if(onePage){const i=PAGES.findIndex(p=>p.k===page);pn.hidden=false;
+      pn.innerHTML=`<button id="pPrev" ${i===0?'disabled':''}>◀ ${i>0?PAGES[i-1].n:'前'}</button><button class="pri" id="pNext" ${i===PAGES.length-1?'disabled':''}>${i<PAGES.length-1?PAGES[i+1].n:'次'} ▶</button>`;
+      $('#pPrev').onclick=()=>setPage(PAGES[i-1].k);$('#pNext').onclick=()=>setPage(PAGES[i+1].k)}
+    else pn.hidden=true;
+  }else{pb.hidden=true;pn.hidden=true}
+  $('#hNav').classList.toggle('on',navOn);
+  updateNav();
+}
+$('#pbar').onclick=e=>{const b=e.target.closest('[data-pg]');if(b)setPage(b.dataset.pg)};
+function setPage(k){if(view!=='edit')return;page=k;applyPage();renderChrome();
+  if(k==='text')renderText();if(k==='cut')renderList();
+  if(onePage)window.scrollTo(0,0);else{const p=PAGES.find(x=>x.k===k);const el=$(p.s[k==='cut'?1:0]);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}}
+function applyPage(){const show=onePage?PAGES.find(p=>p.k===page).s:ALLSEC;
+  ALLSEC.forEach(s=>{const el=$(s);if(el)el.classList.toggle('pg-off',!show.includes(s))});
+  const v=$('#ve');if(v&&!show.includes('#sPlayer'))v.pause();
+  const tv=$('#tv');if(tv&&!show.includes('#sText'))tv.pause();
+  main.classList.toggle('cutpage',onePage&&page==='cut')}
+$('#tabbar').onclick=async e=>{const b=e.target.closest('button');if(!b)return;const v=b.dataset.v;
+  if(tour)tourEnd();
+  if(view==='edit')await save();
+  const id=cur?.id||lastId,m=id?await idb.get('manuals',id):null;
+  if(v==='list')showList();
+  else if(v==='edit'){if(m)showEdit(m.id);else{await showList();toast('一覧から「編集」を押すか「＋ 新しい手順書」で作ります')}}
+  else if(v==='view'){if(m)showView(m.id);else{await showList();toast('一覧から「見る」を押します')}}
+  else if(v==='set')showSettings()};
+let sw=null;
+main.addEventListener('touchstart',e=>{sw=null;if(view!=='edit'||!onePage||tour)return;
+  if(e.target.closest('input,textarea,select,video,canvas,svg,.thumb,.strip,.vwrap'))return;const t=e.touches[0];sw={x:t.clientX,y:t.clientY,tm:Date.now()}},{passive:true});
+main.addEventListener('touchend',e=>{if(!sw)return;const t=e.changedTouches[0],dx=t.clientX-sw.x,dy=t.clientY-sw.y,ok=Math.abs(dx)>70&&Math.abs(dy)<50&&Date.now()-sw.tm<600;sw=null;
+  if(!ok)return;const i=PAGES.findIndex(p=>p.k===page),j=dx<0?i+1:i-1;if(j>=0&&j<PAGES.length)setPage(PAGES[j].k)},{passive:true});
+
+/* ---------- 手順ナビ（次にやること） ---------- */
+function guide(){
+  const ed=isEditor();
+  if(view==='list'){
+    if(!ed)return{no:'ナビ',text:listCount?'「見る」で手順を確認します。新しいファイルが届いたら「📥 共有ファイルを読み込む」。':'事務所から届いたファイルを「📥 共有ファイルを読み込む」で追加します。',target:'#bImp'};
+    return listCount?{no:'ナビ',text:'「見る」＝現場の表示、「編集」＝直す。新しく作るなら「＋ 新しい手順書」。',target:'#bNew'}
+      :{no:'はじめに',text:'「＋ 新しい手順書」から。流れ：① 撮る → ② 切る → ③ 説明（AI） → ④ 仕上げ・送る',target:'#bNew'}}
+  if(view==='edit'&&cur){const S=cur.steps;
+    if(!cur.videoId&&!S.length)return{no:'1/6 撮る',pg:'video',text:'「📷 撮影する」で撮るか、動画・写真・既存の手順書（Excel・Word・PDF）を取り込みます。',target:'#bCap'};
+    if(inPt!=null&&outPt!=null)return{no:'2/6 切る',pg:'cut',text:'「＋ 手順に追加」を押します。',target:'#bAdd'};
+    if(inPt!=null)return{no:'2/6 切る',pg:'cut',text:'再生して、手順の終わりで止めて「■ 終了点」。',target:'#bOut'};
+    if(!S.length)return{no:'2/6 切る',pg:'cut',text:'「✂ 自動で区切る」で候補を作るか、動画を止めて「▶ 開始点」から手で区切ります。',target:'#bAuto'};
+    const ne=S.findIndex(s=>!s.text.ja.trim());
+    if(ne>=0)return{no:'3/6 説明',pg:'text',step:ne,text:`手順${ne+1}の説明を入れます。「🤖 AIで説明を書く」で下書きもできます。`,target:'#tAi'};
+    const nt=S.findIndex(s=>!s.text.vi.trim()||!s.text.id.trim());
+    if(nt>=0)return{no:'4/6 翻訳',pg:'fin',text:'「🌐 未翻訳をまとめて翻訳」を押します（手順ごとなら③の「🌐 翻訳」）。',target:'#bTrAll'};
+    for(const [k,l] of [['title','手順書名'],['partNo','品番'],['approver','承認者']])
+      if(!String(cur[k]||'').trim())return{no:'5/6 情報',pg:'fin',text:`${l}を入れます（ISOの文書管理・一覧・ファイル名に使われます）。`,target:`[data-meta="${k}"]`};
+    return{no:'6/6 送る',pg:'fin',text:'「▶ 閲覧モードで確認」→「🎬 字幕入り動画」でLINE送信、または「📦 現場に配る」。',target:'#bPrev'}}
+  if(view==='view'&&cur&&cur.steps.length){const u=UI[lang];return{no:u.navNo,text:u.nav,target:null}}
+  if(view==='settings')return{no:'設定',text:'はじめに：AIのカギ（APIキー）→ 3言語辞書 → 編集者PIN の順に設定します。',target:'#sKey'};
+  return null}
+function updateNav(){
+  const n=$('#nav'),g=navOn?guide():null;if(!g){n.hidden=true;return}
+  n.hidden=false;
+  n.innerHTML=`<div class="navin"><span class="navno">${esc(g.no)}</span><div class="navtx">${esc(g.text)}</div>${g.target?'<button id="navGo">ここ ▶</button>':''}</div>`;
+  if(g.target)$('#navGo').onclick=()=>{if(g.pg&&page!==g.pg)setPage(g.pg);if(g.step!=null&&tIdx!==g.step){tIdx=g.step;renderText()}setTimeout(()=>pulse(g.target),60)}}
+function pulse(sel){const el=typeof sel==='string'?$(sel):sel;if(!el)return;
+  el.scrollIntoView({behavior:'smooth',block:'center'});el.classList.remove('pulse');void el.offsetWidth;el.classList.add('pulse');
+  setTimeout(()=>el.classList.remove('pulse'),3200);if(el.matches('input,textarea'))setTimeout(()=>el.focus({preventScroll:true}),450)}
+$('#hNav').onclick=()=>{navOn=!navOn;lsSet('kensa-nav',navOn?'1':'0');renderChrome();toast(navOn?'手順ナビ：オン':'手順ナビ：オフ')};
+
+/* ---------- 一覧 ---------- */
+async function showList(){
+  if(view==='edit')await save();
+  view='list';stopTTS();setTitle('検査手順ムービー');
+  const ms=(await idb.all('manuals')).sort((a,b)=>b.updatedAt-a.updatedAt);listCount=ms.length;const ed=isEditor();
+  main.innerHTML=`<div class="card"><div class="row">${ed?'<button class="pri" id="bNew">＋ 新しい手順書</button>':''}
+      <button id="bImp">📥 共有ファイルを読み込む</button><input type="file" id="fImp" accept=".json,application/json" hidden></div>
+      <p class="sub small">${ed?'流れ：① 撮る → ② 切る → ③ 説明（AI） → ④ 仕上げ（翻訳・字幕動画・現場に配る）':'事務所から届いたファイルを「読み込む」で追加し、「見る」で手順を確認します。'}</p></div>
+    ${ms.length>3?'<input type="search" id="q" placeholder="🔍 品番・手順書名で探す" style="margin-bottom:10px">':''}<div id="ml"></div>`;
+  const draw=q=>{const f=ms.filter(m=>!q||(m.title+' '+m.partNo).toLowerCase().includes(q.toLowerCase()));
+    $('#ml').innerHTML=f.length?f.map(m=>`<div class="card"><div class="row"><div class="grow"><b>${esc(m.title||'（無題）')}</b>
+      <div class="sub">品番 ${esc(m.partNo||'-')}・第${esc(m.version||'1')}版・改訂 ${esc(m.revDate||'-')}・手順${m.steps.length}${m.approver?'':'・<span style="color:var(--warn)">未承認</span>'}</div></div>
+      <button class="pri" data-view="${m.id}">見る</button>${ed?`<button data-edit="${m.id}">編集</button>`:''}</div></div>`).join('')
+      :`<p class="sub">${ms.length?'見つかりません。':'まだ手順書がありません。'}</p>`};
+  draw('');if($('#q'))$('#q').oninput=e=>draw(e.target.value.trim());
+  if($('#bNew'))$('#bNew').onclick=()=>showEdit(null);
+  $('#bImp').onclick=()=>$('#fImp').click();
+  $('#fImp').onchange=e=>{const f=e.target.files[0];if(f)importFile(f);e.target.value=''};
+  $('#ml').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.view)showView(b.dataset.view);else if(b.dataset.edit)showEdit(b.dataset.edit)};
+  renderChrome();
+}
+
+/* ---------- 作る・直す（4ページ） ---------- */
+async function showEdit(id,pg){
+  if(!isEditor()){toast('編集するには右上の「🔒 閲覧」を押して編集モードにします',3200);return}
+  stopTTS();
+  const m=id?await idb.get('manuals',id):newManual();if(!m){showList();return}
+  if(!id)await idb.put('manuals',m);
+  if(!cur||cur.id!==m.id)tIdx=0;
+  cur=m;cur.history=cur.history||[];lastId=cur.id;lsSet('kensa-last',cur.id);view='edit';
+  await loadVideo(cur.videoId);
+  inPt=outPt=null;inThumb='';segEnd=null;openRow=-1;
+  page=pg||(!cur.steps.length?(cur.videoId?'cut':'video'):'text');
+  setTitle(cur.title||'新しい手順書');
+  const mf=(k,l,t='text')=>`<div><label class="f">${l}</label><input type="${t}" data-meta="${k}" value="${esc(cur[k])}"></div>`;
+  main.innerHTML=`
+  <div class="card" id="sCap"><h3>① 撮る・取り込む</h3>
+    <div class="row"><button class="pri" id="bCap">📷 撮影する</button><button id="bPick">🎞 動画を選ぶ</button></div>
+    <div class="row mt"><button id="bPhoto">🖼 写真で手順を追加</button><button id="bDoc">📄 既存の手順書を取り込む</button></div>
+    <p class="sub small">コツ：スマホを固定し、手元を大きく・明るく。動画は1本1〜3分が目安（1080pか720p）。写真だけでも手順書を作れます。既存の手順書は Excel（.xlsx）・Word（.docx）・PDF に対応。パソコンでは、ファイルをこの画面にドラッグしても取り込めます。</p>
+    <input type="file" id="fCap" accept="video/*" capture="environment" hidden><input type="file" id="fPick" accept="video/*" hidden>
+    <input type="file" id="fPhoto" accept="image/*" multiple hidden><input type="file" id="fDoc" accept=".xlsx,.docx,.pdf" hidden></div>
+  <div class="card" id="sPlayer"><div id="vArea"></div></div>
+  <div class="card" id="sCut"><h3>② 手順に切り分ける</h3>
+    <div class="row"><button id="bIn">▶ 開始点 <span id="tIn">--</span></button><button id="bOut">■ 終了点 <span id="tOut">--</span></button><button class="pri" id="bAdd">＋ 手順に追加</button></div>
+    <div class="row mt"><button class="sm" id="bB1">−1秒</button><button class="sm" id="bBF">−0.2</button><button class="sm" id="bFF">+0.2</button><button class="sm" id="bF1">+1秒</button><button class="sm" id="bAuto">✂ 自動で区切る</button></div></div>
+  <div class="card" id="sList"><h3>手順の一覧（<span id="nSteps">0</span>）</h3><div id="stepList"></div></div>
+  <div class="card" id="sText"><div class="strip" id="strip"></div><div id="tBody"></div></div>
+  <div class="card" id="sInfo"><h3>手順書の情報</h3><div class="grid2">
+    ${mf('title','手順書名（例：外観検査 ○○カバー）')}${mf('partNo','品番')}
+    ${mf('author','作成者')}${mf('approver','承認者')}</div>
+    <div class="row mt"><span class="sub grow">第<b id="iVer">${esc(cur.version)}</b>版・改訂日 <b id="iDate">${esc(cur.revDate)}</b></span><button class="sm" id="bRev">📝 改訂する（版数を上げる）</button></div>
+    <div id="hist" class="sub small"></div></div>
+  <div class="card" id="sFin"><h3>④ 仕上げ・送る</h3><div class="fin">
+    <button id="bAiAll">🤖 説明が空の手順をAIで下書き</button>
+    <button id="bTrAll">🌐 未翻訳をまとめて翻訳</button>
+    <button class="pri" id="bPrev">▶ 閲覧モードで確認（現場の見え方）</button>
+    <button id="bCapV">🎬 字幕入り動画を作る（LINEなどで送る）</button>
+    <button id="bExp">📦 現場に配る（共有ファイルを書き出す）</button>
+    <button class="danger" id="bDelM">🗑 この手順書を削除</button></div></div>`;
+  main.querySelectorAll('[data-meta]').forEach(el=>el.oninput=()=>{cur[el.dataset.meta]=el.value;saveSoon();if(el.dataset.meta==='title')setTitle(el.value||'新しい手順書');updateNav()});
+  $('#bCap').onclick=()=>$('#fCap').click();$('#bPick').onclick=()=>$('#fPick').click();
+  $('#fCap').onchange=$('#fPick').onchange=e=>{const f=e.target.files[0];if(f)setVideo(f);e.target.value=''};
+  $('#bPhoto').onclick=()=>$('#fPhoto').click();$('#bDoc').onclick=()=>$('#fDoc').click();
+  $('#fPhoto').onchange=e=>{const fs=[...e.target.files];e.target.value='';if(fs.length)addPhotos(fs)};
+  $('#fDoc').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)importDoc(f)};
+  $('#bIn').onclick=()=>{const v=$('#ve');if(!v)return noVideo();inPt=v.currentTime;inThumb=grab(v);$('#tIn').textContent=fmt(inPt);updateNav()};
+  $('#bOut').onclick=()=>{const v=$('#ve');if(!v)return noVideo();outPt=v.currentTime;$('#tOut').textContent=fmt(outPt);updateNav()};
+  $('#bAdd').onclick=addStep;$('#bAuto').onclick=autoSplit;
+  [['#bB1',-1],['#bBF',-0.2],['#bFF',0.2],['#bF1',1]].forEach(([s,d])=>$(s).onclick=()=>{const v=$('#ve');if(!v)return noVideo();v.pause();
+    v.currentTime=Math.max(0,Math.min(isFinite(v.duration)?v.duration:1e9,v.currentTime+d))});
+  $('#stepList').onclick=listClick;
+  $('#strip').onclick=e=>{const d=e.target.closest('[data-t]');if(d){tIdx=+d.dataset.t;renderText()}};
+  $('#bRev').onclick=revise;$('#bAiAll').onclick=aiAll;$('#bTrAll').onclick=translateAll;
+  $('#bPrev').onclick=async()=>{await save();showView(cur.id)};
+  $('#bCapV').onclick=async()=>{await save();openCapDialog()};
+  $('#bExp').onclick=async()=>{await save();exportPkg(cur)};
+  $('#bDelM').onclick=async()=>{if(!confirm('この手順書と動画を削除します。元に戻せません。よろしいですか？'))return;
+    if(cur.videoId)await idb.del('videos',cur.videoId);await idb.del('manuals',cur.id);cur=null;lastId=null;lsSet('kensa-last','');showList()};
+  renderPlayer();renderList();renderText();renderHist();applyPage();renderChrome();window.scrollTo(0,0);
+}
+function noVideo(){toast('先に「① 撮る」で動画を入れてください')}
+async function setVideo(file){
+  const vs=cur.steps.filter(s=>!isPhoto(s));
+  if(vs.length&&!confirm(`動画を差し替えると、動画から切り出した手順（${vs.length}件）は使えなくなるため削除されます（写真の手順は残ります）。差し替えますか？`))return;
+  if(cur.videoId)await idb.del('videos',cur.videoId);
+  const vid=uid();
+  try{await idb.put('videos',file,vid)}catch(e){alert('保存できませんでした（端末の容量不足の可能性）：'+e);return}
+  cur.videoId=vid;cur.steps=cur.steps.filter(isPhoto);tIdx=0;await save();await loadVideo(vid);renderPlayer();renderList();renderText();
+  toast('動画を取り込みました。次は「② 切る」です');setPage('cut');
+}
+function renderPlayer(){
+  const a=$('#vArea');
+  if(!curURL){a.innerHTML='<p class="sub">まだ動画がありません。「📷 撮影する」か「🎞 動画を選ぶ」から始めます。</p>';return}
+  a.innerHTML='<div class="vwrap"><video id="ve" controls playsinline preload="auto"></video></div>';
+  const v=$('#ve');v.src=curURL;v.ontimeupdate=()=>{if(segEnd!=null&&v.currentTime>=segEnd){v.pause();segEnd=null}}}
+async function addStep(){
+  if(inPt==null||outPt==null){alert('「▶ 開始点」と「■ 終了点」を押してください');return}
+  if(outPt<=inPt+0.2){alert('終了点は開始点より後にしてください');return}
+  cur.steps.push({id:uid(),start:inPt,end:outPt,thumb:inThumb,text:{ja:'',vi:'',id:''},marks:[]});
+  inPt=outPt=null;inThumb='';$('#tIn').textContent='--';$('#tOut').textContent='--';
+  await save();renderList();toast(`手順${cur.steps.length}を追加しました`)}
+function renderList(){
+  const el=$('#stepList');if(!el||!cur)return;$('#nSteps').textContent=cur.steps.length;
+  if(!cur.steps.length){el.innerHTML='<p class="sub">まだありません。上のボタンで切り分けるか「✂ 自動で区切る」を使います。</p>';updateNav();return}
+  el.innerHTML=cur.steps.map((s,i)=>`<div class="srow"><div class="srow-m" data-open="${i}">${s.thumb?`<img src="${s.thumb}" alt="">`:'<div class="nothumb"></div>'}
+    <div class="grow"><b>手順 ${i+1}</b> <span class="sub">${isPhoto(s)?'🖼 写真':fmt(s.start)+'〜'+fmt(s.end)}</span><div class="sub one">${esc(s.text.ja||'（説明なし）')}</div></div>
+    ${isPhoto(s)?'':`<button class="sm" data-play="${i}" aria-label="区間再生">▶</button>`}<span class="chev">${openRow===i?'▲':'▼'}</span></div>
+    ${openRow===i?`<div class="row tools">${isPhoto(s)?'':`<button class="sm" data-setin="${i}">開始＝今の位置</button><button class="sm" data-setout="${i}">終了＝今の位置</button>
+      <button class="sm" data-setimg="${i}">画像＝今の画面</button>`}<button class="sm" data-up="${i}" ${i===0?'disabled':''}>↑</button>
+      <button class="sm" data-dn="${i}" ${i===cur.steps.length-1?'disabled':''}>↓</button><button class="sm" data-gotext="${i}">✏ 説明へ</button>
+      <button class="sm danger" data-del="${i}">削除</button></div>`:''}</div>`).join('');
+  updateNav()}
+async function listClick(e){
+  const b=e.target.closest('button'),v=$('#ve');
+  if(!b){const o=e.target.closest('[data-open]');if(o){const i=+o.dataset.open;openRow=openRow===i?-1:i;renderList()}return}
+  const d=b.dataset;
+  if(d.play!=null){if(!v)return;const s=cur.steps[+d.play];v.currentTime=s.start;segEnd=s.end;v.play().catch(()=>{});return}
+  if(d.setin!=null||d.setout!=null||d.setimg!=null){if(!v)return;const i=+(d.setin??d.setout??d.setimg),s=cur.steps[i],t=v.currentTime;
+    if(d.setin!=null){if(t>=s.end-0.2){alert('開始は終了より前にしてください');return}s.start=t;s.thumb=grab(v)||s.thumb}
+    if(d.setout!=null){if(t<=s.start+0.2){alert('終了は開始より後にしてください');return}s.end=t}
+    if(d.setimg!=null)s.thumb=grab(v)||s.thumb;
+    await save();renderList();toast('変更しました');return}
+  if(d.up!=null||d.dn!=null){const i=+(d.up??d.dn),j=d.up!=null?i-1:i+1;[cur.steps[i],cur.steps[j]]=[cur.steps[j],cur.steps[i]];openRow=j;await save();renderList();return}
+  if(d.gotext!=null){tIdx=+d.gotext;setPage('text');return}
+  if(d.del!=null){if(!confirm(`手順${+d.del+1}を削除しますか？`))return;cur.steps.splice(+d.del,1);openRow=-1;await save();renderList()}}
+function renderText(){
+  const st=$('#strip'),b=$('#tBody');if(!st||!cur)return;
+  if(!cur.steps.length){st.innerHTML='';b.innerHTML='<p class="sub">まだ手順がありません。「② 切る」で手順を作ってください。</p>';updateNav();return}
+  tIdx=Math.max(0,Math.min(tIdx,cur.steps.length-1));const s=cur.steps[tIdx],last=tIdx===cur.steps.length-1;
+  st.innerHTML=cur.steps.map((x,i)=>{const ok=x.text.ja.trim(),tr=ok&&x.text.vi.trim()&&x.text.id.trim();
+    return`<div data-t="${i}" class="${i===tIdx?'on':''} ${ok?'':'empty'}">${x.thumb?`<img src="${x.thumb}" alt="">`:''}<span>${i+1}${tr?' ✓':ok?'':' ・'}</span></div>`}).join('');
+  const on=st.querySelector('.on');if(on)on.scrollIntoView({block:'nearest',inline:'center'});
+  const ph=isPhoto(s),src=s.img||s.thumb;
+  b.innerHTML=`<div class="row"><b class="grow">手順 ${tIdx+1} / ${cur.steps.length}</b><span class="sub">${ph?'🖼 写真':fmt(s.start)+'〜'+fmt(s.end)}</span></div>
+    <div class="vwrap thumb" id="tImg">${src?`<img src="${src}" alt="">`:'<div class="noimg">画像なし</div>'}<div class="marks">${marksHTML(s.marks)}</div>
+      <video id="tv" playsinline muted hidden></video></div>
+    <div class="row">${ph?'':'<button class="sm" id="tPlay">▶ 動きを見る</button>'}<span class="sub small grow">画像をタップ＝赤丸（もう一度で消す）</span></div>
+    <label class="f">日本語の説明</label><textarea id="tJa" data-t="ja" placeholder="例：ゲート部にバリがないか、指でなぞって確認する（メモだけ書いてAIに整えさせてもOK）">${esc(s.text.ja)}</textarea>
+    <div class="row mt"><button class="pri sm" id="tAi">🤖 AIで説明を書く</button><button class="sm" id="tTr">🌐 翻訳</button><button class="sm" id="tGt">Google翻訳で確認</button></div>
+    <label class="f">Tiếng Việt（ベトナム語）</label><textarea id="tVi" data-t="vi">${esc(s.text.vi)}</textarea>
+    <label class="f">Bahasa Indonesia（インドネシア語）</label><textarea id="tId" data-t="id">${esc(s.text.id)}</textarea>
+    <div class="row mt"><button id="tPv" ${tIdx===0?'disabled':''}>◀ 前の手順</button><button class="pri grow" id="tNx">${last?'④ 仕上げへ ▶':'次の手順 ▶'}</button></div>`;
+  b.querySelectorAll('textarea').forEach(t=>t.oninput=()=>{cur.steps[tIdx].text[t.dataset.t]=t.value;saveSoon();updateNav()});
+  $('#tImg').onclick=e=>{const tv=$('#tv');if(!tv.hidden)return;const img=$('#tImg img');if(!img)return;
+    const r=img.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100,ms=cur.steps[tIdx].marks;
+    if(x<0||x>100||y<0||y>100)return;
+    const near=ms.findIndex(m=>Math.hypot(m.x-x,(m.y-y)*r.height/r.width)<7);
+    if(near>=0)ms.splice(near,1);else ms.push({x:+x.toFixed(1),y:+y.toFixed(1)});
+    $('#tImg .marks').innerHTML=marksHTML(ms);save()};
+  if($('#tPlay'))$('#tPlay').onclick=()=>{const tv=$('#tv'),img=$('#tImg img'),mk=$('#tImg .marks'),bt=$('#tPlay');if(!curURL)return;
+    if(tv.hidden){if(!tv.src)tv.src=curURL;tv.hidden=false;if(img)img.hidden=true;mk.hidden=true;bt.textContent='■ 画像に戻る';
+      const go=()=>{tv.currentTime=s.start;tv.play().catch(()=>{})};if(tv.readyState>=1)go();else tv.onloadedmetadata=go;
+      tv.ontimeupdate=()=>{if(tv.currentTime>=s.end)go()}}
+    else{tv.pause();tv.hidden=true;if(img)img.hidden=false;mk.hidden=false;bt.textContent='▶ 動きを見る'}};
+  $('#tAi').onclick=async()=>{const bt=$('#tAi');const has=s.text.ja.trim();
+    if(has&&!confirm('今の日本語をメモとして、AIが整えた文に置き換えます。よろしいですか？'))return;
+    bt.disabled=true;bt.textContent='🤖 考え中…';
+    try{const t=await aiDescribe(tIdx);s.text.ja=t;if(s.text.vi||s.text.id){s.text.vi='';s.text.id=''}await save();renderText();toast('AIの下書きです。必ず内容を確認してください',3200)}
+    catch(err){aiErr(err);bt.disabled=false;bt.textContent='🤖 AIで説明を書く'}};
+  $('#tTr').onclick=async()=>{if(!s.text.ja.trim()){alert('先に日本語の説明を入れてください');return}
+    if((s.text.vi.trim()||s.text.id.trim())&&!confirm('今の訳を上書きしますか？'))return;
+    const bt=$('#tTr');bt.disabled=true;bt.textContent='🌐 翻訳中…';
+    try{await trStep(s);renderText();toast('翻訳しました')}catch(err){aiErr(err);bt.disabled=false;bt.textContent='🌐 翻訳'}};
+  $('#tGt').onclick=()=>{if(!s.text.ja.trim()){alert('先に日本語の説明を入れてください');return}
+    window.open('https://translate.google.com/?sl=ja&tl=vi&op=translate&text='+encodeURIComponent(s.text.ja),'_blank')};
+  $('#tPv').onclick=()=>{tIdx--;renderText();window.scrollTo(0,0)};
+  $('#tNx').onclick=()=>{if(last)setPage('fin');else{tIdx++;renderText();window.scrollTo(0,0)}};
+  updateNav()}
+function renderHist(){const h=$('#hist');if(!h)return;
+  h.innerHTML=cur.history.length?'改訂履歴：'+cur.history.slice(0,5).map(x=>`第${esc(x.ver)}版 ${esc(x.date)} ${esc(x.note)}`).join(' ／ '):''}
+async function revise(){
+  const note=prompt('改訂内容を一言で（例：手順3の判定基準を変更）','');if(note===null)return;
+  const nv=String((parseInt(cur.version,10)||1)+1);
+  cur.version=nv;cur.revDate=today();cur.approver='';cur.history.unshift({ver:nv,date:today(),note:note.trim()||'改訂'});
+  await save();$('#iVer').textContent=nv;$('#iDate').textContent=cur.revDate;$('[data-meta="approver"]').value='';renderHist();updateNav();
+  toast(`第${nv}版にしました。承認者を入れ直してください`,3200)}
+
+/* ---------- AI（説明の下書き・翻訳） ---------- */
+async function claude(content,max=1500){
+  if(!settings.apiKey)throw new Error('NOKEY');
+  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{
+    'content-type':'application/json','x-api-key':settings.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:settings.model,max_tokens:max,messages:[{role:'user',content}]})});
+  if(!r.ok){const t=await r.text();throw new Error('AIエラー（'+r.status+'）：'+t.slice(0,200))}
+  const j=await r.json();return(j.content||[]).map(c=>c.text||'').join('')}
+function aiErr(err){
+  if(err.message==='NOKEY'){if(confirm('AIを使うにはAPIキーの設定が必要です。設定画面を開きますか？\n（キーがなくても、説明は手で書け、訳は「Google翻訳で確認」から貼り付けられます）'))showSettings()}
+  else if(err.message!=='CANCEL')alert(err.message)}
+async function translate(text){
+  const g=settings.glossary.filter(e=>e.ja&&text.includes(e.ja)).slice(0,200);
+  const gl=g.map(e=>`${e.ja} → vi: ${e.vi||'-'} / id: ${e.id||'-'}`).join('\n');
+  const prompt=`あなたはプラスチック成形工場の品質検査手順書の翻訳者です。次の日本語の作業説明を、ベトナム語とインドネシア語に翻訳してください。
+・現場の外国人作業者が一読で分かる、短く平易な文にする
+・用語集にある語は、必ず用語集の訳語を使う
+・数値・単位・記号・品番は変えない
+・出力はJSONのみ：{"vi":"ベトナム語訳","id":"インドネシア語訳"}
+${gl?'【用語集】\n'+gl+'\n':''}【原文】
+${text}`;
+  const out=await claude(prompt,2000);const m=out.match(/\{[\s\S]*\}/);if(!m)throw new Error('翻訳結果を読み取れませんでした');
+  return JSON.parse(m[0])}
+async function trStep(s){const r=await translate(s.text.ja);s.text.vi=(r.vi||'').trim();s.text.id=(r.id||'').trim();await save()}
+async function grabFrames(times,w,marks){return withHiddenVideo(async v=>{const out=[];
+  for(let k=0;k<times.length;k++){await seekTo(v,times[k]);if(!v.videoWidth)continue;const sc=Math.min(1,w/v.videoWidth);const c=document.createElement('canvas');
+    c.width=Math.round(v.videoWidth*sc);c.height=Math.round(v.videoHeight*sc);const ctx=c.getContext('2d');ctx.drawImage(v,0,0,c.width,c.height);
+    if(k===0&&marks&&marks.length)drawMarks(ctx,c.width,c.height,marks);out.push(c.toDataURL('image/jpeg',0.8))}
+  return out})}
+async function aiDescribe(i){
+  if(!settings.apiKey)throw new Error('NOKEY');
+  const s=cur.steps[i],hint=s.text.ja.trim();
+  let frames=[];
+  if(isPhoto(s)){const src=s.img||s.thumb;if(src){const im=await loadImage(src),sc=Math.min(1,1024/Math.max(im.width,im.height)),c=document.createElement('canvas');
+      c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);const x=c.getContext('2d');x.drawImage(im,0,0,c.width,c.height);drawMarks(x,c.width,c.height,s.marks);frames=[c.toDataURL('image/jpeg',0.82)]}}
+  else{try{frames=await grabFrames([s.start+0.05,(s.start+s.end)/2,Math.max(s.start+0.05,s.end-0.1)],512,s.marks)}catch(e){}
+    if(!frames.length&&s.thumb)frames=[s.thumb]}
+  if(!frames.length&&!hint)throw new Error('画像を取り出せませんでした。メモを書いてからもう一度押してください');
+  const prev=cur.steps.map((x,k)=>k<i&&x.text.ja.trim()?`手順${k+1}：${x.text.ja.trim()}`:'').filter(Boolean).slice(-3).join('\n');
+  const txt=`あなたはプラスチック射出成形工場の品質管理の専門家で、作業手順書を作っています。
+手順書「${cur.title||'（名称未設定）'}」${cur.partNo?'（品番 '+cur.partNo+'）':''}の手順${i+1}/${cur.steps.length}の${isPhoto(s)?'写真':'動画から切り出した画像（開始・中間・終了）'}を見て、作業者がこの手順で行うことを日本語で書いてください。
+・1〜2文、全体で70字以内。「〜する」「〜を確認する」の言い切り
+・見る場所、動作、判定の基準（分かれば）を具体的に${s.marks.length?'\n・1枚目の赤丸は特に見てほしい箇所':''}
+・画像から確実に分からないこと（数値・品名など）は書かない
+・外国人作業者にも分かる、やさしい言葉で
+${hint?`【作成者のメモ（最優先。これを正しく整えること）】\n${hint}\n`:''}${prev?`【前の手順】\n${prev}\n`:''}出力は説明文だけ。`;
+  const content=[...frames.map(d=>({type:'image',source:{type:'base64',media_type:'image/jpeg',data:d.split(',')[1]}})),{type:'text',text:txt}];
+  return(await claude(content,400)).trim().replace(/^["「]|["」]$/g,'')}
+async function aiAll(){
+  const idx=cur.steps.map((s,i)=>s.text.ja.trim()?-1:i).filter(i=>i>=0);
+  if(!idx.length){toast('説明が空の手順はありません');return}
+  if(!settings.apiKey)return aiErr(new Error('NOKEY'));
+  const m=progressModal('🤖 AIで説明を下書き中',`${idx.length}件`);
+  try{for(let k=0;k<idx.length;k++){if(m.cancelled)break;m.set(k/idx.length,`手順${idx[k]+1}（${k+1}/${idx.length}）`);
+      cur.steps[idx[k]].text.ja=await aiDescribe(idx[k]);await save()}
+    m.close();renderList();renderText();toast('下書きしました。「③ 説明」で内容を確認してください',3600)}
+  catch(e){m.close();renderText();aiErr(e)}}
+async function translateAll(){
+  const ts=cur.steps.filter(s=>s.text.ja.trim()&&(!s.text.vi.trim()||!s.text.id.trim()));
+  if(!ts.length){toast('未翻訳の手順はありません');return}
+  if(!settings.apiKey)return aiErr(new Error('NOKEY'));
+  const m=progressModal('🌐 翻訳中',`${ts.length}件`);
+  try{for(let k=0;k<ts.length;k++){if(m.cancelled)break;m.set(k/ts.length,`${k+1}/${ts.length}`);await trStep(ts[k])}
+    m.close();renderText();toast('翻訳しました')}
+  catch(e){m.close();renderText();aiErr(e)}}
+
+/* ---------- 自動で区切る（画面の変化で候補） ---------- */
+async function autoSplit(){
+  if(!curURL)return noVideo();
+  if(cur.steps.length&&!confirm('今ある手順の後ろに、自動で見つけた候補を追加します。よろしいですか？'))return;
+  const m=progressModal('✂ 自動で区切っています','画面が大きく変わった所を探しています…');
+  try{
+    const segs=await withHiddenVideo(async v=>{
+      const dur=v.duration;if(!isFinite(dur)||dur<=0)throw new Error('動画の長さが分かりません');
+      const step=dur>300?1:0.5,W=64,H=36,c=document.createElement('canvas');c.width=W;c.height=H;const ctx=c.getContext('2d',{willReadFrequently:true});
+      let prev=null;const diffs=[];
+      for(let t=0;t<dur;t+=step){if(m.cancelled)throw new Error('CANCEL');await seekTo(v,t);ctx.drawImage(v,0,0,W,H);
+        const d=ctx.getImageData(0,0,W,H).data,g=new Float32Array(W*H);for(let i=0;i<W*H;i++)g[i]=d[i*4]*.299+d[i*4+1]*.587+d[i*4+2]*.114;
+        if(prev){let s=0;for(let i=0;i<g.length;i++)s+=Math.abs(g[i]-prev[i]);diffs.push({t:t-step/2,d:s/g.length})}
+        prev=g;m.set(t/dur*0.9)}
+      const vals=diffs.map(x=>x.d),n=vals.length||1,mean=vals.reduce((a,b)=>a+b,0)/n,sd=Math.sqrt(vals.reduce((a,b)=>a+(b-mean)**2,0)/n);
+      const th=Math.max(8,mean+1.8*sd),cuts=[0];
+      for(const x of diffs)if(x.d>th&&x.t-cuts[cuts.length-1]>=2)cuts.push(x.t);
+      if(cuts.length>1&&dur-cuts[cuts.length-1]<1.2)cuts.pop();cuts.push(dur);
+      const out=[];for(let i=0;i<cuts.length-1;i++){const a=cuts[i],b=cuts[i+1];if(b-a>=1.2)out.push([a,Math.max(a+0.3,b-0.05)])}
+      for(const s of out){if(m.cancelled)throw new Error('CANCEL');await seekTo(v,Math.min(s[0]+0.3,s[1]));s.push(grab(v))}
+      return out});
+    m.close();if(!segs.length){alert('区切りの候補が見つかりませんでした。手で区切ってください');return}
+    segs.forEach(([a,b,th])=>cur.steps.push({id:uid(),start:a,end:b,thumb:th,text:{ja:'',vi:'',id:''},marks:[]}));
+    await save();renderList();renderText();toast(`${segs.length}個の手順候補を追加しました。▼で調整・削除できます`,3600)}
+  catch(e){m.close();if(e.message!=='CANCEL')alert('自動区切りに失敗しました：'+e.message)}}
+
+/* ---------- 見る（現場用） ---------- */
+async function showView(id){
+  if(view==='edit')await save();
+  stopTTS();const m=await idb.get('manuals',id);if(!m){showList();return}
+  cur=m;lastId=m.id;lsSet('kensa-last',m.id);view='view';await loadVideo(cur.videoId);
+  vIdx=0;lang=lsGet('kensa-lang','ja');if(!LANGS[lang])lang='ja';
+  setTitle(cur.title||'（無題）');
+  if(!cur.steps.length){main.innerHTML='<div class="card"><p class="sub">まだ手順がありません。</p></div>';renderChrome();return}
+  main.innerHTML=`
+  <div class="card"><div class="row"><div class="grow"><b>${esc(cur.title||'（無題）')}</b>
+    <div class="sub">品番 ${esc(cur.partNo||'-')}・第${esc(cur.version||'1')}版・改訂 ${esc(cur.revDate||'-')}・承認 ${esc(cur.approver||'未')}</div></div>
+    <button class="sm" id="bCapV2" aria-label="字幕入り動画">🎬</button>
+    <select id="lang" style="width:auto">${Object.entries(LANGS).map(([k,v])=>`<option value="${k}" ${k===lang?'selected':''}>${v.name}</option>`).join('')}</select></div></div>
+  <div class="card"><b id="stepNo"></b>
+    <div class="vwrap" id="vv">${curURL?'<video id="vp" playsinline muted controls preload="auto"></video>':''}<img id="vimg" alt="" hidden><div class="marks" id="vmarks"></div></div>
+    <div class="big" id="vtext"></div>
+    <div class="row"><button id="bPv"></button><button id="bSp"></button><button class="pri grow" id="bNx"></button></div></div>
+  <div class="card"><h3 id="tlTitle"></h3><div class="tl" id="tl"></div></div>`;
+  $('#lang').onchange=e=>{lang=e.target.value;lsSet('kensa-lang',lang);renderViewStep()};
+  $('#bPv').onclick=()=>{if(vIdx>0){vIdx--;renderViewStep()}};
+  $('#bNx').onclick=()=>{if(vIdx<cur.steps.length-1){vIdx++;renderViewStep();window.scrollTo({top:0,behavior:'smooth'})}};
+  $('#bSp').onclick=speakStep;$('#bCapV2').onclick=openCapDialog;
+  $('#tl').onclick=e=>{const d=e.target.closest('[data-i]');if(d){vIdx=+d.dataset.i;renderViewStep();window.scrollTo({top:0,behavior:'smooth'})}};
+  const v=$('#vp');
+  if(v){v.src=curURL;v.ontimeupdate=()=>{const s=cur.steps[vIdx];if(!s||isPhoto(s))return;if(v.currentTime>=s.end||v.currentTime<s.start-0.5){v.currentTime=s.start;v.play().catch(()=>{})}}}
+  renderViewStep();renderChrome();window.scrollTo(0,0)}
+function renderViewStep(){
+  stopTTS();const s=cur.steps[vIdx],u=UI[lang],last=vIdx===cur.steps.length-1;
+  $('#stepNo').textContent=`${u.step} ${vIdx+1} / ${cur.steps.length}`;
+  const t=(s.text[lang]||'').trim();
+  $('#vtext').innerHTML=t?esc(t).replace(/\n/g,'<br>'):(lang!=='ja'&&s.text.ja?`<span class="sub">${u.none}</span><br>${esc(s.text.ja).replace(/\n/g,'<br>')}`:`<span class="sub">${u.none}</span>`);
+  $('#vmarks').innerHTML=marksHTML(s.marks);
+  const v=$('#vp'),im=$('#vimg');
+  if(v&&!isPhoto(s)){im.hidden=true;v.hidden=false;const go=()=>{v.currentTime=s.start;v.play().catch(()=>{})};if(v.readyState>=1)go();else v.onloadedmetadata=go}
+  else{if(v){v.pause();v.hidden=true}const src=s.img||s.thumb||'';im.hidden=!src;if(src)im.src=src;$('#vmarks').hidden=!src}
+  if(v&&!isPhoto(s))$('#vmarks').hidden=false;
+  $('#bPv').textContent=u.prev;$('#bPv').disabled=vIdx===0;
+  $('#bNx').textContent=last?u.done:u.next;$('#bNx').disabled=last;
+  $('#bSp').textContent=u.speak;$('#tlTitle').textContent=u.list;
+  $('#tl').innerHTML=cur.steps.map((x,i)=>`<div data-i="${i}" class="${i===vIdx?'on':''}">${x.thumb?`<img src="${x.thumb}" alt="">`:''}${u.step} ${i+1}</div>`).join('');
+  updateNav()}
+function speakStep(){
+  const s=cur.steps[vIdx];let L=lang,text=(s.text[lang]||'').trim();
+  if(!text){text=s.text.ja;L='ja'}if(!text)return;
+  if(!('speechSynthesis' in window)){alert('この端末は読み上げに対応していません');return}
+  stopTTS();const code=LANGS[L].tts,u=new SpeechSynthesisUtterance(text);u.lang=code;u.rate=0.9;
+  const vs=speechSynthesis.getVoices();
+  if(vs.length){const vo=vs.find(x=>x.lang.replace('_','-').toLowerCase().startsWith(code.slice(0,2).toLowerCase()));
+    if(vo)u.voice=vo;else{alert(`この端末に「${LANGS[L].name}」の読み上げ音声が入っていません。端末の設定（読み上げコンテンツ／音声）から追加してください。`);return}}
+  speechSynthesis.speak(u)}
+try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>{}}catch(e){}
+
+/* ---------- 字幕入り動画 ---------- */
+const CAPOPT=[['ja','日本語'],['vi','ベトナム語'],['id','インドネシア語'],['ja+vi','日本語＋ベトナム語'],['ja+id','日本語＋インドネシア語']];
+function pickRecMime(){for(const t of['video/mp4;codecs=avc1.42E01E','video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm']){try{if(MediaRecorder.isTypeSupported(t))return t}catch(e){}}return''}
+function wrapLines(ctx,text,maxW){const out=[];
+  for(const para of String(text).split('\n')){let line='';const toks=/\s/.test(para.trim())?para.split(/(\s+)/):[...para];
+    for(const t of toks){const test=line+t;if(ctx.measureText(test).width>maxW&&line.trim()){out.push(line.trim());line=t.trimStart()}else line=test}
+    if(line.trim())out.push(line.trim())}
+  return out}
+function rrect(ctx,x,y,w,h,r){ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,w,h,r);else ctx.rect(x,y,w,h)}
+const FONT='"Hiragino Sans","Noto Sans JP","Noto Sans","Segoe UI",Arial,sans-serif';
+function capLayout(ctx,W,H,s,langs){
+  const blocks=langs.map(L=>{let t=(s.text[L]||'').trim();if(!t&&L!=='ja')t=(s.text.ja||'').trim();return t}).filter(Boolean);
+  const uniq=blocks.filter((b,i)=>blocks.indexOf(b)===i);
+  let fs=Math.round(Math.min(W,H)*0.058),lines;
+  for(;;){ctx.font=`700 ${fs}px ${FONT}`;lines=[];uniq.forEach((b,bi)=>wrapLines(ctx,b,W*0.9).forEach(l=>lines.push({l,bi})));
+    if(lines.length*fs*1.35<=H*0.42||fs<=14)break;fs=Math.round(fs*0.88)}
+  return{fs,lines}}
+function drawStepOverlay(ctx,W,H,m,si,langs,lay,r){
+  const s=m.steps[si],u=UI[langs[0]];r=r||{x:0,y:0,w:W,h:H};drawMarks(ctx,r.w,r.h,s.marks,r.x,r.y);
+  const bf=Math.round(Math.min(W,H)*0.05);ctx.font=`700 ${bf}px ${FONT}`;
+  const bt=`${u.step} ${si+1} / ${m.steps.length}`,bw=ctx.measureText(bt).width+bf*1.2;
+  ctx.fillStyle='rgba(31,95,191,.92)';rrect(ctx,bf*0.5,bf*0.5,bw,bf*1.6,bf*0.4);ctx.fill();
+  ctx.fillStyle='#fff';ctx.textBaseline='middle';ctx.fillText(bt,bf*1.1,bf*1.3);
+  if(!lay.lines.length)return;
+  const lh=lay.fs*1.35,pad=lay.fs*0.5,bh=lay.lines.length*lh+pad*2;
+  ctx.fillStyle='rgba(0,0,0,.66)';ctx.fillRect(0,H-bh,W,bh);
+  ctx.font=`700 ${lay.fs}px ${FONT}`;ctx.textAlign='center';ctx.textBaseline='middle';
+  lay.lines.forEach((o,i)=>{ctx.fillStyle=o.bi===0?'#fff':'#ffe082';ctx.fillText(o.l,W/2,H-bh+pad+lh*(i+0.5))});
+  ctx.textAlign='left'}
+function drawTitle(ctx,W,H,m){
+  ctx.fillStyle='#1f5fbf';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';
+  const fs=Math.round(Math.min(W,H)*0.08);ctx.font=`700 ${fs}px ${FONT}`;
+  const tl=wrapLines(ctx,m.title||'（無題）',W*0.86).slice(0,3);tl.forEach((l,i)=>ctx.fillText(l,W/2,H*0.4+(i-(tl.length-1)/2)*fs*1.3));
+  const f2=Math.round(fs*0.5);ctx.font=`${f2}px ${FONT}`;
+  ctx.fillText(`品番 ${m.partNo||'-'}　第${m.version||'1'}版　改訂 ${m.revDate||'-'}`,W/2,H*0.62);
+  ctx.fillText(`作成 ${m.author||'-'}　承認 ${m.approver||'-'}`,W/2,H*0.62+f2*1.6);ctx.textAlign='left'}
+function photoSecs(s,langs){const t=langs.map(L=>s.text[L]||s.text.ja||'').join('');return Math.min(10,Math.max(4,3+t.length*0.06))}
+async function makeCaptionVideo(m,langs,withTitle,prog,cancel){
+  let v=null,rec,raf,wake;
+  try{
+    if(curURL&&m.steps.some(s=>!isPhoto(s))){v=document.createElement('video');v.muted=true;v.playsInline=true;v.setAttribute('playsinline','');v.preload='auto';
+      v.style.cssText='position:fixed;left:-9999px;top:0;width:4px;height:4px';document.body.appendChild(v);v.src=curURL;
+      await new Promise((res,rej)=>{if(v.readyState>=1)res();v.onloadedmetadata=res;v.onerror=()=>rej(new Error('動画を読み込めませんでした'))})}
+    try{wake=await navigator.wakeLock.request('screen')}catch(e){}
+    let bw=1280,bh=720;
+    if(v){bw=v.videoWidth;bh=v.videoHeight}else{const f=m.steps.find(s=>s.img||s.thumb);if(f){try{const im=await loadImage(f.img||f.thumb);bw=im.width;bh=im.height}catch(e){}}}
+    const sc=Math.min(1,1280/Math.max(bw,bh));
+    const W=Math.max(2,Math.round(bw*sc/2)*2),H=Math.max(2,Math.round(bh*sc/2)*2);
+    const c=document.createElement('canvas');c.width=W;c.height=H;const ctx=c.getContext('2d');
+    const mime=pickRecMime(),stream=c.captureStream(30);
+    rec=new MediaRecorder(stream,mime?{mimeType:mime,videoBitsPerSecond:4e6}:{videoBitsPerSecond:4e6});
+    const chunks=[];rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+    const stopped=new Promise(r=>rec.onstop=r);
+    let mode='title',si=0,lay=null,pim=null;
+    const frame=()=>{if(mode==='title')drawTitle(ctx,W,H,m);
+      else if(mode==='photo'){ctx.fillStyle='#000';ctx.fillRect(0,0,W,H);let r={x:0,y:0,w:W,h:H};
+        if(pim){const k=Math.min(W/pim.width,H/pim.height);r={w:pim.width*k,h:pim.height*k};r.x=(W-r.w)/2;r.y=(H-r.h)/2;ctx.drawImage(pim,r.x,r.y,r.w,r.h)}
+        drawStepOverlay(ctx,W,H,m,si,langs,lay,r)}
+      else{ctx.drawImage(v,0,0,W,H);drawStepOverlay(ctx,W,H,m,si,langs,lay)}};
+    const loop=()=>{frame();raf=requestAnimationFrame(loop)};
+    const go=()=>{if(rec.state==='inactive')rec.start(500);else if(rec.state==='paused')rec.resume()};
+    if(withTitle){frame();loop();go();await sleep(2500)}
+    for(si=0;si<m.steps.length;si++){
+      if(cancel.c)throw new Error('CANCEL');
+      const s=m.steps[si];prog(si,m.steps.length);
+      if(rec.state==='recording')rec.pause();
+      if(isPhoto(s)||!v){pim=null;const src=s.img||s.thumb;if(src){try{pim=await loadImage(src)}catch(e){}}
+        mode='photo';lay=capLayout(ctx,W,H,s,langs);frame();if(!raf)loop();go();
+        const until=Date.now()+photoSecs(s,langs)*1000;while(Date.now()<until&&!cancel.c)await sleep(100);continue}
+      v.currentTime=s.start;await onceSeeked(v);
+      mode='step';lay=capLayout(ctx,W,H,s,langs);frame();if(!raf)loop();go();
+      await v.play();
+      await new Promise(res=>{const chk=()=>{if(cancel.c||v.currentTime>=s.end||v.ended||v.paused)res();else setTimeout(chk,30)};chk()});
+      v.pause()}
+    si=m.steps.length-1;
+    if(cancel.c)throw new Error('CANCEL');
+    await sleep(300);rec.stop();await stopped;
+    return new Blob(chunks,{type:(rec.mimeType||mime||'video/webm').split(';')[0]})
+  }finally{cancelAnimationFrame(raf);try{if(rec&&rec.state!=='inactive')rec.stop()}catch(e){}try{wake&&wake.release()}catch(e){}if(v)v.remove()}}
+function openCapDialog(){
+  if(!cur||!cur.steps.length){alert('手順がある手順書で使えます');return}
+  if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){alert('このブラウザは動画の書き出しに対応していません。パソコンのChrome、またはスマホの最新ブラウザでお試しください。');return}
+  const ve=$('#ve');if(ve)ve.pause();const vp=$('#vp');if(vp)vp.pause();
+  const total=cur.steps.reduce((a,s)=>a+(isPhoto(s)?photoSecs(s,['ja','vi']):s.end-s.start),0);
+  const d=document.createElement('div');d.className='modal';d.id='capModal';
+  d.innerHTML=`<div class="mbox"><h3>🎬 字幕入り動画を作る</h3>
+    <p class="sub small">各手順の区間をつなぎ、説明文・赤丸・手順番号を動画に焼き込みます。できた動画はLINEなどでそのまま送れます。</p>
+    <label class="f">字幕の言語</label><select id="capL">${CAPOPT.map(([k,l])=>`<option value="${k}" ${k===(UI[lang]?lang:'ja')?'selected':''}>${l}</option>`).join('')}</select>
+    <label class="f" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="capT" checked> 最初に表紙（手順書名・品番・版数）を入れる</label>
+    <p class="sub small">作成には実際の再生と同じ時間（約${Math.ceil(total+3)}秒）かかります。作成中はこの画面を開いたままにしてください。</p>
+    <div id="capP" class="sub"></div><div class="bar" id="capBar" hidden><i></i></div><div id="capOut"></div>
+    <div class="row mt"><button class="pri" id="capGo">作成する</button><button id="capX">閉じる</button></div></div>`;
+  document.body.appendChild(d);
+  const cancel={c:false};let busy=false,outURL=null;
+  const close=()=>{cancel.c=true;if(outURL)URL.revokeObjectURL(outURL);d.remove()};
+  d.querySelector('#capX').onclick=()=>{if(busy&&!confirm('作成を中止しますか？'))return;close()};
+  d.querySelector('#capGo').onclick=async()=>{
+    const key=d.querySelector('#capL').value,langs=key.split('+');
+    const miss=cur.steps.filter(s=>langs.some(L=>L!=='ja'&&!(s.text[L]||'').trim())).length;
+    if(miss&&!confirm(`${miss}件の手順が未翻訳です（その部分は日本語で表示されます）。このまま作成しますか？`))return;
+    busy=true;cancel.c=false;const gb=d.querySelector('#capGo');gb.disabled=true;d.querySelector('#capOut').innerHTML='';
+    const bar=d.querySelector('#capBar');bar.hidden=false;
+    const prog=(i,n)=>{d.querySelector('#capP').textContent=`作成中… 手順 ${i+1} / ${n}`;bar.firstChild.style.width=Math.round(i/n*100)+'%'};
+    try{
+      const blob=await makeCaptionVideo(cur,langs,d.querySelector('#capT').checked,prog,cancel);
+      bar.firstChild.style.width='100%';
+      const ext=blob.type.includes('mp4')?'mp4':'webm';
+      const name=safeName(`${cur.partNo||''}_${cur.title||'手順書'}_${key}_第${cur.version||'1'}版.${ext}`);
+      outURL=URL.createObjectURL(blob);
+      d.querySelector('#capP').textContent=`できました（約${(blob.size/1048576).toFixed(1)}MB・${ext.toUpperCase()}）。再生して確認してください。`;
+      d.querySelector('#capOut').innerHTML=`<video controls playsinline src="${outURL}"></video><div class="row mt"><button class="pri" id="capSave">📤 保存・共有（LINEなど）</button></div>`;
+      d.querySelector('#capSave').onclick=()=>shareOrDownload(blob,name);
+    }catch(e){if(e.message!=='CANCEL'){d.querySelector('#capP').textContent='作成できませんでした：'+e.message;bar.hidden=true}}
+    busy=false;gb.disabled=false;gb.textContent='作り直す'}}
+
+/* ---------- 配る・読み込む・バックアップ ---------- */
+async function exportPkg(m){
+  if(!m.steps.length){alert('手順がありません');return}
+  const warn=[];if(!lock)warn.push('・編集者PINが未設定のため、受け取った端末でも編集できます（現場用は先に「⚙ 設定」でPINを決めるのがおすすめ）');
+  if(!m.approver)warn.push('・承認者が未記入です');
+  const un=m.steps.filter(s=>!s.text.vi.trim()||!s.text.id.trim()).length;if(un)warn.push(`・${un}件の手順が未翻訳です`);
+  if(warn.length&&!confirm('確認してください：\n'+warn.join('\n')+'\n\nこのまま書き出しますか？'))return;
+  const blob=m.videoId?await idb.get('videos',m.videoId):null;
+  if(blob&&blob.size>80*1024*1024&&!confirm(`動画が大きいため（約${Math.round(blob.size/1048576)}MB）、共有ファイルも大きくなります。続けますか？`))return;
+  toast('書き出し中…');
+  const pkg={format:'kensa-movie-v1',exportedAt:new Date().toISOString(),manual:m,video:blob?await blobToDataURL(blob):null,lock:lock||null};
+  await shareOrDownload(new Blob([JSON.stringify(pkg)],{type:'application/json'}),safeName(`手順書_${m.partNo||''}_${m.title||'無題'}_第${m.version||'1'}版.json`))}
+async function adoptLock(l){if(l&&l.hash&&!lock){lock=l;await idb.put('kv',lock,'lock');unlocked=false;ssSet('kensa-unlocked','0');return true}return false}
+async function importFile(f){
+  try{toast('読み込み中…',6000);const pkg=JSON.parse(await f.text());
+    if(pkg.format==='kensa-movie-backup-v1')return restoreBackup(pkg);
+    if(pkg.format!=='kensa-movie-v1'||!pkg.manual)throw new Error('この形式のファイルは読み込めません');
+    const m=pkg.manual,ex=await idb.get('manuals',m.id);
+    if(ex&&!confirm(`「${ex.title||'無題'}」（第${ex.version}版）は既にあります。読み込むファイル（第${m.version}版）で上書きしますか？`))return;
+    if(ex&&ex.videoId)await idb.del('videos',ex.videoId);
+    if(pkg.video){const b=await(await fetch(pkg.video)).blob();m.videoId=m.videoId||uid();await idb.put('videos',b,m.videoId)}else m.videoId=null;
+    m.updatedAt=Date.now();await idb.put('manuals',m);
+    const locked=await adoptLock(pkg.lock);
+    await showList();renderChrome();toast(locked?'読み込みました。この端末は閲覧専用になりました':'読み込みました',3600)
+  }catch(e){alert('読み込みに失敗しました：'+e.message)}}
+async function backupAll(){
+  const ms=await idb.all('manuals');if(!ms.length){toast('データがありません');return}
+  const m=progressModal('💾 バックアップを作成中','');const vids={};
+  try{for(let i=0;i<ms.length;i++){if(m.cancelled)return;m.set(i/ms.length);const x=ms[i];if(x.videoId){const b=await idb.get('videos',x.videoId);if(b)vids[x.videoId]=await blobToDataURL(b)}}
+    m.close();
+    const pkg={format:'kensa-movie-backup-v1',at:new Date().toISOString(),manuals:ms,videos:vids,glossary:settings.glossary,lock:lock||null};
+    download(new Blob([JSON.stringify(pkg)],{type:'application/json'}),`kensa_backup_${today()}.json`)}
+  catch(e){m.close();alert('バックアップに失敗しました：'+e.message)}}
+async function restoreBackup(pkg){
+  if(!isEditor()){alert('バックアップから戻すには編集モードにしてください');return}
+  if(!confirm(`${String(pkg.at||'').slice(0,10)} のバックアップ（手順書${pkg.manuals.length}件）を読み込みます。同じ手順書は上書きされます。よろしいですか？`))return;
+  for(const m of pkg.manuals){if(m.videoId&&pkg.videos[m.videoId]){const b=await(await fetch(pkg.videos[m.videoId])).blob();await idb.put('videos',b,m.videoId)}await idb.put('manuals',m)}
+  if(pkg.glossary&&pkg.glossary.length&&!settings.glossary.length){settings.glossary=pkg.glossary;await idb.put('kv',settings,'settings')}
+  await adoptLock(pkg.lock);toast('バックアップから戻しました');showList()}
+
+/* ---------- 取り込み（写真・ドラッグ・Excel/Word/PDF） ---------- */
+async function addPhotos(files){
+  if(!cur||view!=='edit')return;
+  files=files.slice().sort((a,b)=>a.name.localeCompare(b.name,'ja',{numeric:true}));
+  const m=progressModal('🖼 写真を取り込み中','');let n=0;const first=cur.steps.length;
+  for(let i=0;i<files.length;i++){if(m.cancelled)break;m.set(i/files.length,`${i+1} / ${files.length}`);
+    const url=URL.createObjectURL(files[i]);try{const im=await loadImage(url);cur.steps.push(newPhotoStep(toJpeg(im,1280),toJpeg(im,400,0.7)));n++}catch(e){}finally{URL.revokeObjectURL(url)}}
+  m.close();await save();
+  if(!n){alert('写真を読み込めませんでした（このブラウザで開けない形式の可能性があります。JPEG・PNGにしてください）');return}
+  tIdx=first;renderList();toast(`写真${n}枚を手順に追加しました`);setPage('text')}
+let dropT=null;
+document.addEventListener('dragover',e=>{if(!e.dataTransfer||![...e.dataTransfer.types].includes('Files'))return;e.preventDefault();$('#drop').hidden=false;clearTimeout(dropT);dropT=setTimeout(()=>$('#drop').hidden=true,250)});
+document.addEventListener('drop',e=>{if(!e.dataTransfer||!e.dataTransfer.files.length)return;e.preventDefault();$('#drop').hidden=true;handleFiles([...e.dataTransfer.files])});
+async function handleFiles(files){
+  for(const f of files.filter(f=>/\.json$/i.test(f.name)))await importFile(f);
+  const rest=files.filter(f=>!/\.json$/i.test(f.name));if(!rest.length)return;
+  if(!isEditor()){toast('取り込むには右上の「🔒 閲覧」から編集モードにします',3200);return}
+  const vids=rest.filter(f=>f.type.startsWith('video/')||/\.(mp4|mov|m4v|webm)$/i.test(f.name));
+  const imgs=rest.filter(f=>f.type.startsWith('image/')||/\.(jpe?g|png|webp|gif|bmp)$/i.test(f.name));
+  const docs=rest.filter(f=>/\.(xlsx|docx|pdf|xls|doc)$/i.test(f.name));
+  const bad=rest.filter(f=>!vids.includes(f)&&!imgs.includes(f)&&!docs.includes(f));
+  if(vids.length+imgs.length+docs.length){
+    if(view!=='edit'){if(!confirm('新しい手順書を作って取り込みますか？\n（今ある手順書に足すときは、その手順書の「作る・直す」画面にドラッグします）'))return;await showEdit(null)}
+    if(vids.length)await setVideo(vids[0]);
+    if(imgs.length)await addPhotos(imgs);
+    for(const d of docs)await importDoc(d)}
+  if(bad.length)alert('取り込めない形式です：'+bad.map(f=>f.name).join('、'))}
+/* zip（xlsx・docx の中身）を読む */
+async function unzip(buf){
+  const u8=new Uint8Array(buf),dv=new DataView(buf);let e=-1;
+  for(let i=u8.length-22;i>=Math.max(0,u8.length-65557);i--){if(dv.getUint32(i,true)===0x06054b50){e=i;break}}
+  if(e<0)throw new Error('ファイルが壊れているか、対応していない形式です');
+  const n=dv.getUint16(e+10,true);let p=dv.getUint32(e+16,true);const map=new Map(),td=new TextDecoder();
+  for(let k=0;k<n;k++){if(dv.getUint32(p,true)!==0x02014b50)break;
+    const method=dv.getUint16(p+10,true),csize=dv.getUint32(p+20,true),nl=dv.getUint16(p+28,true),xl=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),off=dv.getUint32(p+42,true);
+    map.set(td.decode(u8.subarray(p+46,p+46+nl)),{method,csize,off});p+=46+nl+xl+cl}
+  const get=async name=>{const f=map.get(name);if(!f)return null;const st=f.off+30+dv.getUint16(f.off+26,true)+dv.getUint16(f.off+28,true),data=u8.slice(st,st+f.csize);
+    if(f.method===0)return data;if(f.method!==8)throw new Error('未対応の圧縮形式です');
+    if(typeof DecompressionStream==='undefined')throw new Error('このブラウザは取り込みに対応していません（最新のChrome・Safari・Edgeで）');
+    return new Uint8Array(await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer())};
+  return{names:[...map.keys()],get,text:async nm=>{const b=await get(nm);return b?new TextDecoder().decode(b):null}}}
+const RNS='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+const XP=t=>new DOMParser().parseFromString(t||'<x/>','application/xml');
+const byLN=(el,n)=>[...el.getElementsByTagName('*')].filter(e=>e.localName===n);
+const rattr=(el,a)=>el.getAttributeNS(RNS,a)||el.getAttribute('r:'+a);
+function rpath(base,target){if(target.startsWith('/'))return target.slice(1);const parts=base.split('/');parts.pop();for(const t of target.split('/')){if(t==='..')parts.pop();else if(t!=='.')parts.push(t)}return parts.join('/')}
+async function readRels(z,file){const p=file.split('/'),f=p.pop(),t=await z.text([...p,'_rels',f+'.rels'].join('/')),m={};
+  if(t)byLN(XP(t),'Relationship').forEach(r=>m[r.getAttribute('Id')]={target:rpath(file,r.getAttribute('Target')||''),type:r.getAttribute('Type')||''});return m}
+async function bytesToImg(bytes,name){const ext=(name.split('.').pop()||'').toLowerCase();
+  const mime={png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',gif:'image/gif',bmp:'image/bmp',webp:'image/webp'}[ext];if(!mime||!bytes)return null;
+  const url=URL.createObjectURL(new Blob([bytes],{type:mime}));
+  try{const im=await loadImage(url);if(im.width<60||im.height<60)return null;return{img:toJpeg(im,1280),thumb:toJpeg(im,400,0.7)}}catch(e){return null}finally{URL.revokeObjectURL(url)}}
+async function parseXlsx(z){
+  const ss=[],sst=await z.text('xl/sharedStrings.xml');if(sst)byLN(XP(sst),'si').forEach(si=>ss.push(byLN(si,'t').map(t=>t.textContent).join('')));
+  const wb=XP(await z.text('xl/workbook.xml')),wrels=await readRels(z,'xl/workbook.xml'),lines=[],imgs=[];let si=0;
+  for(const sh of byLN(wb,'sheet')){const rel=wrels[rattr(sh,'id')];if(!rel)continue;const name=sh.getAttribute('name')||'';si++;
+    const sx=XP(await z.text(rel.target));
+    for(const r of byLN(sx,'row')){const rn=+r.getAttribute('r');
+      const cells=byLN(r,'c').map(c=>{const t=c.getAttribute('t'),v=byLN(c,'v')[0];if(t==='s')return ss[+(v&&v.textContent)]||'';if(t==='inlineStr')return byLN(c,'t').map(x=>x.textContent).join('');return v?v.textContent:''}).map(x=>x.trim()).filter(Boolean);
+      if(cells.length)lines.push({si,sheet:name,row:rn,text:cells.join(' | ')})}
+    const srels=await readRels(z,rel.target);
+    for(const d of Object.values(srels).filter(x=>/\/drawing$/.test(x.type))){const dx=XP(await z.text(d.target)),drels=await readRels(z,d.target);
+      for(const a of[...byLN(dx,'twoCellAnchor'),...byLN(dx,'oneCellAnchor'),...byLN(dx,'absoluteAnchor')]){const bl=byLN(a,'blip')[0];if(!bl)continue;const t=drels[rattr(bl,'embed')];if(!t)continue;
+        const fr=byLN(a,'from')[0],to=byLN(a,'to')[0],num=(el,n)=>el?+(byLN(el,n)[0]||{}).textContent||0:0;
+        const row=fr?num(fr,'row')+1:0;imgs.push({si,sheet:name,row,row2:to?num(to,'row')+1:row,col:num(fr,'col'),path:t.target})}}}
+  imgs.sort((a,b)=>a.si-b.si||a.row-b.row||a.col-b.col);
+  const images=[];for(const im of imgs){const o=await bytesToImg(await z.get(im.path),im.path);if(o)images.push({...im,...o})}
+  return{kind:'Excel',lines,images}}
+async function parseDocx(z){
+  const doc=XP(await z.text('word/document.xml')),rels=await readRels(z,'word/document.xml'),items=[];
+  for(const p of byLN(doc,'p')){if(p.parentElement&&byLN(p.parentElement,'p').length&&p.parentElement.closest&&p.parentElement.localName==='txbxContent')continue;
+    for(const id of[...byLN(p,'blip').map(b=>rattr(b,'embed')),...byLN(p,'imagedata').map(b=>rattr(b,'id'))].filter(Boolean)){const t=rels[id];if(t)items.push({type:'img',path:t.target})}
+    const tx=byLN(p,'t').filter(t=>t.namespaceURI&&t.namespaceURI.includes('wordprocessingml')).map(t=>t.textContent).join('').trim();if(tx)items.push({type:'text',text:tx})}
+  const images=[],seq=[];
+  for(const it of items){if(it.type==='text')seq.push(it);else{const o=await bytesToImg(await z.get(it.path),it.path);if(o){images.push(o);seq.push({type:'img',n:images.length})}}}
+  return{kind:'Word',seq,images}}
+async function parsePdf(buf,file){
+  const u8=new Uint8Array(buf),str=new TextDecoder('latin1').decode(u8),raw=[],seen=new Set();let i=0;
+  while((i=str.indexOf('/DCTDecode',i))>=0){const so=str.indexOf('stream',i);if(so<0)break;let st=so+6;if(str[st]==='\r')st++;if(str[st]==='\n')st++;
+    const en=str.indexOf('endstream',st);if(en<0)break;let e2=en;while(e2>st&&(str[e2-1]==='\n'||str[e2-1]==='\r'))e2--;
+    if(u8[st]===0xFF&&u8[st+1]===0xD8){const key=(e2-st)+':'+u8[st+20]+u8[st+40];if(!seen.has(key)){seen.add(key);raw.push(u8.slice(st,e2))}}i=en}
+  const images=[];for(const b of raw.slice(0,60)){const o=await bytesToImg(b,'x.jpg');if(o)images.push(o)}
+  return{kind:'PDF',images,b64:(await blobToDataURL(file)).split(',')[1],size:file.size}}
+function rawSteps(p){
+  const out=[];
+  if(p.kind==='Excel'){
+    if(p.images.length)p.images.forEach((im,i)=>{const nx=p.images[i+1],end=nx&&nx.si===im.si?nx.row:Math.max(im.row2+1,im.row+1);
+      const t=p.lines.filter(l=>l.si===im.si&&l.row>=im.row&&l.row<end).map(l=>l.text).join(' / ');out.push({text:t.slice(0,300),im})});
+    else p.lines.filter(l=>l.text.length>2).slice(0,60).forEach(l=>out.push({text:l.text.slice(0,300),im:null}))}
+  else if(p.kind==='Word'){
+    if(p.images.length){let curS=null;for(const it of p.seq){if(it.type==='img'){curS={text:'',im:p.images[it.n-1]};out.push(curS)}else if(curS)curS.text=(curS.text?curS.text+' ':'')+it.text}
+      out.forEach(o=>o.text=o.text.slice(0,300))}
+    else p.seq.filter(it=>it.text.length>2).slice(0,60).forEach(it=>out.push({text:it.text.slice(0,300),im:null}))}
+  else p.images.forEach(im=>out.push({text:'',im}));
+  return{steps:out}}
+async function aiOrganize(p){
+  const n=p.images.length;
+  const prompt=`あなたはプラスチック射出成形工場の品質管理の専門家です。既存の作業手順書（${p.kind}）の内容を、動画・写真の手順書アプリ用の「手順」に整理してください。
+・作業の順番どおりに、1手順＝1つの作業または確認
+・text：1〜2文・80字以内、「〜する」「〜を確認する」の言い切り。判定基準・数値・記号は原文どおり残す
+・image：その手順に対応する画像の番号（全${n}枚。対応がなければ null）。画像は原則1回ずつ使う
+・表題・品番・承認欄・改訂履歴・注意書きだけの行は手順にしない。title に手順書名、partNo に品番（なければ空文字）
+・出力はJSONのみ：{"title":"","partNo":"","steps":[{"text":"","image":1}]}`;
+  let content;
+  if(p.kind==='PDF'){content=[{type:'document',source:{type:'base64',media_type:'application/pdf',data:p.b64}}];
+    p.images.slice(0,20).forEach((im,i)=>content.push({type:'text',text:`画像${i+1}`},{type:'image',source:{type:'base64',media_type:'image/jpeg',data:im.thumb.split(',')[1]}}));
+    content.push({type:'text',text:prompt+(n?'\n画像は上に「画像1」「画像2」…の順で添付しています。PDFの中の同じ写真に対応します。':'')})}
+  else{let body='';
+    if(p.kind==='Excel'){const ev=[...p.lines.map(l=>({si:l.si,row:l.row,o:0,t:`${l.sheet} 行${l.row}: ${l.text}`})),
+        ...p.images.map((im,i)=>({si:im.si,row:im.row,o:-1,t:`［画像${i+1}：${im.sheet} 行${im.row}〜${im.row2}に貼付］`}))].sort((a,b)=>a.si-b.si||a.row-b.row||a.o-b.o);
+      body=ev.slice(0,600).map(x=>x.t).join('\n')}
+    else body=p.seq.slice(0,600).map(it=>it.type==='img'?`［画像${it.n}］`:it.text).join('\n');
+    content=prompt+'\n【手順書の内容】\n'+body}
+  const out=await claude(content,4000);const mm=out.match(/\{[\s\S]*\}/);if(!mm)throw new Error('AIの結果を読み取れませんでした');
+  const j=JSON.parse(mm[0]);
+  return{title:(j.title||'').trim(),partNo:(j.partNo||'').trim(),steps:(j.steps||[]).slice(0,80).map(x=>({text:String(x.text||'').trim(),im:x.image&&p.images[x.image-1]||null}))}}
+async function importDoc(file){
+  if(!cur||view!=='edit')return;
+  const ext=(file.name.split('.').pop()||'').toLowerCase();
+  if(ext==='xls'||ext==='doc'){alert('古い形式（.xls／.doc）は読めません。Excel・Wordで開いて「名前を付けて保存」→「.xlsx」「.docx」で保存し直してください。');return}
+  if(!['xlsx','docx','pdf'].includes(ext)){alert('Excel（.xlsx）・Word（.docx）・PDF に対応しています');return}
+  const m=progressModal('📄 手順書を読んでいます',file.name);let p;
+  try{const buf=await file.arrayBuffer();if(ext==='pdf')p=await parsePdf(buf,file);else{const z=await unzip(buf);p=ext==='xlsx'?await parseXlsx(z):await parseDocx(z)}}
+  catch(e){m.close();alert('読み込めませんでした：'+e.message);return}
+  m.close();
+  const nText=p.kind==='Excel'?p.lines.length:p.kind==='Word'?p.seq.filter(x=>x.type==='text').length:null,key=!!settings.apiKey;
+  const d=document.createElement('div');d.className='modal';d.id='docModal';
+  d.innerHTML=`<div class="mbox"><h3>📄 取り込み：${esc(file.name)}</h3>
+    <p class="sub">${p.kind}　画像 ${p.images.length}枚${nText!=null?`・文字 ${nText}行`:''} が見つかりました。</p>
+    <label class="opt"><input type="radio" name="dm" value="ai" ${key?'checked':'disabled'}><span><b>🤖 AIで手順に整理（おすすめ）</b><br><span class="sub small">順番・説明文・画像の対応をAIが整理し、手順書名と品番も入れます。${key?'':'（⚙ 設定でAPIキーを入れると使えます）'}</span></span></label>
+    <label class="opt"><input type="radio" name="dm" value="raw" ${key?'':'checked'}><span><b>そのまま取り込む</b><br><span class="sub small">${p.kind==='PDF'?'PDFの写真を1枚＝1手順で取り込みます（PDFの文字はAIがないと読めません）。':p.images.length?'画像1枚＝1手順。近くの文字を説明に入れます。':'文字1行＝1手順で取り込みます。'}</span></span></label>
+    <div id="dmOut"></div>
+    <div class="row mt"><button class="pri" id="dmGo">手順を作る</button><button id="dmX">やめる</button></div></div>`;
+  document.body.appendChild(d);let result=null;
+  d.querySelector('#dmX').onclick=()=>d.remove();
+  d.querySelector('#dmGo').onclick=async()=>{const bt=d.querySelector('#dmGo');
+    if(result){const first=cur.steps.length;
+      for(const st of result.steps)cur.steps.push(newPhotoStep(st.im?st.im.img:'',st.im?st.im.thumb:'',st.text));
+      if(result.title&&!cur.title.trim()){cur.title=result.title;setTitle(cur.title);const el=$('[data-meta="title"]');if(el)el.value=cur.title}
+      if(result.partNo&&!cur.partNo.trim()){cur.partNo=result.partNo;const el=$('[data-meta="partNo"]');if(el)el.value=cur.partNo}
+      await save();d.remove();tIdx=first;renderList();toast(`${result.steps.length}個の手順を追加しました。「③ 説明」で確認してください`,3600);setPage('text');return}
+    const mode=d.querySelector('input[name=dm]:checked').value;bt.disabled=true;bt.textContent=mode==='ai'?'🤖 AIが整理中…':'作成中…';
+    try{result=mode==='ai'?await aiOrganize(p):rawSteps(p)}catch(e){bt.disabled=false;bt.textContent='手順を作る';aiErr(e);return}
+    if(!result.steps.length){bt.disabled=false;bt.textContent='手順を作る';alert('手順を作れませんでした');result=null;return}
+    d.querySelector('#dmOut').innerHTML=`<p class="sub small mt">${result.title?`手順書名：<b>${esc(result.title)}</b>　`:''}${result.partNo?`品番：<b>${esc(result.partNo)}</b>`:''}<br>${result.steps.length}個の手順ができました。確認して「追加する」を押します（あとで直せます）。</p>
+      <div class="dprev">${result.steps.map((st,i)=>`<div>${st.im?`<img src="${st.im.thumb}" alt="">`:'<span class="ni"></span>'}<span><b>${i+1}.</b> ${esc(st.text||'（説明なし）')}</span></div>`).join('')}</div>`;
+    d.querySelectorAll('input[name=dm]').forEach(x=>x.disabled=true);bt.disabled=false;bt.textContent='✔ 追加する'}}
+
+/* ---------- 設定（編集者のみ） ---------- */
+function parseCSV(text){
+  const rows=[];let row=[],f='',q=false;
+  for(let i=0;i<text.length;i++){const c=text[i];
+    if(q){if(c==='"'){if(text[i+1]==='"'){f+='"';i++}else q=false}else f+=c}
+    else if(c==='"')q=true;
+    else if(c===','||c==='\t'){row.push(f);f=''}
+    else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;row.push(f);rows.push(row);row=[];f=''}
+    else f+=c}
+  if(f||row.length){row.push(f);rows.push(row)}
+  return rows.filter(r=>r.some(x=>x.trim()))}
+async function showSettings(){
+  if(!isEditor()){toast('設定は編集モードで開けます');return}
+  if(view==='edit')await save();
+  view='settings';stopTTS();setTitle('設定');
+  const viewURL=location.origin+location.pathname+'?view';
+  main.innerHTML=`
+  <div class="card" id="sAi"><h3>🤖 AI（説明の下書き・自動翻訳）</h3>
+    <p class="sub small">APIキーは事務所の作成用端末にだけ入れます。現場の端末には不要です。キーはこの端末の中だけに保存され、配布ファイルには入りません。</p>
+    <label class="f">Claude APIキー</label><input type="password" id="sKey" value="${esc(settings.apiKey)}" placeholder="sk-ant-…" autocomplete="off">
+    <label class="f">AIの種類</label><select id="sModel">
+      <option value="claude-sonnet-5" ${settings.model==='claude-sonnet-5'?'selected':''}>高精度（Claude Sonnet 5）おすすめ</option>
+      <option value="claude-haiku-4-5-20251001" ${settings.model==='claude-haiku-4-5-20251001'?'selected':''}>低コスト・高速（Claude Haiku 4.5）</option></select>
+    <div class="row mt"><button class="pri" id="sSave">保存</button><button id="sTest">翻訳テスト</button></div></div>
+  <div class="card" id="sGl"><h3>📖 用語集（3言語辞書）</h3>
+    <p class="sub small">Excelの辞書を「CSV UTF-8（コンマ区切り）」で保存して読み込みます。列：A 日本語／B ベトナム語／C インドネシア語。説明に含まれる用語は、必ずこの訳語で翻訳されます。</p>
+    <div class="row"><button id="gImp">CSVを読み込む</button><button class="danger" id="gClr">用語集を消す</button></div>
+    <input type="file" id="gFile" accept=".csv,.txt,text/csv" hidden><div id="gInfo" class="sub small mt"></div></div>
+  <div class="card" id="sPin"><h3>🔒 権限（編集者PIN）</h3>
+    <p class="sub small">PINを決めると、この端末は普段「🔒 閲覧」になり、PINを入れた時だけ編集できます。配った共有ファイルにもPINの鍵（暗号化した値）が入り、受け取った端末は自動で閲覧専用になります。</p>
+    <div class="sub" id="pinSt"></div>
+    <div class="row mt"><button class="pri" id="pSet">${lock?'PINを変更':'PINを決める'}</button>${lock?'<button class="danger" id="pDel">PINを外す</button>':''}</div>
+    <label class="f">現場用のアドレス（開くと最初から閲覧モード）</label>
+    <div class="row"><input type="text" id="vUrl" value="${esc(viewURL)}" readonly class="grow" style="flex:1"><button class="sm" id="vCopy">コピー</button></div></div>
+  <div class="card"><h3>🖥 表示</h3>
+    <label class="f" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="oNav" ${navOn?'checked':''}> 手順ナビ（画面上の黄色い帯）を出す</label>
+    <label class="f">「作る・直す」画面の出し方</label><select id="oPage"><option value="1" ${onePage?'selected':''}>1画面ずつ（① 撮る〜④ 仕上げ をページで切替）</option><option value="0" ${onePage?'':'selected'}>縦に全部並べる</option></select></div>
+  <div class="card" id="sBk"><h3>💾 バックアップ</h3>
+    <p class="sub small">全部の手順書と動画を1つのファイルに書き出します。機種変更や万一のときに「📥 共有ファイルを読み込む」で戻せます。</p>
+    <div class="row"><button id="bkOut">全データを書き出す</button></div></div>
+  <div class="card"><h3>この端末の保存容量</h3><div id="quota" class="sub">確認中…</div></div>`;
+  const gInfo=()=>{const g=settings.glossary;$('#gInfo').innerHTML=g.length?`登録 ${g.length} 語　例：`+g.slice(0,3).map(e=>esc(e.ja)+' → '+esc(e.vi)+' / '+esc(e.id)).join('、'):'未登録'};gInfo();
+  $('#pinSt').textContent=lock?'PIN：設定済み（この端末と配布先は、PINで編集モードになります）':'PIN：未設定（この端末はいつでも編集できます）';
+  $('#sSave').onclick=async()=>{settings.apiKey=$('#sKey').value.trim();settings.model=$('#sModel').value;await idb.put('kv',settings,'settings');toast('保存しました')};
+  $('#sTest').onclick=async()=>{settings.apiKey=$('#sKey').value.trim();settings.model=$('#sModel').value;
+    const b=$('#sTest');b.disabled=true;b.textContent='テスト中…';
+    try{const r=await translate('成形品のゲート部にバリがないか、目視で確認する。');await idb.put('kv',settings,'settings');alert('成功しました\n\nベトナム語：'+r.vi+'\n\nインドネシア語：'+r.id)}
+    catch(e){alert(e.message==='NOKEY'?'APIキーを入れてください':e.message)}b.disabled=false;b.textContent='翻訳テスト'};
+  $('#gImp').onclick=()=>$('#gFile').click();
+  $('#gFile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+    const buf=await f.arrayBuffer();let text=new TextDecoder('utf-8').decode(buf);
+    if(text.includes('�')){try{text=new TextDecoder('shift_jis').decode(buf)}catch(err){}}
+    let rows=parseCSV(text.replace(/^﻿/,''));
+    if(rows.length&&/日本語|japanese|^ja$/i.test((rows[0][0]||'').trim()))rows=rows.slice(1);
+    settings.glossary=rows.map(r=>({ja:(r[0]||'').trim(),vi:(r[1]||'').trim(),id:(r[2]||'').trim()})).filter(e=>e.ja);
+    settings.glossary.sort((a,b)=>b.ja.length-a.ja.length);
+    await idb.put('kv',settings,'settings');gInfo();toast(`用語集 ${settings.glossary.length} 語を登録しました`)};
+  $('#gClr').onclick=async()=>{if(!confirm('用語集を消しますか？'))return;settings.glossary=[];await idb.put('kv',settings,'settings');gInfo()};
+  $('#pSet').onclick=async()=>{
+    if(lock&&!await checkPIN('今のPINを確認'))return;
+    const p1=await askPIN('新しいPIN','4〜8けたの数字を入れてください');if(p1==null)return;
+    if(!/^\d{4,8}$/.test(p1)){alert('4〜8けたの数字にしてください');return}
+    const p2=await askPIN('もう一度','確認のため、同じPINを入れてください');if(p2==null)return;
+    if(p1!==p2){alert('PINが一致しません');return}
+    const salt=uid();lock={salt,hash:await hashPIN(p1,salt)};await idb.put('kv',lock,'lock');unlocked=true;ssSet('kensa-unlocked','1');
+    alert('PINを設定しました。\n・このPINは忘れないよう控えてください\n・これから配る共有ファイルを受け取った端末は、閲覧専用になります');showSettings()};
+  if($('#pDel'))$('#pDel').onclick=async()=>{if(!await checkPIN('PINを外す'))return;if(!confirm('PINを外すと、この端末は誰でも編集できるようになります。よろしいですか？'))return;
+    lock=null;await idb.del('kv','lock');toast('PINを外しました');showSettings()};
+  $('#vCopy').onclick=async()=>{try{await navigator.clipboard.writeText(viewURL);toast('コピーしました')}catch(e){$('#vUrl').select();toast('長押しでコピーしてください')}};
+  $('#oNav').onchange=e=>{navOn=e.target.checked;lsSet('kensa-nav',navOn?'1':'0');renderChrome()};
+  $('#oPage').onchange=e=>{onePage=e.target.value==='1';lsSet('kensa-onepage',onePage?'1':'0');toast('変更しました')};
+  $('#bkOut').onclick=backupAll;
+  try{const q=await navigator.storage.estimate();$('#quota').textContent=`使用 約${Math.round(q.usage/1048576)}MB ／ 上限の目安 約${Math.round(q.quota/1048576)}MB`}
+  catch(e){$('#quota').textContent='確認できませんでした'}
+  renderChrome();window.scrollTo(0,0)}
+
+/* ---------- 使い方ガイド（画面を光らせて案内） ---------- */
+const TOURS=[
+ {id:'setup',cat:'準備',who:'ed',name:'はじめの準備（AI・辞書・PIN）',time:'約2分',steps:[
+  {scr:'settings',s:'#sKey',t:'AIのカギ（APIキー）を貼る',x:'Claude Consoleで作ったAPIキーを貼り付けます。これで「🤖 AIで説明」「🌐 翻訳」が使えます。',a:'idle'},
+  {scr:'settings',s:'#sSave',t:'保存',x:'「保存」を押します。',a:'tap'},
+  {scr:'settings',s:'#sTest',t:'翻訳テスト',x:'試しに翻訳して、動くか確かめます。'},
+  {scr:'settings',s:'#gImp',t:'3言語辞書を読み込む',x:'辞書のExcelを「CSV UTF-8」で保存して読み込みます（A 日本語／B ベトナム語／C インドネシア語）。社内用語の訳がそろいます。'},
+  {scr:'settings',s:'#pSet',t:'編集者PINを決める',x:'PINを決めると、配った先の端末は閲覧専用になります。編集する人だけがPINで編集モードにできます。'}]},
+ {id:'make',cat:'本番の流れ',who:'ed',name:'手順書を作る（撮る→切る→説明）',time:'約5分',steps:[
+  {scr:'list',s:'#bNew',t:'新しい手順書',x:'「＋ 新しい手順書」を押します。すでに作りかけがあれば、一覧の「編集」でも大丈夫です。',a:'tap'},
+  {scr:'edit',pg:'video',s:'#bCap',t:'① 撮る',x:'「📷 撮影する」で検査の様子を撮ります。撮ってある動画なら「🎞 動画を選ぶ」。',need:'手順書を開くと出ます'},
+  {scr:'edit',pg:'video',s:'#bDoc',t:'① 写真・既存の手順書から',x:'写真だけで作るなら「🖼 写真で手順を追加」。Excel・Word・PDFの手順書は「📄 既存の手順書を取り込む」。パソコンではファイルをドラッグしてもOK。'},
+  {scr:'edit',pg:'cut',s:'#bAuto',t:'② 自動で区切る',x:'画面が大きく変わった所で、手順の候補を自動で作ります。多すぎたら削除、ずれたら調整します。'},
+  {scr:'edit',pg:'cut',s:'#bIn',t:'② 手で区切る',x:'動画を止めて「▶ 開始点」→ 手順の終わりで「■ 終了点」→「＋ 手順に追加」。±ボタンで細かく合わせます。'},
+  {scr:'edit',pg:'cut',s:'#stepList',t:'区間の調整',x:'行を押すと道具が出ます。「開始＝今の位置」などで直したり、↑↓で並べ替え、削除ができます。'},
+  {scr:'edit',pg:'text',s:'#tImg',t:'③ 見る所に赤丸',x:'画像をタップすると赤丸が付きます。もう一度押すと消えます。',need:'手順を作ると出ます'},
+  {scr:'edit',pg:'text',s:'#tAi',t:'③ AIで説明を書く',x:'AIが動画の画像を見て説明を下書きします。先にメモ（例：バリ確認 指で）を書いてから押すと、それを整えてくれます。必ず人が確認します。'},
+  {scr:'edit',pg:'text',s:'#tTr',t:'③ 翻訳',x:'ベトナム語・インドネシア語に翻訳します。辞書の用語が優先されます。'},
+  {scr:'edit',pg:'fin',s:'#sInfo',t:'④ 情報を入れる',x:'手順書名・品番・作成者・承認者を入れます。ISOの文書管理に使えます。'},
+  {scr:'edit',pg:'fin',s:'#bPrev',t:'④ 確認',x:'現場の人と同じ画面で見え方を確認します。'}]},
+ {id:'send',cat:'本番の流れ',who:'all',name:'字幕入り動画をLINEで送る',time:'約1分',steps:[
+  {scr:'editOrView',pg:'fin',s:'#bCapV,#bCapV2',t:'字幕入り動画を作る',x:'説明文・赤丸・手順番号を焼き込んだ動画を作ります。',a:'tap',need:'手順書を開くと出ます'},
+  {scr:'any',s:'#capL',t:'言語を選ぶ',x:'「日本語＋ベトナム語」のように2言語も選べます。',need:'「🎬 字幕入り動画」を押すと出ます'},
+  {scr:'any',s:'#capGo',t:'作成する',x:'再生と同じ時間がかかります。画面を開いたままにします。',a:'tap',need:'「🎬 字幕入り動画」を押すと出ます'},
+  {scr:'any',s:'#capSave',t:'保存・共有',x:'できた動画を再生して確認し、LINEなどで送ります。',need:'作成が終わると出ます'}]},
+ {id:'deliver',cat:'本番の流れ',who:'ed',name:'現場に配る（閲覧専用）',time:'約2分',steps:[
+  {scr:'edit',pg:'fin',s:'#bExp',t:'共有ファイルを書き出す',x:'動画入りのファイルを作り、LINE・Googleドライブなどで現場の端末へ送ります。PINを決めてあれば、受け取った端末は閲覧専用になります。',need:'手順書を開くと出ます'},
+  {scr:'list',s:'#bImp',t:'現場の端末で読み込む',x:'現場の端末で同じアプリを開き「📥 共有ファイルを読み込む」でファイルを選びます。'},
+  {scr:'list',s:'#ml',t:'見る',x:'一覧の「見る」で手順を1つずつ確認します。改訂版を送り直すと上書きされます。'}]},
+ {id:'view',cat:'本番の流れ',who:'all',name:'現場での見方',time:'約1分',steps:[
+  {scr:'view',s:'#lang',t:'言語を選ぶ',x:'日本語・ベトナム語・インドネシア語を選べます。',a:'pick',need:'一覧の「見る」で開くと出ます'},
+  {scr:'view',s:'#vv',t:'動画',x:'その手順の部分だけをくり返し再生します。赤丸が見る所です。'},
+  {scr:'view',s:'#bSp',t:'読み上げ',x:'説明を声で読み上げます。'},
+  {scr:'view',s:'#bNx',t:'次へ',x:'できたら次の手順へ進みます。'}]},
+ {id:'role',cat:'困ったとき',who:'all',name:'編集できない・閲覧に戻したい',time:'約30秒',steps:[
+  {scr:'any',s:'#hRole',t:'編集／閲覧の切り替え',x:'「🔒 閲覧」を押してPINを入れると「🔓 編集」になります。「🔓 編集」を押すと閲覧に戻ります。PINを忘れたら、取扱説明書「困ったとき」を見てください。'}]},
+ {id:'revise',cat:'終わった後',who:'ed',name:'手順書を改訂して配り直す',time:'約2分',steps:[
+  {scr:'edit',pg:'fin',s:'#bRev',t:'改訂する',x:'版数が1つ上がり、改訂日が今日になり、承認者が空欄（承認し直し）になります。改訂内容は履歴に残ります。',need:'手順書を開くと出ます'},
+  {scr:'edit',pg:'text',s:'#strip',t:'直す',x:'説明・赤丸・訳を直します。区間は「② 切る」の一覧で直します。'},
+  {scr:'edit',pg:'fin',s:'#bExp',t:'配り直す',x:'書き出して送り直すと、現場の端末で上書きされます。'}]},
+ {id:'backup',cat:'終わった後',who:'ed',name:'バックアップ',time:'約30秒',steps:[
+  {scr:'settings',s:'#bkOut',t:'全データを書き出す',x:'全部の手順書と動画を1ファイルに保存します。戻すときは一覧の「📥 共有ファイルを読み込む」で選びます。'}]}
+];
+let tour=null;
+function toursDone(){try{return JSON.parse(lsGet('kensa-tours','[]'))}catch(e){return[]}}
+function openSheet(){
+  const ed=isEditor(),done=toursDone(),cats=['準備','本番の流れ','困ったとき','終わった後'];
+  const d=document.createElement('div');d.className='modal sheet';d.id='sheet';
+  d.innerHTML=`<div class="mbox"><div class="row"><h3 class="grow" style="margin:0">？ 使い方</h3><button class="sm" id="shX">閉じる</button></div>
+    <div class="row mt"><a class="linkbtn" href="manual.html" target="_blank">📖 取扱説明書（イラスト付き）</a><a class="linkbtn" href="manual.html#qa" target="_blank">❓ Q&A</a></div>
+    <div class="tlist">${cats.map(c=>{const ts=TOURS.filter(t=>t.cat===c&&(ed||t.who==='all'));return ts.length?`<div class="cat">${c}</div>`+ts.map(t=>`<button data-tour="${t.id}"><span class="grow">${done.includes(t.id)?'✅':'▶️'} ${t.name}</span><span class="sub small">${t.time}</span></button>`).join(''):''}).join('')}</div>
+    <p class="sub small mt">ガイドは、やることを黄色い枠で光らせて1つずつ案内します。ボタンを<b>長押し</b>すると、そのボタンの説明が出ます。</p></div>`;
+  document.body.appendChild(d);
+  d.onclick=e=>{if(e.target===d||e.target.id==='shX'){d.remove();return}const b=e.target.closest('[data-tour]');if(b){d.remove();startTour(b.dataset.tour)}}}
+$('#hHelp').onclick=openSheet;
+async function startTour(id){const T=TOURS.find(t=>t.id===id);if(!T)return;if(tour)tourEnd();tour={T,i:0};await tourShow()}
+async function ensureScreen(st){
+  const id=cur?.id||lastId,m=id?await idb.get('manuals',id):null;
+  if(st.scr==='settings'&&view!=='settings'){if(!isEditor())return'編集モードで開けます';await showSettings()}
+  else if(st.scr==='list'&&view!=='list'){if(document.querySelector('#capModal'))return null;await showList()}
+  else if(st.scr==='edit'||(st.scr==='editOrView'&&isEditor()&&view!=='view')){
+    if(!isEditor())return'編集モードにすると出ます';
+    if(view!=='edit'){if(m)await showEdit(m.id,st.pg);else return st.need||'手順書を開くと出ます'}
+    if(st.pg&&page!==st.pg)setPage(st.pg)}
+  else if(st.scr==='view'||st.scr==='editOrView'){if(view!=='view'){if(m)await showView(m.id);else return st.need||'一覧の「見る」で開くと出ます'}}
+  return null}
+function tourEl(st){for(const s of st.s.split(',')){const el=$(s);if(el&&el.offsetParent!==null&&!el.closest('.pg-off'))return el}return null}
+async function tourShow(){
+  if(!tour)return;tourClear();const{T,i}=tour,st=T.steps[i],n=T.steps.length,last=i===n-1;
+  const note=await ensureScreen(st);if(!tour)return;
+  await sleep(80);let el=tourEl(st);
+  const hole=$('#tHole'),card=$('#tCard');
+  card.hidden=false;
+  card.innerHTML=`<div class="tprog"><i style="width:${(i+1)/n*100}%"></i></div>
+    <div class="row mt"><b class="grow sub">${esc(T.name)}　${i+1}/${n}</b><button class="sm" id="tcFold">たたむ</button><button class="sm" id="tcX">✕ 終わる</button></div>
+    <div id="tcBody"><h4>${esc(st.t)}</h4><p>${esc(st.x)}</p>${el?'':`<div class="tnote">いまは画面に出ていません（${esc(note||st.need||'前の操作をすると出ます')}）</div>`}
+    <div class="row"><button class="sm" id="tcPrev" ${i===0?'disabled':''}>◀ 戻る</button>${el?'<button class="sm" id="tcTry">👉 やってみる</button>':''}<button class="pri sm grow" id="tcNext">${last?'完了 ✓':'次へ ▶'}</button></div></div>`;
+  $('#tcX').onclick=tourEnd;$('#tcNext').onclick=()=>last?tourFinish():tourGo(1);$('#tcPrev').onclick=()=>tourGo(-1);
+  $('#tcFold').onclick=()=>{const b=$('#tcBody');b.hidden=!b.hidden;$('#tcFold').textContent=b.hidden?'ひらく':'たたむ'};
+  if($('#tcTry'))$('#tcTry').onclick=()=>{const e=tourEl(st);if(e)pulse(e)};
+  if(!el){hole.hidden=true;card.style.top='auto';card.style.bottom='calc(64px + env(safe-area-inset-bottom))';
+    tour.poll=setInterval(()=>{if(tourEl(st)){clearInterval(tour.poll);tourShow()}},700);return}
+  el.scrollIntoView({block:'center',behavior:'smooth'});hole.hidden=false;
+  const loop=()=>{if(!tour)return;if(!el.isConnected){el=tourEl(st);if(!el){tourShow();return}}
+    const r=el.getBoundingClientRect(),p=6;
+    Object.assign(hole.style,{left:r.left-p+'px',top:r.top-p+'px',width:r.width+p*2+'px',height:r.height+p*2+'px'});
+    if(r.top+r.height/2>innerHeight*0.5){card.style.top='calc(env(safe-area-inset-top) + 64px)';card.style.bottom='auto'}
+    else{card.style.top='auto';card.style.bottom='calc(64px + env(safe-area-inset-bottom))'}
+    tour.raf=requestAnimationFrame(loop)};loop();
+  if(!last&&st.a){
+    const next=()=>{clearTimeout(tour.timer);tour.timer=setTimeout(()=>tourGo(1),900)};
+    if(st.a==='tap'){const h=()=>next();document.addEventListener('click',e=>{if(e.target.closest(st.s))h()},{capture:true,once:false,signal:(tour.ac=new AbortController()).signal})}
+    else if(st.a==='pick'){el.addEventListener('change',next,{signal:(tour.ac=new AbortController()).signal})}
+    else if(st.a==='idle'){const idle=()=>{clearTimeout(tour.timer);tour.timer=setTimeout(()=>tourGo(1),4000)};el.addEventListener('input',idle,{signal:(tour.ac=new AbortController()).signal})}}}
+function tourClear(){if(!tour)return;clearTimeout(tour.timer);clearInterval(tour.poll);cancelAnimationFrame(tour.raf);if(tour.ac)tour.ac.abort();tour.ac=null}
+function tourGo(d){if(!tour)return;const j=tour.i+d;if(j<0||j>=tour.T.steps.length)return;tour.i=j;tourShow()}
+function tourFinish(){const id=tour.T.id,dn=toursDone();if(!dn.includes(id)){dn.push(id);lsSet('kensa-tours',JSON.stringify(dn))}tourEnd();toast('ガイド完了 ✓')}
+function tourEnd(){tourClear();$('#tHole').hidden=true;$('#tCard').hidden=true;tour=null}
+
+/* ---------- 長押しヘルプ ---------- */
+const HELP=[
+ {s:'#hRole',t:'編集／閲覧の切り替え',x:'🔒閲覧＝見るだけ。押してPINを入れると🔓編集。🔓を押すと閲覧に戻ります。',a:'kengen'},
+ {s:'#hNav',t:'手順ナビ',x:'画面上に「次にやること」を黄色い帯で出します。押すとオン／オフ。',a:'navi'},
+ {s:'#hHelp',t:'使い方',x:'ガイド（画面を光らせて案内）と取扱説明書を開きます。',a:'hajime'},
+ {s:'#bNew',t:'新しい手順書',x:'空の手順書を作り「① 撮る」から始めます。',a:'tsukuru'},
+ {s:'#bImp',t:'共有ファイルを読み込む',x:'事務所から届いた手順書ファイル（.json）や、バックアップを読み込みます。',a:'kubaru'},
+ {s:'#bCap',t:'撮影する',x:'カメラで撮ります。スマホは固定し、手元を大きく・明るく。',a:'toru'},
+ {s:'#bPick',t:'動画を選ぶ',x:'撮影済みの動画をアルバムやファイルから選びます。',a:'toru'},
+ {s:'#bPhoto',t:'写真で手順を追加',x:'写真を選ぶと、1枚＝1手順で追加されます（複数選択OK・ファイル名順）。',a:'torikomi'},
+ {s:'#bDoc',t:'既存の手順書を取り込む',x:'Excel（.xlsx）・Word（.docx）・PDFから、文字と画像を読み取って手順にします。AIがあれば手順に整理します。',a:'torikomi'},
+ {s:'#bIn',t:'開始点',x:'動画を止めた位置を、この手順の始まりにします。',a:'kiru'},
+ {s:'#bOut',t:'終了点',x:'動画を止めた位置を、この手順の終わりにします。',a:'kiru'},
+ {s:'#bAdd',t:'手順に追加',x:'開始点〜終了点を1つの手順として一覧に入れます。',a:'kiru'},
+ {s:'#bAuto',t:'自動で区切る',x:'画面が大きく変わった所を探して手順の候補を作ります。あとで調整・削除できます。',a:'kiru'},
+ {s:'#tAi',t:'AIで説明を書く',x:'AIが画像（開始・中間・終了）を見て下書きします。メモがあればそれを整えます。必ず人が確認してください。',a:'setsumei'},
+ {s:'#tTr',t:'翻訳',x:'この手順をベトナム語・インドネシア語に翻訳します。辞書の用語が優先されます。',a:'honyaku'},
+ {s:'#tGt',t:'Google翻訳で確認',x:'APIキーがなくても使えます。訳をコピーして貼り付けます。',a:'honyaku'},
+ {s:'#tPlay',t:'動きを見る',x:'この手順の区間をくり返し再生します。',a:'setsumei'},
+ {s:'#bAiAll',t:'AIでまとめて下書き',x:'説明が空の手順を、AIで一度に下書きします。',a:'setsumei'},
+ {s:'#bTrAll',t:'まとめて翻訳',x:'未翻訳の手順を一度に翻訳します。',a:'honyaku'},
+ {s:'#bPrev',t:'閲覧モードで確認',x:'現場の人と同じ画面で確認します。',a:'miru'},
+ {s:'#bCapV',t:'字幕入り動画',x:'説明・赤丸・手順番号を焼き込んだ動画を作り、LINEなどで送れます。',a:'jimaku'},
+ {s:'#bCapV2',t:'字幕入り動画',x:'この手順書の字幕入り動画を作ります。',a:'jimaku'},
+ {s:'#bExp',t:'現場に配る',x:'動画入りの共有ファイルを書き出します。PINがあれば受け取った端末は閲覧専用に。',a:'kubaru'},
+ {s:'#bRev',t:'改訂する',x:'版数を上げ、改訂日を今日に、承認者を空欄にします。履歴に残ります。',a:'kaitei'},
+ {s:'#bDelM',t:'削除',x:'この手順書と動画を消します。元に戻せません。',a:'kaitei'},
+ {s:'#bSp',t:'読み上げ',x:'選んだ言語で説明を読み上げます。',a:'miru'},
+ {s:'#lang',t:'言語',x:'日本語・ベトナム語・インドネシア語を切り替えます。',a:'miru'},
+ {s:'#pSet',t:'編集者PIN',x:'4〜8けたの数字。決めると配布先は閲覧専用になります。',a:'kengen'},
+ {s:'#tabbar [data-v="list"]',t:'一覧',x:'手順書の一覧。探す・見る・編集する。',a:'hajime'},
+ {s:'#tabbar [data-v="edit"]',t:'作る・直す',x:'いま開いている手順書を編集します（編集モードのみ）。',a:'tsukuru'},
+ {s:'#tabbar [data-v="view"]',t:'見る',x:'いま開いている手順書を現場用の画面で見ます。',a:'miru'},
+ {s:'#tabbar [data-v="set"]',t:'設定',x:'AIのカギ、辞書、PIN、バックアップ。',a:'junbi'}
+];
+let lp=null,lpFired=false;
+function findHelp(t){if(!t||!t.closest)return null;for(const h of HELP){const el=t.closest(h.s);if(el)return{h,el}}return null}
+document.addEventListener('pointerdown',e=>{lpFired=false;const tip=$('#tip');if(!tip.hidden&&!e.target.closest('#tip'))tip.hidden=true;
+  const hit=findHelp(e.target);if(!hit)return;clearTimeout(lp&&lp.t);
+  lp={x0:e.clientX,y0:e.clientY,t:setTimeout(()=>{lpFired=true;lp=null;showTip(hit.h,hit.el)},550)}},{passive:true});
+document.addEventListener('pointermove',e=>{if(lp&&Math.hypot(e.clientX-lp.x0,e.clientY-lp.y0)>10){clearTimeout(lp.t);lp=null}},{passive:true});
+['pointerup','pointercancel'].forEach(ev=>document.addEventListener(ev,()=>{if(lp){clearTimeout(lp.t);lp=null}},{passive:true}));
+document.addEventListener('click',e=>{if(lpFired){lpFired=false;e.preventDefault();e.stopPropagation()}},true);
+document.addEventListener('contextmenu',e=>{if(findHelp(e.target))e.preventDefault()});
+function showTip(h,el){const tip=$('#tip');
+  tip.innerHTML=`<b>${esc(h.t)}</b><div>${esc(h.x)}</div>${h.a?`<a href="manual.html#${h.a}" target="_blank">取扱説明書で詳しく →</a>`:''}`;
+  tip.hidden=false;const r=el.getBoundingClientRect(),tw=Math.min(300,innerWidth-24);tip.style.width=tw+'px';
+  const left=Math.max(12,Math.min(innerWidth-tw-12,r.left+r.width/2-tw/2));tip.style.left=left+'px';
+  const th=tip.offsetHeight;tip.style.top=(r.bottom+8+th<innerHeight-60?r.bottom+8:Math.max(8,r.top-8-th))+'px';
+  clearTimeout(tip._h);tip._h=setTimeout(()=>tip.hidden=true,7000)}
+
+/* ---------- 起動 ---------- */
+window.addEventListener('pagehide',()=>{if(view==='edit')save()});
+(async()=>{
+  navOn=lsGet('kensa-nav','1')==='1';onePage=lsGet('kensa-onepage','1')==='1';lastId=lsGet('kensa-last','')||null;
+  try{await openDB()}catch(e){main.innerHTML='<div class="card">この端末（またはプライベートブラウズ）では保存機能が使えません。</div>';return}
+  const s=await idb.get('kv','settings');if(s)settings={...settings,...s};
+  lock=(await idb.get('kv','lock'))||null;unlocked=ssGet('kensa-unlocked')==='1';
+  try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+  await showList();
+  if(!lsGet('kensa-hello','')){lsSet('kensa-hello','1');const h=document.createElement('div');h.id='hello';
+    h.innerHTML='<span class="grow">はじめての方は右上の「？」→ ガイドへ。ボタンを<b>長押し</b>すると説明が出ます。</span><button>OK</button>';
+    document.body.appendChild(h);h.querySelector('button').onclick=()=>h.remove();setTimeout(()=>h.remove(),15000)}
+})();
+</script>
+</body>
+</html>
