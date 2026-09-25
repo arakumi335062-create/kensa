@@ -944,20 +944,27 @@ function openCapDialog(){
     <label class="f">字幕の言語</label><select id="capL">${CAPOPT.map(([k,l])=>`<option value="${k}" ${k===(UI[lang]?lang:'ja')?'selected':''}>${l}</option>`).join('')}</select>
     <label class="f" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="capT" checked> 最初に表紙（手順書名・品番・版数）を入れる</label>
     <label class="f" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="capA" ${curURL&&cur.steps.some(x=>!isPhoto(x))?'checked':'disabled'}> 🎥 元の動画の音声を入れる</label>
-    <label class="f">🔊 読み上げ音声（録音・AI音声）</label><select id="capN"><option value="">入れない</option>${['ja','vi','id'].map(L=>{const n=cur.steps.filter(x=>x.voice&&x.voice[L]).length;return`<option value="${L}" ${n?'':'disabled'}>${VLN[L]}（${n}/${cur.steps.length} 手順に音声あり）</option>`}).join('')}</select>
-    <p class="sub small" style="margin:2px 0 0">読み上げの間は、元の音声を小さくします。読み上げが長い手順は、その分だけ長く表示します。</p>
+    <label class="f">🔊 読み上げ音声（録音・AI音声）</label><select id="capN"><option value="">入れない</option>${['ja','vi','id'].map(L=>{const n=cur.steps.filter(x=>x.voice&&x.voice[L]).length;return`<option value="${L}">${VLN[L]}（音声あり ${n}/${cur.steps.length} 手順）</option>`}).join('')}</select>
+    <p class="sub small" style="margin:2px 0 0">音声がない手順は、作成のときにAI音声を自動で作れます（⚙ 設定でAI音声のキーが必要）。自分の声は「③ 説明」の「● 録音」で。読み上げの間は元の音声を小さくします。</p>
     <p class="sub small">作成には実際の再生と同じ時間（約${Math.ceil(total+3)}秒）かかります。作成中はこの画面を開いたままにしてください。</p>
     <div id="capP" class="sub"></div><div class="bar" id="capBar" hidden><i></i></div><div id="capOut"></div>
     <div class="row mt"><button class="pri" id="capGo">作成する</button><button id="capX">閉じる</button></div></div>`;
   document.body.appendChild(d);
-  const syncN=()=>{const ls=d.querySelector('#capL').value.split('+'),want=ls[ls.length-1],o=d.querySelector(`#capN option[value="${want}"]`);if(o&&!o.disabled)d.querySelector('#capN').value=want};
+  const syncN=()=>{const ls=d.querySelector('#capL').value.split('+'),want=ls[ls.length-1];if(cur.steps.some(x=>x.voice&&x.voice[want]))d.querySelector('#capN').value=want};
   d.querySelector('#capL').onchange=syncN;syncN();
   const cancel={c:false};let busy=false,outURL=null;
   const close=()=>{cancel.c=true;if(outURL)URL.revokeObjectURL(outURL);d.remove()};
   d.querySelector('#capX').onclick=()=>{if(busy&&!confirm('作成を中止しますか？'))return;close()};
   d.querySelector('#capGo').onclick=async()=>{
     const key=d.querySelector('#capL').value,langs=key.split('+');
-    const orig=d.querySelector('#capA').checked,narrL=d.querySelector('#capN').value;
+    const orig=d.querySelector('#capA').checked;let narrL=d.querySelector('#capN').value;
+    const need=narrL?cur.steps.filter(x=>(x.text[narrL]||'').trim()&&!(x.voice&&x.voice[narrL])):[];
+    let makeTts=false;
+    if(need.length){
+      if(settings.ttsKey)makeTts=confirm(`${VLN[narrL]}の音声がない手順が${need.length}件あります。\nAI音声を作ってから動画を作りますか？\n（「キャンセル」＝音声がある手順だけ読み上げ）`);
+      else{const has=cur.steps.some(x=>x.voice&&x.voice[narrL]);
+        if(!has){alert(`${VLN[narrL]}の読み上げ音声がまだありません。\n・自分の声：「③ 説明」の「● 録音」\n・AI音声：「⚙ 設定」でAI音声のキーを入れると、ここで自動で作れます\n\n今は「読み上げ音声：入れない」で作成できます。`);return}
+        if(!confirm(`${need.length}件の手順に${VLN[narrL]}の音声がありません（AI音声のキーが未設定）。音声がある手順だけ読み上げます。続けますか？`))return}}
     let ac=null;if(orig||narrL){try{ac=new(window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){ac=null}}
     const miss=cur.steps.filter(s=>langs.some(L=>L!=='ja'&&!(s.text[L]||'').trim())).length;
     if(miss&&!confirm(`${miss}件の手順が未翻訳です（その部分は日本語で表示されます）。このまま作成しますか？`))return;
@@ -965,6 +972,8 @@ function openCapDialog(){
     const bar=d.querySelector('#capBar');bar.hidden=false;
     const prog=(i,n)=>{d.querySelector('#capP').textContent=`作成中… 手順 ${i+1} / ${n}`;bar.firstChild.style.width=Math.round(i/n*100)+'%'};
     try{
+      if(makeTts){for(let k=0;k<need.length;k++){if(cancel.c)throw new Error('CANCEL');d.querySelector('#capP').textContent=`🔊 AI音声を作成中… ${k+1} / ${need.length}`;bar.firstChild.style.width=Math.round(k/need.length*100)+'%';
+          const x=need[k];x.voice=x.voice||{};x.voice[narrL]=await tts(x.text[narrL].trim(),narrL);await save()}}
       const blob=await makeCaptionVideo(cur,langs,d.querySelector('#capT').checked,prog,cancel,{ac,orig,narr:narrL});
       bar.firstChild.style.width='100%';
       const ext=blob.type.includes('mp4')?'mp4':'webm';
