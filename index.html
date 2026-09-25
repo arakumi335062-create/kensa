@@ -115,6 +115,20 @@ textarea{min-height:58px;resize:vertical}
 .dprev div{display:flex;gap:8px;align-items:center;border-top:1px solid var(--line);padding:4px 0;font-size:13px}.dprev div:first-child{border-top:0}
 .dprev img,.dprev .ni{width:64px;height:40px;object-fit:cover;border-radius:4px;background:#ccc;flex:0 0 auto}
 .opt{display:flex;gap:8px;align-items:flex-start;margin:6px 0;font-size:14px}.opt input{margin-top:4px}
+.tlw{overflow-x:auto;overflow-y:hidden;border:1px solid var(--line);border-radius:8px;background:#15181e;-webkit-overflow-scrolling:touch;margin-top:4px}
+.tli{position:relative;height:78px;min-width:100%}
+.strip2{position:absolute;left:0;top:12px;height:54px;display:flex;pointer-events:none}
+.strip2 img{height:54px;object-fit:cover;display:block;flex:0 0 auto;opacity:.6}
+.gapz{position:absolute;top:12px;height:54px;background:repeating-linear-gradient(45deg,rgba(0,0,0,.72) 0 6px,rgba(0,0,0,.5) 6px 12px);cursor:pointer}
+.sg{position:absolute;top:10px;height:58px;border:2px solid rgba(255,255,255,.9);border-radius:6px;color:#fff;font-weight:700;font-size:13px;cursor:pointer}
+.sg span{position:absolute;left:4px;top:1px;text-shadow:0 1px 2px #000,0 0 2px #000;pointer-events:none}
+.sg.on{border:3px solid #ffd400;z-index:2}
+.hd{position:absolute;top:-4px;bottom:-4px;width:30px;touch-action:none;z-index:3;cursor:ew-resize}
+.hd::after{content:'';position:absolute;top:50%;left:50%;width:14px;height:34px;margin:-17px 0 0 -7px;background:#ffd400;border-radius:5px;box-shadow:0 0 0 2px #000}
+.hd.l{left:-16px}.hd.r{right:-16px}
+.ph{position:absolute;top:0;bottom:0;width:2px;background:#ff3b30;z-index:4;pointer-events:none}
+.ph::before{content:'';position:absolute;top:0;left:-6px;border:7px solid transparent;border-top-color:#ff3b30}
+.ival{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
 [hidden]{display:none!important}
 @media (max-width:560px){.grid2{grid-template-columns:1fr}}
 </style>
@@ -273,7 +287,7 @@ function renderChrome(){
 }
 $('#pbar').onclick=e=>{const b=e.target.closest('[data-pg]');if(b)setPage(b.dataset.pg)};
 function setPage(k){if(view!=='edit')return;page=k;applyPage();renderChrome();
-  if(k==='text')renderText();if(k==='cut')renderList();
+  if(k==='text')renderText();if(k==='cut'){renderList();requestAnimationFrame(renderTimeline)}
   if(onePage)window.scrollTo(0,0);else{const p=PAGES.find(x=>x.k===k);const el=$(p.s[k==='cut'?1:0]);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}}
 function applyPage(){const show=onePage?PAGES.find(p=>p.k===page).s:ALLSEC;
   ALLSEC.forEach(s=>{const el=$(s);if(el)el.classList.toggle('pg-off',!show.includes(s))});
@@ -290,7 +304,7 @@ $('#tabbar').onclick=async e=>{const b=e.target.closest('button');if(!b)return;c
   else if(v==='set')showSettings()};
 let sw=null;
 main.addEventListener('touchstart',e=>{sw=null;if(view!=='edit'||!onePage||tour)return;
-  if(e.target.closest('input,textarea,select,video,canvas,svg,.thumb,.strip,.vwrap'))return;const t=e.touches[0];sw={x:t.clientX,y:t.clientY,tm:Date.now()}},{passive:true});
+  if(e.target.closest('input,textarea,select,video,canvas,svg,.thumb,.strip,.vwrap,.tlw'))return;const t=e.touches[0];sw={x:t.clientX,y:t.clientY,tm:Date.now()}},{passive:true});
 main.addEventListener('touchend',e=>{if(!sw)return;const t=e.changedTouches[0],dx=t.clientX-sw.x,dy=t.clientY-sw.y,ok=Math.abs(dx)>70&&Math.abs(dy)<50&&Date.now()-sw.tm<600;sw=null;
   if(!ok)return;const i=PAGES.findIndex(p=>p.k===page),j=dx<0?i+1:i-1;if(j>=0&&j<PAGES.length)setPage(PAGES[j].k)},{passive:true});
 
@@ -303,9 +317,9 @@ function guide(){
       :{no:'はじめに',text:'「＋ 新しい手順書」から。流れ：① 撮る → ② 切る → ③ 説明（AI） → ④ 仕上げ・送る',target:'#bNew'}}
   if(view==='edit'&&cur){const S=cur.steps;
     if(!cur.videoId&&!S.length)return{no:'1/6 撮る',pg:'video',text:'「📷 撮影する」で撮るか、動画・写真・既存の手順書（Excel・Word・PDF）を取り込みます。',target:'#bCap'};
-    if(inPt!=null&&outPt!=null)return{no:'2/6 切る',pg:'cut',text:'「＋ 手順に追加」を押します。',target:'#bAdd'};
-    if(inPt!=null)return{no:'2/6 切る',pg:'cut',text:'再生して、手順の終わりで止めて「■ 終了点」。',target:'#bOut'};
-    if(!S.length)return{no:'2/6 切る',pg:'cut',text:'「✂ 自動で区切る」で候補を作るか、動画を止めて「▶ 開始点」から手で区切ります。',target:'#bAuto'};
+    const VS=S.filter(x=>!isPhoto(x));
+    if(cur.videoId&&(!VS.length||(VS.length===1&&S.length===1&&VS[0].start<0.1&&!VS[0].text.ja.trim())))
+      return{no:'2/6 切る',pg:'cut',text:'動画を止めて「✂ ここで分ける」、または「⏱ 一定時間で区切る」で手順に分けます。1つのままでよければ「③ 説明」へ。',target:'#bSplit'};
     const ne=S.findIndex(s=>!s.text.ja.trim());
     if(ne>=0)return{no:'3/6 説明',pg:'text',step:ne,text:`手順${ne+1}の説明を入れます。「🤖 AIで説明を書く」で下書きもできます。`,target:'#tAi'};
     const nt=S.findIndex(s=>!s.text.vi.trim()||!s.text.id.trim());
@@ -357,7 +371,7 @@ async function showEdit(id,pg){
   if(!cur||cur.id!==m.id)tIdx=0;
   cur=m;cur.history=cur.history||[];lastId=cur.id;lsSet('kensa-last',cur.id);view='edit';
   await loadVideo(cur.videoId);
-  inPt=outPt=null;inThumb='';segEnd=null;openRow=-1;
+  inPt=outPt=null;inThumb='';segEnd=null;openRow=-1;pps=0;selId=null;
   page=pg||(!cur.steps.length?(cur.videoId?'cut':'video'):'text');
   setTitle(cur.title||'新しい手順書');
   const mf=(k,l,t='text')=>`<div><label class="f">${l}</label><input type="${t}" data-meta="${k}" value="${esc(cur[k])}"></div>`;
@@ -369,9 +383,13 @@ async function showEdit(id,pg){
     <input type="file" id="fCap" accept="video/*" capture="environment" hidden><input type="file" id="fPick" accept="video/*" hidden>
     <input type="file" id="fPhoto" accept="image/*" multiple hidden><input type="file" id="fDoc" accept=".xlsx,.docx,.pdf" hidden></div>
   <div class="card" id="sPlayer"><div id="vArea"></div></div>
-  <div class="card" id="sCut"><h3>② 手順に切り分ける</h3>
-    <div class="row"><button id="bIn">▶ 開始点 <span id="tIn">--</span></button><button id="bOut">■ 終了点 <span id="tOut">--</span></button><button class="pri" id="bAdd">＋ 手順に追加</button></div>
-    <div class="row mt"><button class="sm" id="bB1">−1秒</button><button class="sm" id="bBF">−0.2</button><button class="sm" id="bFF">+0.2</button><button class="sm" id="bF1">+1秒</button><button class="sm" id="bAuto">✂ 自動で区切る</button></div></div>
+  <div class="card" id="sCut"><h3>② 切り分ける（タイムライン）</h3>
+    <div class="tlw" id="tlw"></div>
+    <div class="row" style="margin-top:4px"><span id="tlInfo" class="sub small grow"></span><button class="sm" id="zOut" aria-label="縮小">－</button><button class="sm" id="zIn" aria-label="拡大">＋</button></div>
+    <div class="row mt"><button class="pri" id="bSplit">✂ ここで分ける</button><button id="bMerge">🔗 前とつなぐ</button><button class="danger" id="bSegDel">使わない</button></div>
+    <div class="row mt"><button class="sm" id="bB1">−1秒</button><button class="sm" id="bBF">−0.2</button><button class="sm" id="bFF">+0.2</button><button class="sm" id="bF1">+1秒</button></div>
+    <div class="row mt"><button class="sm" id="bFix">⏱ 一定時間で区切る</button><button class="sm" id="bAuto">🎬 画面の変化で区切る</button><button class="sm" id="bFill">すき間をなくす</button><button class="sm" id="bWhole">全体を1つに戻す</button></div>
+    <p class="sub small">使い方：動画を止めて「✂ ここで分ける」。帯をタップで選び、両端の黄色い●をドラッグで長さを調整。しま模様は使わない部分（字幕動画に入りません）。</p></div>
   <div class="card" id="sList"><h3>手順の一覧（<span id="nSteps">0</span>）</h3><div id="stepList"></div></div>
   <div class="card" id="sText"><div class="strip" id="strip"></div><div id="tBody"></div></div>
   <div class="card" id="sInfo"><h3>手順書の情報</h3><div class="grid2">
@@ -392,9 +410,10 @@ async function showEdit(id,pg){
   $('#bPhoto').onclick=()=>$('#fPhoto').click();$('#bDoc').onclick=()=>$('#fDoc').click();
   $('#fPhoto').onchange=e=>{const fs=[...e.target.files];e.target.value='';if(fs.length)addPhotos(fs)};
   $('#fDoc').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)importDoc(f)};
-  $('#bIn').onclick=()=>{const v=$('#ve');if(!v)return noVideo();inPt=v.currentTime;inThumb=grab(v);$('#tIn').textContent=fmt(inPt);updateNav()};
-  $('#bOut').onclick=()=>{const v=$('#ve');if(!v)return noVideo();outPt=v.currentTime;$('#tOut').textContent=fmt(outPt);updateNav()};
-  $('#bAdd').onclick=addStep;$('#bAuto').onclick=autoSplit;
+  $('#bAuto').onclick=autoSplit;$('#bSplit').onclick=splitHere;$('#bMerge').onclick=mergePrev;$('#bSegDel').onclick=delSeg;
+  $('#bFix').onclick=fixedDialog;$('#bFill').onclick=fillGaps;$('#bWhole').onclick=wholeOne;
+  $('#zIn').onclick=()=>zoomTL(1.6);$('#zOut').onclick=()=>zoomTL(1/1.6);
+  bindTL();
   [['#bB1',-1],['#bBF',-0.2],['#bFF',0.2],['#bF1',1]].forEach(([s,d])=>$(s).onclick=()=>{const v=$('#ve');if(!v)return noVideo();v.pause();
     v.currentTime=Math.max(0,Math.min(isFinite(v.duration)?v.duration:1e9,v.currentTime+d))});
   $('#stepList').onclick=listClick;
@@ -405,7 +424,7 @@ async function showEdit(id,pg){
   $('#bExp').onclick=async()=>{await save();exportPkg(cur)};
   $('#bDelM').onclick=async()=>{if(!confirm('この手順書と動画を削除します。元に戻せません。よろしいですか？'))return;
     if(cur.videoId)await idb.del('videos',cur.videoId);await idb.del('manuals',cur.id);cur=null;lastId=null;lsSet('kensa-last','');showList()};
-  renderPlayer();renderList();renderText();renderHist();applyPage();renderChrome();window.scrollTo(0,0);
+  renderPlayer();renderList();renderText();renderHist();applyPage();renderChrome();renderTimeline();window.scrollTo(0,0);
 }
 function noVideo(){toast('先に「① 撮る」で動画を入れてください')}
 async function setVideo(file){
@@ -414,14 +433,18 @@ async function setVideo(file){
   if(cur.videoId)await idb.del('videos',cur.videoId);
   const vid=uid();
   try{await idb.put('videos',file,vid)}catch(e){alert('保存できませんでした（端末の容量不足の可能性）：'+e);return}
-  cur.videoId=vid;cur.steps=cur.steps.filter(isPhoto);tIdx=0;await save();await loadVideo(vid);renderPlayer();renderList();renderText();
-  toast('動画を取り込みました。次は「② 切る」です');setPage('cut');
+  cur.videoId=vid;cur.steps=cur.steps.filter(isPhoto);tIdx=0;selId=null;pps=0;await save();await loadVideo(vid);
+  try{const [dur,th]=await withHiddenVideo(async v=>{await seekTo(v,0.3);return[v.duration,grab(v)]});
+    if(isFinite(dur)&&dur>0){cur.steps.unshift({id:uid(),start:0,end:dur,thumb:th,text:{ja:'',vi:'',id:''},marks:[]});await save()}}catch(e){}
+  renderPlayer();renderList();renderText();
+  toast('動画を取り込みました。止めた所で「✂ ここで分ける」を押していきます',3600);setPage('cut');
 }
 function renderPlayer(){
   const a=$('#vArea');
   if(!curURL){a.innerHTML='<p class="sub">まだ動画がありません。「📷 撮影する」か「🎞 動画を選ぶ」から始めます。</p>';return}
   a.innerHTML='<div class="vwrap"><video id="ve" controls playsinline preload="auto"></video></div>';
-  const v=$('#ve');v.src=curURL;v.ontimeupdate=()=>{if(segEnd!=null&&v.currentTime>=segEnd){v.pause();segEnd=null}}}
+  const v=$('#ve');v.src=curURL;v.ontimeupdate=()=>{if(segEnd!=null&&v.currentTime>=segEnd){v.pause();segEnd=null}updatePH()};
+  v.addEventListener('seeked',updatePH);v.addEventListener('loadedmetadata',()=>{if(!tlDur)renderTimeline()})}
 async function addStep(){
   if(inPt==null||outPt==null){alert('「▶ 開始点」と「■ 終了点」を押してください');return}
   if(outPt<=inPt+0.2){alert('終了点は開始点より後にしてください');return}
@@ -448,10 +471,10 @@ async function listClick(e){
     if(d.setin!=null){if(t>=s.end-0.2){alert('開始は終了より前にしてください');return}s.start=t;s.thumb=grab(v)||s.thumb}
     if(d.setout!=null){if(t<=s.start+0.2){alert('終了は開始より後にしてください');return}s.end=t}
     if(d.setimg!=null)s.thumb=grab(v)||s.thumb;
-    await save();renderList();toast('変更しました');return}
+    await save();renderList();drawSegs();toast('変更しました');return}
   if(d.up!=null||d.dn!=null){const i=+(d.up??d.dn),j=d.up!=null?i-1:i+1;[cur.steps[i],cur.steps[j]]=[cur.steps[j],cur.steps[i]];openRow=j;await save();renderList();return}
   if(d.gotext!=null){tIdx=+d.gotext;setPage('text');return}
-  if(d.del!=null){if(!confirm(`手順${+d.del+1}を削除しますか？`))return;cur.steps.splice(+d.del,1);openRow=-1;await save();renderList()}}
+  if(d.del!=null){if(!confirm(`手順${+d.del+1}を削除しますか？`))return;cur.steps.splice(+d.del,1);openRow=-1;await save();renderList();drawSegs()}}
 function renderText(){
   const st=$('#strip'),b=$('#tBody');if(!st||!cur)return;
   if(!cur.steps.length){st.innerHTML='';b.innerHTML='<p class="sub">まだ手順がありません。「② 切る」で手順を作ってください。</p>';updateNav();return}
@@ -570,10 +593,110 @@ async function translateAll(){
     m.close();renderText();toast('翻訳しました')}
   catch(e){m.close();renderText();aiErr(e)}}
 
+/* ---------- タイムライン（② 切る） ---------- */
+let pps=0,selId=null,tlDur=0,drag=null,tlJust=false;const stripCache={};
+function vsteps(){return cur?cur.steps.filter(x=>!isPhoto(x)).sort((a,b)=>a.start-b.start):[]}
+function renderTimeline(){
+  const w=$('#tlw');if(!w||!cur)return;
+  if(!curURL){w.innerHTML='<div style="padding:14px;color:#bbb;font-size:13px">動画を入れるとタイムラインが出ます</div>';tlDur=0;const i=$('#tlInfo');if(i)i.textContent='';return}
+  if(!$('#tli'))w.innerHTML='<div class="tli" id="tli"><div class="strip2" id="strip2"></div><div id="segs"></div><div class="ph" id="ph"></div></div>';
+  const v=$('#ve'),c=stripCache[cur.videoId];
+  tlDur=v&&isFinite(v.duration)&&v.duration>0?v.duration:(c&&c.dur)||0;
+  if(!c)genStrip(cur.videoId);
+  if(!tlDur||!w.clientWidth)return;
+  if(!pps)pps=Math.max(2,(w.clientWidth-4)/tlDur);
+  $('#tli').style.width=Math.ceil(tlDur*pps)+'px';drawStrip();drawSegs();updatePH()}
+async function genStrip(vid){
+  if(stripCache[vid])return;stripCache[vid]={busy:true};
+  try{const r=await withHiddenVideo(async v=>{const dur=v.duration;if(!isFinite(dur)||dur<=0)throw 0;
+      const n=Math.min(60,Math.max(8,Math.ceil(dur/1.5))),iv=dur/n,fr=[];for(let i=0;i<n;i++){await seekTo(v,i*iv+iv/2);fr.push(grab(v,120))}return{dur,iv,frames:fr}});
+    stripCache[vid]=r;if(cur&&cur.videoId===vid){if(!tlDur)renderTimeline();else drawStrip()}}
+  catch(e){delete stripCache[vid]}}
+function drawStrip(){const s=$('#strip2'),c=cur&&stripCache[cur.videoId];if(!s)return;
+  s.innerHTML=c&&c.frames?c.frames.map(f=>`<img src="${f}" alt="" style="width:${c.iv*pps}px">`).join(''):''}
+function drawSegs(){
+  const el=$('#segs');if(!el||!tlDur)return;const vs=vsteps();let h='',t=0;
+  const gap=(a,b)=>b-a>0.05?`<div class="gapz" data-ga="${a}" data-gb="${b}" style="left:${a*pps}px;width:${(b-a)*pps}px"></div>`:'';
+  vs.forEach(s=>{h+=gap(t,s.start);t=Math.max(t,s.end);const i=cur.steps.indexOf(s),on=s.id===selId;
+    h+=`<div class="sg${on?' on':''}" data-id="${s.id}" style="left:${s.start*pps}px;width:${Math.max(4,(s.end-s.start)*pps)}px;background:hsla(${(i*67)%360},75%,45%,.5)"><span>${i+1}</span>${on?`<div class="hd l" data-id="${s.id}" data-side="l"></div><div class="hd r" data-id="${s.id}" data-side="r"></div>`:''}</div>`});
+  h+=gap(t,tlDur);el.innerHTML=h;tlInfo()}
+function tlInfo(){const el=$('#tlInfo');if(!el)return;const s=cur.steps.find(x=>x.id===selId);
+  if(s&&!isPhoto(s)){el.innerHTML=`選択中：<b>手順${cur.steps.indexOf(s)+1}</b>　${fmt(s.start)}〜${fmt(s.end)}（${(s.end-s.start).toFixed(1)}秒）`}
+  else{const vs=vsteps(),used=vs.reduce((a,x)=>a+x.end-x.start,0),un=Math.max(0,tlDur-used);
+    el.textContent=`全体 ${fmt(tlDur)}・動画の手順 ${vs.length}${un>0.1?`・使わない部分 ${un.toFixed(1)}秒`:'・すき間なし'}`}
+  const has=!!(s&&!isPhoto(s));['#bMerge','#bSegDel'].forEach(q=>{const b=$(q);if(b)b.disabled=!has})}
+function updatePH(){const v=$('#ve'),ph=$('#ph'),w=$('#tlw');if(!v||!ph||!pps)return;const x=v.currentTime*pps;ph.style.left=x+'px';
+  if(!v.paused&&w&&(x<w.scrollLeft||x>w.scrollLeft+w.clientWidth-20))w.scrollLeft=x-40}
+function zoomTL(f){const w=$('#tlw'),v=$('#ve');if(!w||!tlDur)return;const min=Math.max(2,(w.clientWidth-4)/tlDur);
+  pps=Math.max(min,Math.min(240,pps*f));$('#tli').style.width=Math.ceil(tlDur*pps)+'px';drawStrip();drawSegs();updatePH();
+  if(v)w.scrollLeft=v.currentTime*pps-w.clientWidth/2}
+function tlTime(e){const r=$('#tli').getBoundingClientRect();return Math.max(0,Math.min(tlDur,(e.clientX-r.left)/pps))}
+function bindTL(){
+  const w=$('#tlw');
+  w.addEventListener('pointerdown',e=>{const hd=e.target.closest('.hd');if(!hd)return;e.preventDefault();drag={id:hd.dataset.id,side:hd.dataset.side,moved:false};try{hd.setPointerCapture(e.pointerId)}catch(_){}});
+  w.addEventListener('pointermove',e=>{if(!drag)return;e.preventDefault();const s=cur.steps.find(x=>x.id===drag.id);if(!s)return;
+    const vs=vsteps(),k=vs.indexOf(s),pv=vs[k-1],nx=vs[k+1];let t=tlTime(e);
+    if(drag.side==='l'){const lk=pv&&Math.abs(pv.end-s.start)<0.05;t=Math.max(lk?pv.start+0.3:pv?pv.end:0,Math.min(t,s.end-0.3));s.start=t;if(lk)pv.end=t;drag.thumbId=s.id}
+    else{const lk=nx&&Math.abs(nx.start-s.end)<0.05;t=Math.min(lk?nx.end-0.3:nx?nx.start:tlDur,Math.max(t,s.start+0.3));s.end=t;if(lk){nx.start=t;drag.thumbId=nx.id}}
+    drag.moved=true;const v=$('#ve');if(v){v.pause();v.currentTime=t}drawSegs();updatePH()});
+  const end=async()=>{if(!drag)return;const d=drag;drag=null;tlJust=d.moved;setTimeout(()=>tlJust=false,80);
+    if(d.moved){const s=cur.steps.find(x=>x.id===d.thumbId);if(s){await sleep(250);const v=$('#ve');if(v)s.thumb=grab(v)||s.thumb}await save();drawSegs();renderList()}};
+  w.addEventListener('pointerup',end);w.addEventListener('pointercancel',end);
+  w.addEventListener('click',e=>{if(tlJust||e.target.closest('.hd')||!$('#tli'))return;const t=tlTime(e),v=$('#ve');
+    const sg=e.target.closest('.sg'),gp=e.target.closest('.gapz');if(v){v.pause();v.currentTime=t}
+    if(sg){selId=sg.dataset.id;drawSegs();return}
+    selId=null;drawSegs();
+    if(gp&&confirm(`この使わない部分（${fmt(+gp.dataset.ga)}〜${fmt(+gp.dataset.gb)}）を手順にしますか？`))addGap(+gp.dataset.ga,+gp.dataset.gb)})}
+function insertByTime(n){const vs=vsteps(),pv=vs.filter(x=>x.start<n.start).pop();
+  if(pv)cur.steps.splice(cur.steps.indexOf(pv)+1,0,n);else{const f=vs[0];cur.steps.splice(f?cur.steps.indexOf(f):cur.steps.length,0,n)}}
+async function afterTL(msg){await save();drawSegs();renderList();updateNav();if(msg)toast(msg)}
+async function addGap(a,b){const v=$('#ve');if(v){v.currentTime=a+0.2;await onceSeeked(v)}
+  const n={id:uid(),start:a,end:b,thumb:v?grab(v):'',text:{ja:'',vi:'',id:''},marks:[]};insertByTime(n);selId=n.id;await afterTL('手順にしました')}
+async function splitHere(){
+  const v=$('#ve');if(!v)return noVideo();v.pause();const t=v.currentTime;let vs=vsteps();
+  if(!vs.length&&tlDur){const n0={id:uid(),start:0,end:tlDur,thumb:'',text:{ja:'',vi:'',id:''},marks:[]};cur.steps.unshift(n0);vs=[n0]}
+  const s=vs.find(x=>t>x.start+0.3&&t<x.end-0.3);
+  if(!s){toast(vs.some(x=>t>=x.start&&t<=x.end)?'手順の端に近すぎます。少し動かしてから押してください':'ここは使わない部分です。タップすると手順にできます',3200);return}
+  const n={id:uid(),start:t,end:s.end,thumb:grab(v),text:{ja:'',vi:'',id:''},marks:[]};s.end=t;
+  cur.steps.splice(cur.steps.indexOf(s)+1,0,n);selId=n.id;await afterTL(`分けました（手順${cur.steps.indexOf(s)+1}｜手順${cur.steps.indexOf(n)+1}）`)}
+async function mergePrev(){const s=cur.steps.find(x=>x.id===selId);if(!s||isPhoto(s))return;const vs=vsteps(),pv=vs[vs.indexOf(s)-1];
+  if(!pv){toast('前の手順がありません');return}
+  pv.end=s.end;['ja','vi','id'].forEach(L=>{pv.text[L]=[pv.text[L],s.text[L]].filter(x=>x&&x.trim()).join(' ')});
+  cur.steps.splice(cur.steps.indexOf(s),1);selId=pv.id;await afterTL('前の手順とつなぎました')}
+async function delSeg(){const s=cur.steps.find(x=>x.id===selId);if(!s||isPhoto(s))return;
+  if(s.text.ja.trim()&&!confirm('この手順の説明も消えます。使わない部分にしますか？'))return;
+  cur.steps.splice(cur.steps.indexOf(s),1);selId=null;await afterTL('使わない部分にしました（しま模様をタップで戻せます）')}
+async function fillGaps(){const vs=vsteps();if(!vs.length){toast('手順がありません');return}
+  vs[0].start=0;for(let i=0;i<vs.length-1;i++)if(vs[i+1].start>vs[i].end)vs[i].end=vs[i+1].start;vs[vs.length-1].end=tlDur;
+  await afterTL('すき間をなくしました（動画の最初から最後まで全部入ります）')}
+async function replaceVideoSteps(segs){
+  const first=cur.steps.findIndex(x=>!isPhoto(x)),at=first<0?cur.steps.length:first;
+  const before=cur.steps.slice(0,at).filter(isPhoto),after=cur.steps.slice(at).filter(isPhoto);
+  const news=segs.map(([a,b,th])=>({id:uid(),start:a,end:b,thumb:th||'',text:{ja:'',vi:'',id:''},marks:[]}));
+  cur.steps=[...before,...news,...after];selId=null;tIdx=0;await save();drawSegs();renderList();renderText();updateNav()}
+async function cutBy(fn,label){
+  const m=progressModal(label,'');
+  try{const segs=await withHiddenVideo(async v=>{const dur=v.duration;if(!isFinite(dur)||dur<=0)throw new Error('動画の長さが分かりません');
+      const out=fn(dur);for(let i=0;i<out.length;i++){if(m.cancelled)throw new Error('CANCEL');await seekTo(v,Math.min(out[i][0]+0.2,out[i][1]));out[i].push(grab(v));m.set(i/out.length)}return out});
+    m.close();await replaceVideoSteps(segs);return segs.length}
+  catch(e){m.close();if(e.message!=='CANCEL')alert(e.message);return 0}}
+function fixedDialog(){if(!curURL)return noVideo();
+  const d=document.createElement('div');d.className='modal';d.innerHTML=`<div class="mbox"><h3>⏱ 一定時間で区切る</h3>
+    <p class="sub small">動画の最初から最後まで、すき間なく同じ長さで区切ります。あとで「✂ ここで分ける」「🔗 前とつなぐ」や両端のドラッグで調整できます。</p>
+    <div class="ival">${[3,5,10,15,20,30].map(n=>`<button data-n="${n}">${n}秒ごと</button>`).join('')}</div><div class="row mt"><button id="ivX">やめる</button></div></div>`;
+  document.body.appendChild(d);
+  d.onclick=async e=>{if(e.target.id==='ivX'||e.target===d){d.remove();return}const b=e.target.closest('[data-n]');if(!b)return;const L=+b.dataset.n;d.remove();
+    const vs=vsteps();if(vs.length>1&&!confirm(`今の動画の手順（${vs.length}件${vs.some(x=>x.text.ja.trim())?'・説明あり':''}）を消して、${L}秒ごとに区切り直します。よろしいですか？`))return;
+    const n=await cutBy(dur=>{const o=[];for(let a=0;a<dur-0.05;a+=L){let b=Math.min(dur,a+L);if(dur-b<1)b=dur;o.push([a,b]);if(b>=dur)break}return o},'⏱ 区切っています');
+    if(n)toast(`${L}秒ごとに${n}個の手順にしました`)}}
+async function wholeOne(){if(!curURL)return noVideo();const vs=vsteps();
+  if(vs.length>1&&!confirm(`今の動画の手順（${vs.length}件）を消して、動画全体を1つの手順に戻します。よろしいですか？`))return;
+  if(await cutBy(dur=>[[0,dur]],'準備しています'))toast('全体を1つの手順にしました。止めた所で「✂ ここで分ける」')}
+
 /* ---------- 自動で区切る（画面の変化で候補） ---------- */
 async function autoSplit(){
   if(!curURL)return noVideo();
-  if(cur.steps.length&&!confirm('今ある手順の後ろに、自動で見つけた候補を追加します。よろしいですか？'))return;
+  const vs0=vsteps();if(vs0.length>1&&!confirm(`今の動画の手順（${vs0.length}件）を消して、画面の変化で区切り直します。よろしいですか？`))return;
   const m=progressModal('✂ 自動で区切っています','画面が大きく変わった所を探しています…');
   try{
     const segs=await withHiddenVideo(async v=>{
@@ -588,12 +711,11 @@ async function autoSplit(){
       const th=Math.max(8,mean+1.8*sd),cuts=[0];
       for(const x of diffs)if(x.d>th&&x.t-cuts[cuts.length-1]>=2)cuts.push(x.t);
       if(cuts.length>1&&dur-cuts[cuts.length-1]<1.2)cuts.pop();cuts.push(dur);
-      const out=[];for(let i=0;i<cuts.length-1;i++){const a=cuts[i],b=cuts[i+1];if(b-a>=1.2)out.push([a,Math.max(a+0.3,b-0.05)])}
+      const out=[];for(let i=0;i<cuts.length-1;i++){const a=cuts[i],b=cuts[i+1];if(b-a<1.2&&out.length)out[out.length-1][1]=b;else out.push([a,b])}
       for(const s of out){if(m.cancelled)throw new Error('CANCEL');await seekTo(v,Math.min(s[0]+0.3,s[1]));s.push(grab(v))}
       return out});
     m.close();if(!segs.length){alert('区切りの候補が見つかりませんでした。手で区切ってください');return}
-    segs.forEach(([a,b,th])=>cur.steps.push({id:uid(),start:a,end:b,thumb:th,text:{ja:'',vi:'',id:''},marks:[]}));
-    await save();renderList();renderText();toast(`${segs.length}個の手順候補を追加しました。▼で調整・削除できます`,3600)}
+    await replaceVideoSteps(segs);toast(`${segs.length}個の手順に区切りました。帯の両端で調整できます`,3600)}
   catch(e){m.close();if(e.message!=='CANCEL')alert('自動区切りに失敗しました：'+e.message)}}
 
 /* ---------- 見る（現場用） ---------- */
@@ -1039,8 +1161,10 @@ const TOURS=[
   {scr:'list',s:'#bNew',t:'新しい手順書',x:'「＋ 新しい手順書」を押します。すでに作りかけがあれば、一覧の「編集」でも大丈夫です。',a:'tap'},
   {scr:'edit',pg:'video',s:'#bCap',t:'① 撮る',x:'「📷 撮影する」で検査の様子を撮ります。撮ってある動画なら「🎞 動画を選ぶ」。',need:'手順書を開くと出ます'},
   {scr:'edit',pg:'video',s:'#bDoc',t:'① 写真・既存の手順書から',x:'写真だけで作るなら「🖼 写真で手順を追加」。Excel・Word・PDFの手順書は「📄 既存の手順書を取り込む」。パソコンではファイルをドラッグしてもOK。'},
-  {scr:'edit',pg:'cut',s:'#bAuto',t:'② 自動で区切る',x:'画面が大きく変わった所で、手順の候補を自動で作ります。多すぎたら削除、ずれたら調整します。'},
-  {scr:'edit',pg:'cut',s:'#bIn',t:'② 手で区切る',x:'動画を止めて「▶ 開始点」→ 手順の終わりで「■ 終了点」→「＋ 手順に追加」。±ボタンで細かく合わせます。'},
+  {scr:'edit',pg:'cut',s:'#tlw',t:'② タイムライン',x:'動画を入れると全体が1つの手順（色の帯）になります。タップでその時間へ移動。赤い線が今の位置です。',need:'動画を入れると出ます'},
+  {scr:'edit',pg:'cut',s:'#bSplit',t:'② ここで分ける',x:'動画を止めて「✂ ここで分ける」を押すと、その位置で手順が2つに分かれます。これをくり返します。'},
+  {scr:'edit',pg:'cut',s:'#bFix',t:'② 一気に区切る',x:'「⏱ 一定時間で区切る」で5秒ごと・10秒ごとなどに一気に分けられます。「🎬 画面の変化で区切る」も使えます。'},
+  {scr:'edit',pg:'cut',s:'#bMerge',t:'② 調整する',x:'帯をタップして選び、両端の黄色い●をドラッグで長さ調整（隣とくっついている境目は、両方が一緒に動きます）。「🔗 前とつなぐ」で1つに、「使わない」で外せます。'},
   {scr:'edit',pg:'cut',s:'#stepList',t:'区間の調整',x:'行を押すと道具が出ます。「開始＝今の位置」などで直したり、↑↓で並べ替え、削除ができます。'},
   {scr:'edit',pg:'text',s:'#tImg',t:'③ 見る所に赤丸',x:'画像をタップすると赤丸が付きます。もう一度押すと消えます。',need:'手順を作ると出ます'},
   {scr:'edit',pg:'text',s:'#tAi',t:'③ AIで説明を書く',x:'AIが動画の画像を見て説明を下書きします。先にメモ（例：バリ確認 指で）を書いてから押すと、それを整えてくれます。必ず人が確認します。'},
@@ -1137,10 +1261,14 @@ const HELP=[
  {s:'#bPick',t:'動画を選ぶ',x:'撮影済みの動画をアルバムやファイルから選びます。',a:'toru'},
  {s:'#bPhoto',t:'写真で手順を追加',x:'写真を選ぶと、1枚＝1手順で追加されます（複数選択OK・ファイル名順）。',a:'torikomi'},
  {s:'#bDoc',t:'既存の手順書を取り込む',x:'Excel（.xlsx）・Word（.docx）・PDFから、文字と画像を読み取って手順にします。AIがあれば手順に整理します。',a:'torikomi'},
- {s:'#bIn',t:'開始点',x:'動画を止めた位置を、この手順の始まりにします。',a:'kiru'},
- {s:'#bOut',t:'終了点',x:'動画を止めた位置を、この手順の終わりにします。',a:'kiru'},
- {s:'#bAdd',t:'手順に追加',x:'開始点〜終了点を1つの手順として一覧に入れます。',a:'kiru'},
- {s:'#bAuto',t:'自動で区切る',x:'画面が大きく変わった所を探して手順の候補を作ります。あとで調整・削除できます。',a:'kiru'},
+ {s:'#bSplit',t:'ここで分ける',x:'動画を止めた位置（赤い線）で、今の手順を2つに分けます。',a:'kiru'},
+ {s:'#bMerge',t:'前とつなぐ',x:'選んだ手順を、1つ前の手順とつなげて1つにします。説明文もつながります。',a:'kiru'},
+ {s:'#bSegDel',t:'使わない',x:'選んだ部分を使わない部分（しま模様）にします。字幕動画にも入りません。しま模様をタップすると戻せます。',a:'kiru'},
+ {s:'#bFix',t:'一定時間で区切る',x:'3〜30秒ごとに、動画全体をすき間なく区切ります。',a:'kiru'},
+ {s:'#bAuto',t:'画面の変化で区切る',x:'画面が大きく変わった所で自動的に区切ります。',a:'kiru'},
+ {s:'#bFill',t:'すき間をなくす',x:'使わない部分をなくし、動画の最初から最後まで全部を手順に入れます。',a:'kiru'},
+ {s:'#bWhole',t:'全体を1つに戻す',x:'区切りをやり直したいときに。動画全体が1つの手順になります。',a:'kiru'},
+ {s:'#tlw',t:'タイムライン',x:'動画の流れを横に並べた帯です。タップでその時間へ移動、色の帯が手順です。選んだ帯の両端の黄色い●をドラッグで長さを変えます。',a:'kiru'},
  {s:'#tAi',t:'AIで説明を書く',x:'AIが画像（開始・中間・終了）を見て下書きします。メモがあればそれを整えます。必ず人が確認してください。',a:'setsumei'},
  {s:'#tTr',t:'翻訳',x:'この手順をベトナム語・インドネシア語に翻訳します。辞書の用語が優先されます。',a:'honyaku'},
  {s:'#tGt',t:'Google翻訳で確認',x:'APIキーがなくても使えます。訳をコピーして貼り付けます。',a:'honyaku'},
