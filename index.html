@@ -252,6 +252,9 @@ main.textpage,main.cutpage{max-width:1280px}
 .pe-sel .chips{gap:6px}.pe-sel .chips button{min-height:40px}
 .pe-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.pe-list button{font-size:13px;min-height:38px}.pe-list button.on{box-shadow:0 0 0 3px #ffd400}
 .ptsum{font-size:13px;color:var(--sub);margin:4px 0}
+.camwrap{position:relative;overflow:hidden;border-radius:10px;background:#000;touch-action:none}.camwrap video{border-radius:0!important}
+.camzb{position:absolute;right:8px;top:8px;background:rgba(0,0,0,.6);color:#fff;font-weight:800;font-size:13px;border-radius:8px;padding:2px 8px;pointer-events:none}
+.camzoom{gap:6px;align-items:center;margin-top:6px}.camzoom input{flex:1;min-width:80px}.camzl{min-width:48px;text-align:center;font-weight:800}
 .cam video{width:100%;max-height:52vh;background:#000;border-radius:10px;display:block}
 .cam .recdot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#e53935;margin-right:4px;animation:blink 1s infinite}
 @keyframes blink{50%{opacity:.2}}
@@ -306,8 +309,8 @@ const ALLSEC=['#sCap','#sPlayer','#sCut','#sList','#sText','#sInfo','#sFin'];
   else if(q.get('error'))lsSet('kensa-gerr',q.get('error'));
   history.replaceState(null,'',location.pathname+lsGet('kensa-gsearch',''))}catch(e){}})();
 const forceView=/[?&]view\b/.test(location.search);
-const APP_VER='1.7',APP_DATE='2026-09-28';
-const APP_LOG=[['1.7','ポイント編集に 💬吹き出し・🔤文字・①番号・─線・🖼画像・⭐スタンプ、色・線の太さ・文字の大きさ・塗り'],['1.6','🖨 紙の手順書（QR付き・印刷／PDF）'],['1.5','📦 現場に配る（QR・リンク・ファイルから選ぶ）'],['1.4','🏷 QRラベル・字幕入り動画のQR'],['1.3','② 切る（コマ送り）・③ 説明（画像を見ながら入力）'],['1.2','APIキーの「🔰 かんたん設定」'],['1.1','☁ Googleドライブ連携']];
+const APP_VER='1.8',APP_DATE='2026-09-28';
+const APP_LOG=[['1.8','📷 カメラのズーム（カメラ本体のズーム／デジタルズーム・2本指・ホイール）'],['1.7','ポイント編集に 💬吹き出し・🔤文字・①番号・─線・🖼画像・⭐スタンプ、色・線の太さ・文字の大きさ・塗り'],['1.6','🖨 紙の手順書（QR付き・印刷／PDF）'],['1.5','📦 現場に配る（QR・リンク・ファイルから選ぶ）'],['1.4','🏷 QRラベル・字幕入り動画のQR'],['1.3','② 切る（コマ送り）・③ 説明（画像を見ながら入力）'],['1.2','APIキーの「🔰 かんたん設定」'],['1.1','☁ Googleドライブ連携']];
 function verBadge(){return`<span class="verb">v${APP_VER}</span>`}
 async function checkAppUpdate(manual){if(location.protocol==='file:')return;
   try{const r=await fetch(location.pathname+'?chk='+Date.now(),{cache:'no-store'});const t=await r.text(),m=t.match(/APP_VER='([\d.]+)'/);if(!m)return;
@@ -1704,13 +1707,32 @@ async function openCam(kind,done){
   const d=document.createElement('div');d.className='modal';
   d.innerHTML=`<div class="mbox cam"><div class="row"><h3 class="grow" style="margin:0">${isV?'🎥 カメラで録画':'📸 カメラで写真'}</h3><button class="sm" id="camX">閉じる</button></div>
     <div class="row mt"><select id="camSel" style="flex:1"></select>${isV?'<select id="camRes" style="width:auto"><option value="1280x720">720p</option><option value="1920x1080">1080p</option></select>':''}</div>
-    <div class="mt" style="position:relative"><video id="camV" playsinline muted autoplay></video><div id="camOut"></div></div>
+    <div class="mt" style="position:relative"><div class="camwrap" id="camW"><video id="camV" playsinline muted autoplay></video><span class="camzb" id="camZb" hidden></span></div><div id="camOut"></div></div>
+    <div class="row camzoom" id="camZr"><b class="sub">🔍</b><button class="sm" data-z="-">－</button><input type="range" id="camZ" min="1" max="4" step="0.1" value="1"><button class="sm" data-z="+">＋</button><span id="camZl" class="camzl">1.0倍</span><button class="sm" data-z="1">等倍</button></div>
+    <p class="sub small" id="camZh" style="margin:2px 0 0"></p>
     <p class="sub small" id="camMsg">カメラを準備しています…（許可を求められたら「許可」を押します）</p>
     <div class="row mt" id="camBtns"><button class="pri big" id="camGo" disabled>${isV?'● 録画開始':'📸 撮る'}</button><span id="camT" class="sub" style="min-width:52px;text-align:center"></span></div></div>`;
   document.body.appendChild(d);
   const V=d.querySelector('#camV'),sel=d.querySelector('#camSel'),msg=d.querySelector('#camMsg'),go=d.querySelector('#camGo'),out=d.querySelector('#camOut');
-  let stream=null,rec=null,chunks=[],t0=0,timer=0,blob=null;
-  const stop=()=>{try{if(rec&&rec.state!=='inactive')rec.stop()}catch(e){}if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;clearInterval(timer)};
+  let stream=null,rec=null,chunks=[],t0=0,timer=0,blob=null,hw=null,zoom=1,cx=0.5,cy=0.5,drawOn=false;
+  const CW=d.querySelector('#camW'),ZR=d.querySelector('#camZ'),zl=d.querySelector('#camZl'),zb=d.querySelector('#camZb');
+  const zmin=()=>hw?hw.min:1,zmax=()=>hw?hw.max:4;
+  const clampC=()=>{const h=0.5/zoom;cx=Math.max(h,Math.min(1-h,cx));cy=Math.max(h,Math.min(1-h,cy))};
+  const setZoom=z=>{zoom=Math.max(zmin(),Math.min(zmax(),+(+z).toFixed(2)));ZR.value=zoom;zl.textContent=zoom.toFixed(1)+'倍';zb.hidden=zoom<=zmin()+0.01;zb.textContent='🔍 '+zoom.toFixed(1)+'倍';
+    if(hw){const tr=stream&&stream.getVideoTracks()[0];if(tr)tr.applyConstraints({advanced:[{zoom}]}).catch(()=>{});V.style.transform=''}
+    else{clampC();V.style.transformOrigin='0 0';V.style.transform=zoom>1.001?`scale(${zoom}) translate(${-(cx-0.5/zoom)*100}%,${-(cy-0.5/zoom)*100}%)`:''}};
+  const crop=()=>{const vw=V.videoWidth,vh=V.videoHeight;if(hw||zoom<=1.001)return[0,0,vw,vh];const sw=vw/zoom,sh=vh/zoom;return[(cx-0.5/zoom)*vw,(cy-0.5/zoom)*vh,sw,sh]};
+  d.querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>{const k=b.dataset.z;setZoom(k==='1'?zmin():zoom*(k==='+'?1.25:0.8))});
+  ZR.oninput=e=>setZoom(e.target.value);
+  CW.addEventListener('wheel',e=>{if(!stream)return;e.preventDefault();setZoom(zoom*(e.deltaY<0?1.1:1/1.1))},{passive:false});
+  const pts=new Map();let pinch=null,pan=null;
+  CW.onpointerdown=e=>{if(!stream)return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});try{CW.setPointerCapture(e.pointerId)}catch(_){}
+    if(pts.size===2){const[a,b]=[...pts.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),z:zoom};pan=null}else pan={x:e.clientX,y:e.clientY,cx,cy}};
+  CW.onpointermove=e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(pinch&&pts.size>=2){const[a,b]=[...pts.values()];setZoom(pinch.z*Math.hypot(a.x-b.x,a.y-b.y)/(pinch.d||1));return}
+    if(pan&&!hw&&zoom>1.001){const r=CW.getBoundingClientRect();cx=pan.cx-(e.clientX-pan.x)/r.width/zoom;cy=pan.cy-(e.clientY-pan.y)/r.height/zoom;setZoom(zoom)}};
+  CW.onpointerup=CW.onpointercancel=e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=null;if(!pts.size)pan=null};
+  const stop=()=>{drawOn=false;try{if(rec&&rec.state!=='inactive')rec.stop()}catch(e){}if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;clearInterval(timer)};
   const close=()=>{stop();d.remove()};d.querySelector('#camX').onclick=close;
   const start=async()=>{stop();go.disabled=true;
     const [w,h]=(isV&&d.querySelector('#camRes')?d.querySelector('#camRes').value:'1920x1080').split('x').map(Number);
@@ -1720,20 +1742,28 @@ async function openCam(kind,done){
     V.srcObject=stream;V.hidden=false;out.innerHTML='';go.disabled=false;
     const tr=stream.getVideoTracks()[0],st=tr.getSettings?tr.getSettings():{};
     msg.textContent=`${tr.label||'カメラ'}（${st.width||'?'}×${st.height||'?'}）${isV?(stream.getAudioTracks().length?'・マイクあり':'・マイクなし（音声は入りません）'):''}`;
+    const caps=tr.getCapabilities?tr.getCapabilities():{};hw=caps&&caps.zoom&&caps.zoom.max>caps.zoom.min?{min:caps.zoom.min,max:caps.zoom.max,step:caps.zoom.step||0.1}:null;
+    ZR.min=zmin();ZR.max=zmax();ZR.step=hw?hw.step:0.1;cx=cy=0.5;setZoom(hw?(st.zoom||hw.min):1);
+    d.querySelector('#camZh').textContent=hw?'カメラ本体のズームを使います（画質はそのまま）。＋－・スライダー・2本指で広げる・マウスのホイールで調整。'
+      :'デジタルズーム：映像を拡大して撮ります（拡大するほど少し粗くなります）。＋－・スライダー・2本指・マウスのホイールで拡大、拡大中は映像を引っぱって見る場所を動かせます。';
     if(!sel.options.length||sel.dataset.filled!=='1'){try{const ds=(await navigator.mediaDevices.enumerateDevices()).filter(x=>x.kind==='videoinput');
       sel.innerHTML=ds.map((x,i)=>`<option value="${x.deviceId}" ${x.deviceId===st.deviceId?'selected':''}>${esc(x.label||'カメラ'+(i+1))}</option>`).join('');sel.dataset.filled='1'}catch(e){}}};
   sel.onchange=start;if(d.querySelector('#camRes'))d.querySelector('#camRes').onchange=start;
   go.onclick=()=>{
     if(!isV){const c=document.createElement('canvas');c.width=V.videoWidth;c.height=V.videoHeight;if(!c.width){toast('まだ映像が出ていません');return}
-      c.getContext('2d').drawImage(V,0,0);const url=c.toDataURL('image/jpeg',0.9);V.hidden=true;
+      const[sx,sy,sw,sh]=crop();c.getContext('2d').drawImage(V,sx,sy,sw,sh,0,0,c.width,c.height);V.style.transform='';const url=c.toDataURL('image/jpeg',0.9);V.hidden=true;
       out.innerHTML=`<img src="${url}" style="width:100%;border-radius:10px">`;
       d.querySelector('#camBtns').innerHTML='<button class="pri big" id="camUse">✔ この写真を使う</button><button class="big" id="camRe">↺ 撮り直す</button>';
       d.querySelector('#camUse').onclick=()=>{close();done(url)};d.querySelector('#camRe').onclick=()=>{close();openCam(kind,done)};return}
     if(!rec||rec.state==='inactive'){
-      const mt=pickRecMime(stream.getAudioTracks().length>0);chunks=[];
-      try{rec=new MediaRecorder(stream,mt?{mimeType:mt,videoBitsPerSecond:5e6}:undefined)}catch(e){rec=new MediaRecorder(stream)}
+      const mt=pickRecMime(stream.getAudioTracks().length>0);chunks=[];let rs=stream;
+      if(!hw&&HTMLCanvasElement.prototype.captureStream&&V.videoWidth){const c=document.createElement('canvas');c.width=V.videoWidth;c.height=V.videoHeight;const x=c.getContext('2d');drawOn=true;
+        const draw=()=>{if(!drawOn)return;const[sx,sy,sw,sh]=crop();try{x.drawImage(V,sx,sy,sw,sh,0,0,c.width,c.height)}catch(_){}
+          if(V.requestVideoFrameCallback)V.requestVideoFrameCallback(draw);else requestAnimationFrame(draw)};draw();
+        rs=c.captureStream(30);stream.getAudioTracks().forEach(t=>rs.addTrack(t))}
+      try{rec=new MediaRecorder(rs,mt?{mimeType:mt,videoBitsPerSecond:5e6}:undefined)}catch(e){rec=new MediaRecorder(rs)}
       rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
-      rec.onstop=()=>{blob=new Blob(chunks,{type:(rec.mimeType||mt||'video/webm').split(';')[0]});const u=URL.createObjectURL(blob);
+      rec.onstop=()=>{drawOn=false;V.style.transform='';d.querySelector('#camZr').hidden=true;d.querySelector('#camZh').hidden=true;zb.hidden=true;blob=new Blob(chunks,{type:(rec.mimeType||mt||'video/webm').split(';')[0]});const u=URL.createObjectURL(blob);
         stream&&stream.getTracks().forEach(t=>t.stop());V.hidden=true;out.innerHTML=`<video src="${u}" controls playsinline style="width:100%;max-height:52vh;border-radius:10px;background:#000"></video>`;
         msg.textContent=`録画しました（${((Date.now()-t0)/1000).toFixed(1)}秒・約${(blob.size/1048576).toFixed(1)}MB）。確認して「この動画を使う」を押します。`;
         d.querySelector('#camBtns').innerHTML='<button class="pri big" id="camUse">✔ この動画を使う</button><button class="big" id="camRe">↺ 撮り直す</button>';
