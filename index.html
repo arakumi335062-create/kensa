@@ -116,6 +116,7 @@ a.kw-big{background:#e8f0fe;color:#1a56c4;border:1px solid #b6ccf5;border-radius
 .verb{display:inline-block;font-size:11px;font-weight:700;color:var(--sub);border:1px solid var(--line);border-radius:10px;padding:0 7px;margin-left:6px;vertical-align:middle;white-space:nowrap}
 .appupd{position:fixed;left:10px;right:10px;top:calc(env(safe-area-inset-top) + 8px);z-index:65;max-width:620px;margin:0 auto;background:#1f5fbf;color:#fff;border-radius:12px;padding:8px 10px;display:flex;gap:8px;align-items:center;box-shadow:0 6px 20px rgba(0,0,0,.3);font-size:14px}.appupd button{background:#fff;color:#1f5fbf;border:0}
 .cutedge button,.cutbig{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.25}.cutedge button small,.cutbig small{font-size:11.5px;font-weight:600;opacity:.8;margin-top:2px}.cutedge button.ng{background:#fff6e5;border-color:#e8c07a}.cutedge button.ng small{color:#8a5a00;opacity:1}
+.lsdel{padding:8px 10px}
 .mbox{background:var(--card);color:var(--ink);border-radius:14px;padding:16px;width:100%;max-width:480px;max-height:90vh;overflow:auto}
 .mbox video{width:100%;max-height:48vh;border-radius:8px;background:#000;margin-top:8px}
 .modal.sheet{align-items:flex-end;padding:0}
@@ -315,8 +316,8 @@ const ALLSEC=['#sCap','#sPlayer','#sCut','#sList','#sText','#sInfo','#sFin'];
   else if(q.get('error'))lsSet('kensa-gerr',q.get('error'));
   history.replaceState(null,'',location.pathname+lsGet('kensa-gsearch',''))}catch(e){}})();
 const forceView=/[?&]view\b/.test(location.search);
-const APP_VER='1.10',APP_DATE='2026-09-28';
-const APP_LOG=[['1.10','🎯 ポイント編集をパソコンで大きく：左に挿入メニュー（縦）、真ん中に大きい画像、右に書式'],['1.9','② 切る：ボタンに「何が起きるか」（手順番号・長さ）を表示、注意の文をわかりやすく'],['1.8','📷 カメラのズーム（カメラ本体のズーム／デジタルズーム・2本指・ホイール）'],['1.7','ポイント編集に 💬吹き出し・🔤文字・①番号・─線・🖼画像・⭐スタンプ、色・線の太さ・文字の大きさ・塗り'],['1.6','🖨 紙の手順書（QR付き・印刷／PDF）'],['1.5','📦 現場に配る（QR・リンク・ファイルから選ぶ）'],['1.4','🏷 QRラベル・字幕入り動画のQR'],['1.3','② 切る（コマ送り）・③ 説明（画像を見ながら入力）'],['1.2','APIキーの「🔰 かんたん設定」'],['1.1','☁ Googleドライブ連携']];
+const APP_VER='1.11',APP_DATE='2026-09-28';
+const APP_LOG=[['1.11','一覧から 🗑 削除（この端末だけ／ドライブからも）'],['1.10','🎯 ポイント編集をパソコンで大きく：左に挿入メニュー（縦）、真ん中に大きい画像、右に書式'],['1.9','② 切る：ボタンに「何が起きるか」（手順番号・長さ）を表示、注意の文をわかりやすく'],['1.8','📷 カメラのズーム（カメラ本体のズーム／デジタルズーム・2本指・ホイール）'],['1.7','ポイント編集に 💬吹き出し・🔤文字・①番号・─線・🖼画像・⭐スタンプ、色・線の太さ・文字の大きさ・塗り'],['1.6','🖨 紙の手順書（QR付き・印刷／PDF）'],['1.5','📦 現場に配る（QR・リンク・ファイルから選ぶ）'],['1.4','🏷 QRラベル・字幕入り動画のQR'],['1.3','② 切る（コマ送り）・③ 説明（画像を見ながら入力）'],['1.2','APIキーの「🔰 かんたん設定」'],['1.1','☁ Googleドライブ連携']];
 function verBadge(){return`<span class="verb">v${APP_VER}</span>`}
 async function checkAppUpdate(manual){if(location.protocol==='file:')return;
   try{const r=await fetch(location.pathname+'?chk='+Date.now(),{cache:'no-store'});const t=await r.text(),m=t.match(/APP_VER='([\d.]+)'/);if(!m)return;
@@ -716,14 +717,14 @@ async function showList(){
   const draw=q=>{const f=ms.filter(m=>!q||(m.title+' '+m.partNo).toLowerCase().includes(q.toLowerCase()));
     $('#ml').innerHTML=f.length?f.map(m=>`<div class="card"><div class="row"><div class="grow"><b>${esc(m.title||'（無題）')}</b>
       <div class="sub">品番 ${esc(m.partNo||'-')}・第${esc(m.version||'1')}版・改訂 ${esc(m.revDate||'-')}・手順${m.steps.length}${m.approver?'':'・<span style="color:var(--warn)">未承認</span>'}</div></div>
-      <button class="pri" data-view="${m.id}">見る</button>${ed?`<button data-edit="${m.id}">編集</button>`:''}</div><div class="dline" data-dl="${m.id}"></div></div>`).join('')
+      <button class="pri" data-view="${m.id}">見る</button>${ed?`<button data-edit="${m.id}">編集</button><button class="danger lsdel" data-mdel="${m.id}" title="削除" aria-label="削除">🗑</button>`:''}</div><div class="dline" data-dl="${m.id}"></div></div>`).join('')
       :`<p class="sub">${ms.length?'見つかりません。':'まだ手順書がありません。'}</p>`};
   draw('');if($('#q'))$('#q').oninput=e=>{draw(e.target.value.trim());paintDrive()};
   bindDriveCard();
   if($('#bNew'))$('#bNew').onclick=()=>showEdit(null);
   $('#bImp').onclick=()=>$('#fImp').click();
   $('#fImp').onchange=e=>{const f=e.target.files[0];if(f)importFile(f);e.target.value=''};
-  $('#ml').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.view)showView(b.dataset.view);else if(b.dataset.edit)showEdit(b.dataset.edit)};
+  $('#ml').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.view)showView(b.dataset.view);else if(b.dataset.edit)showEdit(b.dataset.edit);else if(b.dataset.mdel)delManualUI(b.dataset.mdel)};
   renderChrome();
 }
 
@@ -2192,8 +2193,29 @@ function paintDrive(){if(!dRemote)return;const byId={};dRemote.forEach(f=>{if(f.
   $$('[data-dl]').forEach(el=>{const id=el.dataset.dl,m=dLocal.find(x=>x.id===id),f=byId[id],st=dStatus(m,f);
     el.innerHTML=`<span class="db ${st.c}">${st.t}</span>${btn(st,id,f&&f.id)}`;if(st.act==='link'&&m&&f){m.sync={json:f.id,remoteUp:+f.appProperties.kmUp};idb.put('manuals',m)}});
   const only=dRemote.filter(f=>f.appProperties&&!dLocal.find(x=>x.id===f.appProperties.kmId));
-  const r=$('#dRemote');if(r)r.innerHTML=only.length?`<div class="sub small mt">この端末にない手順書：</div>`+only.map(f=>`<div class="row mt"><span class="grow"><b>${esc(f.appProperties.kmTitle||f.name)}</b> <span class="sub small">品番 ${esc(f.appProperties.kmPart||'-')}・第${esc(f.appProperties.kmVer||'1')}版</span></span><button class="sm pri" data-dget="${f.id}">⬇ 取り込む</button></div>`).join(''):''}
-async function dActClick(e){const b=e.target.closest('[data-dget],[data-dput]');if(!b)return;e.stopPropagation();
+  const r=$('#dRemote');if(r)r.innerHTML=only.length?`<div class="sub small mt">この端末にない手順書：</div>`+only.map(f=>`<div class="row mt"><span class="grow"><b>${esc(f.appProperties.kmTitle||'（無題）')}</b> <span class="sub small">品番 ${esc(f.appProperties.kmPart||'-')}・第${esc(f.appProperties.kmVer||'1')}版</span></span><button class="sm pri" data-dget="${f.id}">⬇ 取り込む</button>${isEditor()?`<button class="sm danger" data-ddel="${esc(f.appProperties.kmId)}" title="ドライブから削除">🗑</button>`:''}</div>`).join(''):''}
+
+async function driveTrash(kmId){const folder=await ensureFolder();
+  const q=encodeURIComponent(`'${folder}' in parents and trashed=false and appProperties has { key='kmId' and value='${String(kmId).replace(/'/g,'')}' }`);
+  const j=await(await gfetch(`${GAPI}?q=${q}&pageSize=100&fields=files(id)&supportsAllDrives=true&includeItemsFromAllDrives=true`)).json();
+  let n=0;for(const f of j.files||[]){try{await gfetch(`${GAPI}/${f.id}?supportsAllDrives=true`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({trashed:true})});n++}catch(e){if(e.message==='GAUTH')throw e}}
+  return n}
+async function delManualUI(id){if(!isEditor())return;const m=await idb.get('manuals',id);if(!m)return;
+  const onDrive=!!(settings.gClientId&&m.sync&&m.sync.json),d=document.createElement('div');d.className='modal';
+  d.innerHTML=`<div class="mbox"><h3>🗑 手順書を削除</h3><p>「<b>${esc(m.title||'（無題）')}</b>」（品番 ${esc(m.partNo||'-')}・第${esc(m.version||'1')}版・手順${m.steps.length}）を削除します。</p>
+    <p class="sub small">この端末の手順書と動画が消えます。<b>元に戻せません。</b>必要なら先に「⚙ 設定」→「全データを書き出す」でバックアップしてください。</p>
+    ${onDrive?`<label class="opt"><input type="checkbox" id="dlDrv"><span><b>☁ Googleドライブからも削除する</b><br><span class="sub small">他の端末・QRコードからも見られなくなります（ドライブのゴミ箱に30日間残ります）。チェックしないと、この端末からだけ消えます（ドライブから取り込み直せます）。</span></span></label>`:''}
+    <div class="row mt"><button class="danger" id="dlGo">🗑 削除する</button><button class="grow" id="dlX">やめる</button></div></div>`;
+  document.body.appendChild(d);d.querySelector('#dlX').onclick=()=>d.remove();
+  d.querySelector('#dlGo').onclick=async()=>{const drv=!!(d.querySelector('#dlDrv')&&d.querySelector('#dlDrv').checked);d.remove();
+    if(drv){if(!gToken())return driveErr(new Error('GAUTH'),'list');const pm=progressModal('🗑 ドライブから削除中',m.title||'');
+      try{await driveTrash(m.id);pm.close()}catch(e){pm.close();return driveErr(e,'list')}}
+    if(m.videoId)await idb.del('videos',m.videoId);await idb.del('manuals',m.id);if(cur&&cur.id===m.id){cur=null;lastId=null;lsSet('kensa-last','')}
+    dRemote=null;toast(drv?'削除しました（ドライブからも）':'この端末から削除しました');showList()}}
+async function dActClick(e){const b=e.target.closest('[data-dget],[data-dput],[data-ddel]');if(!b)return;e.stopPropagation();
+  if(b.dataset.ddel){const f=(dRemote||[]).find(x=>x.appProperties&&x.appProperties.kmId===b.dataset.ddel);
+    if(!confirm(`ドライブにある「${(f&&f.appProperties.kmTitle)||'（無題）'}」を削除しますか？\n\n・他の端末やQRコードからも見られなくなります\n・ドライブの「ゴミ箱」に30日間残るので、その間はGoogleドライブから元に戻せます`))return;
+    const pm=progressModal('🗑 ドライブから削除中','');try{const n=await driveTrash(b.dataset.ddel);pm.close();toast(`ドライブから削除しました（${n}ファイル）`);dRemote=null;showList()}catch(err){pm.close();driveErr(err,'list')}return}
   if(b.dataset.dget){const f=(dRemote||[]).find(x=>x.id===b.dataset.dget);if(!f)return;const m=dLocal.find(x=>x.id===f.appProperties.kmId);
     if(m&&m.sync&&m.updatedAt>(m.sync.remoteUp||0)+1&&!confirm('この端末で変更した内容は、ドライブの版で置き換わります。よろしいですか？'))return;
     const pm=progressModal('☁ ドライブから取り込み中',f.appProperties.kmTitle||'');
