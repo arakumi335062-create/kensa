@@ -122,6 +122,32 @@ a.kw-big{background:#e8f0fe;color:#1a56c4;border:1px solid #b6ccf5;border-radius
 .dprev div{display:flex;gap:8px;align-items:center;border-top:1px solid var(--line);padding:4px 0;font-size:13px}.dprev div:first-child{border-top:0}
 .dprev img,.dprev .ni{width:64px;height:40px;object-fit:cover;border-radius:4px;background:#ccc;flex:0 0 auto}
 .opt{display:flex;gap:8px;align-items:flex-start;margin:6px 0;font-size:14px}.opt input{margin-top:4px}
+.tc{display:flex;align-items:baseline;gap:8px;flex-wrap:nowrap;min-height:34px}
+.tc-now{font:800 28px/1.1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.02em}
+.tc-seg{text-align:right;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+#tlInfo{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+@media (max-width:520px){.tc-seg .sub{display:none}}.segc{color:#fff;padding:2px 10px;border-radius:8px;font-weight:800}
+.trans{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin:8px 0 4px}
+.trans button{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:19px;padding:4px 2px;min-height:56px;line-height:1.05;font-weight:700}
+.trans small{font-size:11px;color:var(--sub);font-weight:600;margin-top:3px;white-space:nowrap}
+.trans .tplay{background:var(--pri);color:#fff;border-color:var(--pri)}.trans .tplay small{color:#dfe9ff}
+.tli{touch-action:pan-y;cursor:col-resize}
+.tli .ph{width:3px;margin-left:-1px;box-shadow:0 0 0 1px rgba(0,0,0,.5)}
+.cutact{margin-top:10px}.cutbig{font-size:19px;font-weight:800;min-height:58px;width:100%}
+.cutedge{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}.cutedge button{min-height:50px;font-size:14px}
+.cutact .row button{flex:1}
+.cuthow{background:var(--soft);border-radius:10px;padding:8px 10px;line-height:1.7;margin:10px 0 0}
+.cutmore{margin-top:8px}.cutmore summary{cursor:pointer;font-size:14px;color:var(--sub);padding:6px 0}
+@media (pointer:coarse){.pconly{display:none}}
+@media (max-width:700px){.cutpage #sPlayer .vwrap video{max-height:26vh}.cutpage #sPlayer{padding-top:6px;padding-bottom:6px}}
+@media (max-width:420px){.trans{gap:3px}.trans button{font-size:16px;min-height:52px}.trans small{font-size:10px}.tc-now{font-size:24px}}
+@media (min-width:1000px){
+  main.cutpage{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:0 16px;align-items:start}
+  main.cutpage>*{grid-column:1}
+  main.cutpage #sList{grid-column:2;grid-row:1 / span 3;position:sticky;top:calc(var(--topH,110px) + 8px);max-height:calc(100vh - var(--topH,110px) - 140px);overflow:auto}
+  .cutpage #sPlayer .vwrap video{max-height:40vh}
+  .cutact{display:grid;grid-template-columns:1fr 1.3fr;gap:8px;align-items:stretch}.cutact .cutedge{margin:0}.cutact .row{grid-column:1/-1}
+}
 .tlw{overflow-x:auto;overflow-y:hidden;border:1px solid var(--line);border-radius:8px;background:#15181e;-webkit-overflow-scrolling:touch;margin-top:4px}
 .tli{position:relative;height:78px;min-width:100%}
 .strip2{position:absolute;left:0;top:12px;height:54px;display:flex;pointer-events:none}
@@ -143,6 +169,34 @@ button.rec{background:#c0392b;color:#fff;border-color:#c0392b}
 .dline{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}.dline:empty{display:none}
 .db{font-size:12px;border-radius:10px;padding:2px 9px;font-weight:700}.db.ok{background:#e7f6ec;color:#16632f}.db.new{background:#e3eeff;color:#1f5fbf}.db.warn{background:#fff1d6;color:#8a5a00}
 .upd{background:#e3eeff;color:#123a78;border:1px solid #9dbdf0;border-radius:10px;padding:8px 10px;margin-bottom:10px;display:flex;gap:8px;align-items:center}
+main.textpage,main.cutpage{max-width:1280px}
+.tx-hd{margin-bottom:4px}
+.tx-panes{display:grid;grid-template-columns:1fr;gap:10px}
+.tx-pane{border:2px solid transparent;border-radius:12px;padding:6px;transition:border-color .2s,box-shadow .2s}
+.tx-pane.ok{background:#f1faf3}.tx-pane.ng{background:#fff4f3}
+.tx-pane.hl{border-color:var(--pri);box-shadow:0 0 0 3px rgba(31,95,191,.18)}
+.tx-lab{display:inline-block;font-weight:800;font-size:14px;padding:2px 10px;border-radius:8px}
+.tx-lab.ok{background:#d9f2e0;color:#16632f}.tx-lab.ng{background:#fde0de;color:#b3261e}
+.tx-pane .vwrap{margin:4px auto}.tx-pane .vwrap img,.tx-pane .vwrap video{max-height:30vh}
+.tx-pane.ng .vwrap{outline:3px solid #e53935;border-radius:8px}
+.tx-btns{justify-content:center;gap:6px}
+.tx-chk{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 8px}
+.txc{min-height:32px;padding:2px 12px;border-radius:16px;font-size:13px;font-weight:700;color:var(--warn);border-color:#e8c07a;background:#fff8ea}
+.txc.ok{color:#16632f;border-color:#9fd3b0;background:#e7f6ec}
+.tx-sec{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:10px;background:var(--card)}
+.tx-sec h4{margin:0 0 6px;font-size:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}.tx-sec h4 small{font-weight:400;color:var(--sub);font-size:12px}
+.tx-sec h4 .no{display:inline-flex;width:24px;height:24px;border-radius:50%;align-items:center;justify-content:center;background:#5b6472;color:#fff;font-size:13px}
+.tx-sec h4 .no.ok{background:#2e7d32}.tx-sec h4 .no.ng{background:#e53935}
+.tx-sec.ngbox{background:#fff6f5}
+@media (min-width:900px){.onn{display:none}}
+@media (max-width:899px){.onw{display:none}.tx-l.two .tx-panes{grid-template-columns:1fr 1fr;gap:6px}.tx-l.two #tImg img,.tx-l.two #tImg video,.tx-l.two #ngImg img{max-height:22vh}.tx-l.two .tx-btns button{font-size:12px;padding:4px 6px}}
+@media (min-width:900px){
+  .tx{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:18px;align-items:start}
+  .tx-l{position:sticky;top:calc(var(--topH,110px) + 8px);max-height:calc(100vh - var(--topH,110px) - 130px);overflow:auto}
+  .tx #tImg img,.tx #tImg video{max-height:max(160px,calc(100vh - var(--topH,110px) - 330px))}
+  .tx-l.two #tImg img,.tx-l.two #tImg video,.tx-l.two #ngImg img{max-height:max(110px,calc((100vh - var(--topH,110px) - 380px)/2))}
+}
+@media (prefers-color-scheme:dark){.tx-pane.ok{background:#16261a}.tx-pane.ng,.tx-sec.ngbox{background:#2a1c1c}.txc{background:#2c2413}.txc.ok{background:#16261a}}
 .ngbox{margin-top:10px;border:2px solid #f3b4b0;border-radius:10px;padding:8px;background:#fff6f5}
 @media (prefers-color-scheme:dark){.ngbox{background:#2a1c1c;border-color:#7a3a36}}
 .ngt{color:#b3261e}
@@ -518,7 +572,7 @@ function applyPage(){const show=onePage?PAGES.find(p=>p.k===page).s:ALLSEC;
   ALLSEC.forEach(s=>{const el=$(s);if(el)el.classList.toggle('pg-off',!show.includes(s))});
   const v=$('#ve');if(v&&!show.includes('#sPlayer'))v.pause();
   const tv=$('#tv');if(tv&&!show.includes('#sText'))tv.pause();
-  main.classList.toggle('cutpage',onePage&&page==='cut')}
+  main.classList.toggle('cutpage',onePage&&page==='cut');main.classList.toggle('textpage',onePage&&page==='text');setTopH()}
 $('#tabbar').onclick=async e=>{const b=e.target.closest('button');if(!b)return;const v=b.dataset.v;
   if(tour)tourEnd();
   if(view==='edit')await persist();
@@ -610,13 +664,25 @@ async function showEdit(id,pg){
     <input type="file" id="fCap" accept="video/*" capture="environment" hidden><input type="file" id="fPick" accept="video/*" hidden>
     <input type="file" id="fPhoto" accept="image/*" multiple hidden><input type="file" id="fCamPh" accept="image/*" capture="environment" hidden><input type="file" id="fDoc" accept=".xlsx,.docx,.pdf" hidden></div>
   <div class="card" id="sPlayer"><div id="vArea"></div></div>
-  <div class="card" id="sCut"><h3>② 切り分ける（タイムライン）</h3>
+  <div class="card" id="sCut">
+    <div class="tc"><span class="tc-now" id="tcNow">0:00.0</span><span class="sub"> / <span id="tcDur">-</span></span><span class="tc-seg grow" id="tcSeg"></span></div>
+    <div class="trans" id="trans">
+      <button data-j="pb" title="前の区切りへ（Home）">⏮<small>前の区切り</small></button>
+      <button data-j="-1" title="1秒戻る（Shift+←）">◀◀<small>1秒</small></button>
+      <button data-j="-f" title="1コマ戻る（←）">◀<small>1コマ</small></button>
+      <button data-j="play" class="tplay" id="bPlay" title="再生／停止（スペース）">▶<small>再生</small></button>
+      <button data-j="+f" title="1コマ進む（→）">▶<small>1コマ</small></button>
+      <button data-j="+1" title="1秒進む（Shift+→）">▶▶<small>1秒</small></button>
+      <button data-j="nb" title="次の区切りへ（End）">⏭<small>次の区切り</small></button></div>
     <div class="tlw" id="tlw"></div>
-    <div class="row" style="margin-top:4px"><span id="tlInfo" class="sub small grow"></span><button class="sm" id="zOut" aria-label="縮小">－</button><button class="sm" id="zIn" aria-label="拡大">＋</button></div>
-    <div class="row mt"><button class="pri" id="bSplit">✂ ここで分ける</button><button id="bMerge">🔗 前とつなぐ</button><button class="danger" id="bSegDel">使わない</button></div>
-    <div class="row mt"><button class="sm" id="bB1">−1秒</button><button class="sm" id="bBF">−0.2</button><button class="sm" id="bFF">+0.2</button><button class="sm" id="bF1">+1秒</button></div>
-    <div class="row mt"><button class="sm" id="bFix">⏱ 一定時間で区切る</button><button class="sm" id="bAuto">🎬 画面の変化で区切る</button><button class="sm" id="bFill">すき間をなくす</button><button class="sm" id="bWhole">全体を1つに戻す</button></div>
-    <p class="sub small">使い方：動画を止めて「✂ ここで分ける」。帯をタップで選び、両端の黄色い●をドラッグで長さを調整。しま模様は使わない部分（字幕動画に入りません）。</p></div>
+    <div class="row" style="margin-top:4px"><span id="tlInfo" class="sub small grow"></span><span class="sub small">拡大</span><button class="sm" id="zOut" aria-label="縮小">－</button><button class="sm" id="zIn" aria-label="拡大">＋</button></div>
+    <div class="cutact">
+      <button class="pri cutbig" id="bSplit" title="Enter">✂ ここで分ける</button>
+      <div class="cutedge"><button id="bEdgeL" title="[ キー">⇤ この手順の<b>始まり</b>をここに</button><button id="bEdgeR" title="] キー">この手順の<b>終わり</b>をここに ⇥</button></div>
+      <div class="row"><button id="bMerge">🔗 前の手順とつなぐ</button><button class="danger" id="bSegDel">🚫 この部分は使わない</button></div></div>
+    <p class="sub small cuthow"><b>やり方：</b>① 下の帯（フィルム）を<b>指やマウスで左右になぞる</b>と映像が動きます → ② <b>◀ 1コマ ▶</b>でぴったりの場面に合わせる → ③「<b>✂ ここで分ける</b>」。赤い線がある所が「今の場面」です。黄色いつまみをドラッグしても長さを変えられます。しま模様は使わない部分。<span class="pconly"><br>⌨ キーボード：← → 1コマ／Shift+← → 1秒／スペース 再生・停止／Enter 分ける／[ ] 始まり・終わり</span></p>
+    <details class="cutmore"><summary>自動で区切る・まとめて直す</summary>
+      <div class="row mt"><button class="sm" id="bFix">⏱ 一定時間で区切る</button><button class="sm" id="bAuto">🎬 画面の変化で区切る</button><button class="sm" id="bFill">すき間をなくす</button><button class="sm" id="bWhole">全体を1つに戻す</button></div></details></div>
   <div class="card" id="sList"><h3>手順の一覧（<span id="nSteps">0</span>）</h3><div id="stepList"></div></div>
   <div class="card" id="sText"><div class="strip" id="strip"></div><div id="tBody"></div></div>
   <div class="card" id="sInfo"><h3>手順書の情報</h3><div class="grid2">
@@ -645,8 +711,8 @@ async function showEdit(id,pg){
   $('#bFix').onclick=fixedDialog;$('#bFill').onclick=fillGaps;$('#bWhole').onclick=wholeOne;
   $('#zIn').onclick=()=>zoomTL(1.6);$('#zOut').onclick=()=>zoomTL(1/1.6);
   bindTL();
-  [['#bB1',-1],['#bBF',-0.2],['#bFF',0.2],['#bF1',1]].forEach(([s,d])=>$(s).onclick=()=>{const v=$('#ve');if(!v)return noVideo();v.pause();
-    v.currentTime=Math.max(0,Math.min(isFinite(v.duration)?v.duration:1e9,v.currentTime+d))});
+  $('#trans').onclick=e=>{const b=e.target.closest('[data-j]');if(b)jog(b.dataset.j)};
+  $('#bEdgeL').onclick=()=>setEdge('l');$('#bEdgeR').onclick=()=>setEdge('r');
   $('#stepList').onclick=listClick;
   $('#strip').onclick=e=>{const d=e.target.closest('[data-t]');if(d){tIdx=+d.dataset.t;renderText()}};
   $('#bRev').onclick=revise;$('#bAiAll').onclick=aiAll;$('#bTrAll').onclick=translateAll;$('#bTtsAll').onclick=ttsAllDialog;
@@ -676,7 +742,8 @@ function renderPlayer(){
   if(!curURL){a.innerHTML='<p class="sub">まだ動画がありません。「📷 撮影する」か「🎞 動画を選ぶ」から始めます。</p>';return}
   a.innerHTML='<div class="vwrap"><video id="ve" controls playsinline preload="auto"></video></div>';
   const v=$('#ve');v.src=curURL;v.ontimeupdate=()=>{if(segEnd!=null&&v.currentTime>=segEnd){v.pause();segEnd=null}updatePH()};
-  v.addEventListener('seeked',updatePH);v.addEventListener('loadedmetadata',async()=>{if(!isFinite(v.duration)){await fixDur(v)}if(!tlDur)renderTimeline()})}
+  v.addEventListener('seeked',()=>{if(scrub&&scrub.pend!=null){const t=scrub.pend;scrub.pend=null;v.currentTime=t}updatePH()});
+  v.addEventListener('play',()=>{const f=()=>{if(v.paused||!v.isConnected)return;updatePH();requestAnimationFrame(f)};f()});v.addEventListener('pause',updatePH);v.addEventListener('loadedmetadata',async()=>{if(!isFinite(v.duration)){await fixDur(v)}if(!tlDur)renderTimeline()})}
 async function addStep(){
   if(inPt==null||outPt==null){alert('「▶ 開始点」と「■ 終了点」を押してください');return}
   if(outPt<=inPt+0.2){alert('終了点は開始点より後にしてください');return}
@@ -715,31 +782,44 @@ function renderText(){
     return`<div data-t="${i}" class="${i===tIdx?'on':''} ${ok?'':'empty'}">${x.thumb?`<img src="${x.thumb}" alt="">`:''}<span>${i+1}${tr?' ✓':ok?'':' ・'}</span></div>`}).join('');
   const on=st.querySelector('.on');if(on)on.scrollIntoView({block:'nearest',inline:'center'});
   const ph=isPhoto(s),src=s.img||s.thumb;
-  b.innerHTML=`<div class="row"><b class="grow">手順 ${tIdx+1} / ${cur.steps.length}</b><span class="sub">${ph?'🖼 写真':fmt(s.start)+'〜'+fmt(s.end)}</span></div>
-    <div class="vwrap" id="tImg">${src?`<img src="${src}" alt="">`:'<div class="noimg">画像なし</div>'}<div class="marks"></div>
-      <video id="tv" playsinline muted hidden></video></div>
-    <div class="row">${ph?'':'<button class="sm" id="tPlay">▶ 動きを見る</button>'}<button class="pri grow" id="bPts">🎯 ポイント（○ □ × ➡）を入れる・直す</button></div>
-    <div class="ptsum">${s.marks.length?`ポイント ${s.marks.length}個：`+s.marks.map((m,i)=>`${i+1}.${PTN[m.s]||'○'}${m.t0!=null?fmt(m.t0):'ずっと'}${m.label?' '+esc(m.label):''}`).join('　'):'ポイントはまだありません。見せたい所に ○ □ × ➡ で印を付けると伝わりやすくなります。'}</div>
-    <label class="f">日本語の説明</label><textarea id="tJa" data-t="ja" placeholder="例：ゲート部にバリがないか、指でなぞって確認する（メモだけ書いてAIに整えさせてもOK）">${esc(s.text.ja)}</textarea>
-    <div class="row mt"><button class="pri sm" id="tAi">🤖 AIで説明を書く</button><button class="sm" id="tTr">🌐 翻訳</button><button class="sm" id="tGt">Google翻訳で確認</button></div>
-    <label class="f">Tiếng Việt（ベトナム語）</label><textarea id="tVi" data-t="vi">${esc(s.text.vi)}</textarea>
-    <label class="f">Bahasa Indonesia（インドネシア語）</label><textarea id="tId" data-t="id">${esc(s.text.id)}</textarea>
-    <div class="ngbox" id="ngBox">${s.ng?`<div class="row"><b class="ngt grow">❌ NG例（見る画面で左右2分割）</b></div>
+  const tr=s.text.ja.trim()&&s.text.vi.trim()&&s.text.id.trim(),vc=['ja','vi','id'].filter(L=>s.voice&&s.voice[L]).length;
+  const chip=(ok,label,go)=>`<button class="txc ${ok?'ok':''}" data-go="${go}">${ok?'✓':'・'} ${label}</button>`;
+  b.innerHTML=`<div class="tx"><div class="tx-l ${s.ng?'two':''}" id="txL">
+      <div class="row tx-hd"><b class="grow">手順 ${tIdx+1} / ${cur.steps.length}</b><span class="sub">${ph?'🖼 写真':fmt(s.start)+'〜'+fmt(s.end)}</span></div>
+      <div class="tx-panes"><div class="tx-pane ok" id="paneOk"><div class="tx-lab ok">⭕ OK・正しいやり方</div>
+        <div class="vwrap" id="tImg">${src?`<img src="${src}" alt="">`:'<div class="noimg">画像なし</div>'}<div class="marks"></div><video id="tv" playsinline muted hidden></video></div>
+        <div class="row tx-btns">${ph?'':'<button class="sm" id="tPlay">▶ 動きを見る</button>'}<button class="sm pri" id="bPts">🎯 ポイントを入れる</button></div>
+        <div class="ptsum">${s.marks.length?`ポイント ${s.marks.length}個：`+s.marks.map((m,i)=>`${i+1}.${PTN[m.s]||'○'}${m.t0!=null?fmt(m.t0):''}${m.label?' '+esc(m.label):''}`).join('　'):'ポイントなし（○ □ × ➡ で見せたい所に印）'}</div></div>
+      ${s.ng?`<div class="tx-pane ng" id="paneNg"><div class="tx-lab ng">❌ NG・不良の見本</div>
         <div class="vwrap" id="ngImg"><img src="${s.ng.img||s.ng.thumb}" alt=""><div class="marks"></div></div>
-        <div class="row"><button class="sm" id="ngPts">🎯 NGのポイント（○ □ × ➡）を入れる</button><span class="ptsum grow">${s.ng.marks.length?`${s.ng.marks.length}個`:''}</span></div>
-        <label class="f">NGの説明（日本語）</label><textarea data-n="ja" placeholder="例：ゲート部にバリが残っているものはNG">${esc(s.ng.text.ja)}</textarea>
+        <div class="row tx-btns"><button class="sm" id="ngPts">🎯 NGのポイント</button><span class="ptsum grow">${s.ng.marks.length?`${s.ng.marks.length}個`:''}</span></div></div>`:''}</div></div>
+    <div class="tx-r">
+      <div class="tx-chk">${chip(s.text.ja.trim(),'説明','secOk')}${chip(tr,'翻訳','secOk')}${chip(s.marks.length,'ポイント','paneOk')}${chip(s.ng,'NG例','ngBox')}${chip(vc,'音声'+(vc?' '+vc+'/3':''),'secV')}</div>
+      <section class="tx-sec" id="secOk"><h4><span class="no ok">1</span>OKの説明（正しいやり方）<small><span class="onw">← 左</span><span class="onn">↑ 上</span>の「⭕ OK」の画像</small></h4>
+        <label class="f">日本語</label><textarea id="tJa" data-t="ja" placeholder="例：ゲート部にバリがないか、指でなぞって確認する（メモだけ書いてAIに整えさせてもOK）">${esc(s.text.ja)}</textarea>
+        <div class="row mt"><button class="pri sm" id="tAi">🤖 AIで説明を書く</button><button class="sm" id="tTr">🌐 翻訳（ベトナム語・インドネシア語）</button><button class="sm" id="tGt">Google翻訳で確認</button></div>
+        <label class="f">Tiếng Việt（ベトナム語）</label><textarea id="tVi" data-t="vi">${esc(s.text.vi)}</textarea>
+        <label class="f">Bahasa Indonesia（インドネシア語）</label><textarea id="tId" data-t="id">${esc(s.text.id)}</textarea></section>
+      <section class="tx-sec ngbox" id="ngBox">${s.ng?`<h4><span class="no ng">2</span>NGの説明（不良の見本）<small><span class="onw">← 左</span><span class="onn">↑ 上</span>の「❌ NG」の画像</small></h4>
+        <label class="f">日本語</label><textarea data-n="ja" placeholder="例：ゲート部にバリが残っているものはNG">${esc(s.ng.text.ja)}</textarea>
+        <div class="row mt"><button class="sm pri" id="ngAi">🤖 AIでNGの説明</button><button class="sm" id="ngTr">🌐 翻訳</button></div>
         <label class="f">Tiếng Việt</label><textarea data-n="vi">${esc(s.ng.text.vi)}</textarea>
         <label class="f">Bahasa Indonesia</label><textarea data-n="id">${esc(s.ng.text.id)}</textarea>
-        <div class="row mt"><button class="sm" id="ngAi">🤖 AIでNGの説明</button><button class="sm" id="ngTr">🌐 翻訳</button><button class="sm" id="ngChg">📷 写真を変える</button><button class="sm danger" id="ngDel">NG例を消す</button></div>`
-      :`<div class="row"><b class="ngt grow">❌ NG例を追加（OKとNGを2分割で比べる）</b></div>
-        <p class="sub small" style="margin:4px 0">キズ・バリ・ショート・ヒケなど、不良の見本を並べて見せると、判断がそろいます。</p>
+        <div class="row mt"><button class="sm" id="ngChg">📷 NGの写真を変える</button><button class="sm danger" id="ngDel">NG例を消す</button></div>`
+      :`<h4><span class="no ng">2</span>NG例を追加（任意）</h4>
+        <p class="sub small" style="margin:4px 0">キズ・バリ・ショート・ヒケなどの不良見本を入れると、見る画面でOKとNGが左右に並びます。</p>
         <div class="row"><button class="sm" id="ngAdd">📷 NGの写真を撮る・選ぶ</button>${IS_MOBILE?'':'<button class="sm" id="ngCam">📸 パソコンのカメラで撮る</button>'}${ph?'':'<button class="sm" id="ngFrame">🎞 動画のコマから</button>'}</div>`}
-      <input type="file" id="fNg" accept="image/*" hidden></div>
-    <div class="vbox"><div class="row"><b class="sub small">🎤 読み上げ音声</b><span class="grow">${['ja','vi','id'].map(L=>`<span class="vch ${s.voice&&s.voice[L]?'on':''}">${VLN[L]}${s.voice&&s.voice[L]?' ✓':'：なし'}</span>`).join('')}</span></div>
-      <div class="row mt"><select id="vL" style="width:auto">${['ja','vi','id'].map(L=>`<option value="${L}" ${L===vLang?'selected':''}>${VLN[L]}</option>`).join('')}</select>
-      <button class="sm" id="vRec">● 録音</button><button class="sm" id="vAi">🔊 AI音声</button><button class="sm" id="vPlay">▶ 聞く</button><button class="sm danger" id="vDel">消す</button></div>
-      <p class="sub small" style="margin:6px 0 0">録音＝自分の声（無料）。AI音声＝説明文を自動で読み上げ（⚙ 設定でAI音声のキーが必要）。字幕入り動画に入れられます。</p></div>
-    <div class="row mt"><button id="tPv" ${tIdx===0?'disabled':''}>◀ 前の手順</button><button class="pri grow" id="tNx">${last?'④ 仕上げへ ▶':'次の手順 ▶'}</button></div>`;
+        <input type="file" id="fNg" accept="image/*" hidden></section>
+      <section class="tx-sec vbox" id="secV"><h4><span class="no">3</span>読み上げ音声（任意）</h4>
+        <div class="row">${['ja','vi','id'].map(L=>`<span class="vch ${s.voice&&s.voice[L]?'on':''}">${VLN[L]}${s.voice&&s.voice[L]?' ✓':'：なし'}</span>`).join('')}</div>
+        <div class="row mt"><select id="vL" style="width:auto">${['ja','vi','id'].map(L=>`<option value="${L}" ${L===vLang?'selected':''}>${VLN[L]}</option>`).join('')}</select>
+        <button class="sm" id="vRec">● 録音</button><button class="sm" id="vAi">🔊 AI音声</button><button class="sm" id="vPlay">▶ 聞く</button><button class="sm danger" id="vDel">消す</button></div>
+        <p class="sub small" style="margin:6px 0 0">録音＝自分の声（無料）。AI音声＝説明文を自動で読み上げ（⚙ 設定でキーが必要）。</p></section>
+      <div class="row mt"><button id="tPv" ${tIdx===0?'disabled':''}>◀ 前の手順</button><button class="pri grow" id="tNx">${last?'④ 仕上げへ ▶':'次の手順 ▶'}</button></div></div></div>`;
+  setTopH();
+  b.querySelector('.tx-chk').onclick=e=>{const c=e.target.closest('[data-go]');if(c)pulse('#'+c.dataset.go)};
+  if(!b._fi)b._fi=1,b.addEventListener('focusin',e=>{const ng=!!e.target.closest('#ngBox'),ok=!!e.target.closest('#secOk');const po=$('#paneOk'),pn=$('#paneNg');
+    if(po)po.classList.toggle('hl',ok);if(pn)pn.classList.toggle('hl',ng)});
   b.querySelectorAll('textarea').forEach(t=>t.oninput=()=>{cur.steps[tIdx].text[t.dataset.t]=t.value;saveSoon();updateNav()});
   paintMarks($('#tImg .marks'),$('#tImg img'),s.marks,null,true);
   $('#bPts').onclick=()=>openPts({title:`手順 ${tIdx+1} のポイント`,getMs:()=>s.marks,save:()=>save(),src:s.img||s.thumb,video:!ph&&curURL?{start:s.start,end:s.end}:null,onClose:()=>renderText()});
@@ -774,6 +854,8 @@ function renderText(){
   $('#tPv').onclick=()=>{tIdx--;renderText();window.scrollTo(0,0)};
   $('#tNx').onclick=()=>{if(last)setPage('fin');else{tIdx++;renderText();window.scrollTo(0,0)}};
   updateNav()}
+function setTopH(){const t=document.querySelector('.top');if(t)document.documentElement.style.setProperty('--topH',t.offsetHeight+'px')}
+addEventListener('resize',()=>setTopH());
 function renderHist(){const h=$('#hist');if(!h)return;
   h.innerHTML=cur.history.length?'改訂履歴：'+cur.history.slice(0,5).map(x=>`第${esc(x.ver)}版 ${esc(x.date)} ${esc(x.note)}`).join(' ／ '):''}
 async function revise(){
@@ -1019,21 +1101,65 @@ function tlInfo(){const el=$('#tlInfo');if(!el)return;const s=cur.steps.find(x=>
   else{const vs=vsteps(),used=vs.reduce((a,x)=>a+x.end-x.start,0),un=Math.max(0,tlDur-used);
     el.textContent=`全体 ${fmt(tlDur)}・動画の手順 ${vs.length}${un>0.1?`・使わない部分 ${un.toFixed(1)}秒`:'・すき間なし'}`}
   const has=!!(s&&!isPhoto(s));['#bMerge','#bSegDel'].forEach(q=>{const b=$(q);if(b)b.disabled=!has})}
-function updatePH(){const v=$('#ve'),ph=$('#ph'),w=$('#tlw');if(!v||!ph||!pps)return;const x=v.currentTime*pps;ph.style.left=x+'px';
-  if(!v.paused&&w&&(x<w.scrollLeft||x>w.scrollLeft+w.clientWidth-20))w.scrollLeft=x-40}
+const FRAME=1/30;let scrub=null,holdSel=null;
+function updatePH(){const v=$('#ve');if(!v)return;const t=v.currentTime,ph=$('#ph'),w=$('#tlw');
+  if(ph&&pps){const x=t*pps;ph.style.left=x+'px';if(w&&!scrub&&(x<w.scrollLeft+8||x>w.scrollLeft+w.clientWidth-24))w.scrollLeft=x-w.clientWidth/3}
+  const n=$('#tcNow');if(n&&cur){n.textContent=fmt(t);$('#tcDur').textContent=tlDur?fmt(tlDur):'-';
+    const vs=vsteps();let sg=vs.find(x=>t>=x.start-0.001&&t<x.end-0.001)||(tlDur&&t>=tlDur-0.05?vs.find(x=>Math.abs(x.end-tlDur)<0.06):null);
+    $('#tcSeg').innerHTML=!tlDur?'':segLabel(sg);
+    const keep=holdSel&&vs.find(x=>x.id===holdSel&&x.id===selId&&t>=x.start-0.001&&t<=x.end+0.001);if(keep&&sg!==keep){sg=keep;$('#tcSeg').innerHTML=segLabel(sg)}
+    if(!drag){if(sg&&sg.id!==selId){selId=sg.id;drawSegs()}else if(!sg&&selId&&vs.some(x=>x.id===selId)){selId=null;drawSegs()}}}
+  const pb=$('#bPlay');if(pb)pb.innerHTML=v.paused?'▶<small>再生</small>':'⏸<small>停止</small>'}
+function segLabel(sg){return sg?`今の場面は <b class="segc" style="background:hsla(${(cur.steps.indexOf(sg)*67)%360},75%,40%,.95)">手順${cur.steps.indexOf(sg)+1}</b> <span class="sub">${fmt(sg.start)}〜${fmt(sg.end)}</span>`:'今の場面は <b class="segc" style="background:#555">使わない部分</b>'}
+function updatePHfast(t){const ph=$('#ph');if(ph&&pps)ph.style.left=t*pps+'px';const n=$('#tcNow');if(n)n.textContent=fmt(t)}
+function jog(k){holdSel=null;const v=$('#ve');if(!v)return noVideo();const D=tlDur||(isFinite(v.duration)?v.duration:0);
+  if(k==='play'){if(v.paused){if(v.currentTime>=D-0.05)v.currentTime=0;segEnd=null;v.play().catch(()=>{})}else v.pause();return}
+  v.pause();let t=v.currentTime;
+  if(k==='pb'||k==='nb'){const bs=[...new Set([0,D,...vsteps().flatMap(x=>[x.start,x.end])].map(x=>Math.round(x*100)/100))].sort((a,b)=>a-b);
+    t=k==='pb'?(bs.filter(x=>x<t-0.04).pop()??0):(bs.find(x=>x>t+0.04)??D)}
+  else t+=({'-1':-1,'+1':1,'-f':-FRAME,'+f':FRAME})[k]||0;
+  v.currentTime=Math.max(0,Math.min(D,t));updatePH()}
+async function setEdge(side){const v=$('#ve');if(!v)return noVideo();v.pause();const t=v.currentTime,vs=vsteps();
+  let sg=vs.find(x=>t>=x.start&&t<x.end);if(!sg&&side==='r'&&tlDur&&t>=tlDur-0.05)sg=vs[vs.length-1];
+  if(!sg)sg=side==='l'?vs.find(x=>x.start>t):vs.filter(x=>x.end<=t).pop();
+  if(!sg){toast('近くに手順がありません');return}
+  const k=vs.indexOf(sg),pv=vs[k-1],nx=vs[k+1],no=()=>cur.steps.indexOf(sg)+1;
+  if(side==='l'){if(t>sg.end-0.3){toast('終わりに近すぎます。もう少し前の場面で押してください',3000);return}
+    const lk=pv&&Math.abs(pv.end-sg.start)<0.05;
+    if(pv&&(lk||t<pv.end)){if(t<pv.start+0.3){toast('前の手順が短くなりすぎます',3000);return}pv.end=t}
+    sg.start=t;sg.thumb=grab(v)||sg.thumb}
+  else{if(t<sg.start+0.3){toast('始まりに近すぎます。もう少し後の場面で押してください',3000);return}
+    const lk=nx&&Math.abs(nx.start-sg.end)<0.05;
+    if(nx&&(lk||t>nx.start)){if(t>nx.end-0.3){toast('次の手順が短くなりすぎます',3000);return}nx.start=t;nx.thumb=grab(v)||nx.thumb}
+    sg.end=t}
+  selId=sg.id;holdSel=sg.id;await afterTL(`手順${no()}の${side==='l'?'始まり':'終わり'}を ${fmt(t)} にしました`)}
+addEventListener('keydown',e=>{if(view!=='edit'||page!=='cut'||!onePage&&!$('#sCut'))return;
+  if(e.target.closest&&e.target.closest('input,textarea,select,[contenteditable]')||document.querySelector('.modal,.pe')||e.ctrlKey||e.metaKey||e.altKey)return;
+  const m={ArrowLeft:e.shiftKey?'-1':'-f',ArrowRight:e.shiftKey?'+1':'+f',' ':'play',Home:'pb',End:'nb'}[e.key];
+  if(m){e.preventDefault();jog(m);return}
+  if(e.key==='Enter'){e.preventDefault();splitHere()}else if(e.key==='['){setEdge('l')}else if(e.key===']'){setEdge('r')}});
 function zoomTL(f){const w=$('#tlw'),v=$('#ve');if(!w||!tlDur)return;const min=Math.max(2,(w.clientWidth-4)/tlDur);
   pps=Math.max(min,Math.min(240,pps*f));$('#tli').style.width=Math.ceil(tlDur*pps)+'px';drawStrip();drawSegs();updatePH();
   if(v)w.scrollLeft=v.currentTime*pps-w.clientWidth/2}
 function tlTime(e){const r=$('#tli').getBoundingClientRect();return Math.max(0,Math.min(tlDur,(e.clientX-r.left)/pps))}
 function bindTL(){
   const w=$('#tlw');
-  w.addEventListener('pointerdown',e=>{const hd=e.target.closest('.hd');if(!hd)return;e.preventDefault();drag={id:hd.dataset.id,side:hd.dataset.side,moved:false};try{hd.setPointerCapture(e.pointerId)}catch(_){}});
-  w.addEventListener('pointermove',e=>{if(!drag)return;e.preventDefault();const s=cur.steps.find(x=>x.id===drag.id);if(!s)return;
+  w.addEventListener('pointerdown',e=>{const hd=e.target.closest('.hd');
+    if(!hd){if(!$('#tli')||e.button>0)return;holdSel=null;scrub={x:e.clientX,moved:false,id:e.pointerId};return}
+    e.preventDefault();drag={id:hd.dataset.id,side:hd.dataset.side,moved:false};holdSel=hd.dataset.id;try{hd.setPointerCapture(e.pointerId)}catch(_){}});
+  w.addEventListener('pointermove',e=>{
+    if(scrub){if(!scrub.moved&&Math.abs(e.clientX-scrub.x)<5)return;
+      if(!scrub.moved){scrub.moved=true;try{w.setPointerCapture(scrub.id)}catch(_){}}
+      e.preventDefault();const v=$('#ve');if(!v)return;v.pause();
+      const r=w.getBoundingClientRect();if(e.clientX>r.right-30)w.scrollLeft+=12;else if(e.clientX<r.left+30)w.scrollLeft-=12;
+      const t=tlTime(e);if(!v.seeking)v.currentTime=t;else scrub.pend=t;updatePHfast(t);return}
+    if(!drag)return;e.preventDefault();const s=cur.steps.find(x=>x.id===drag.id);if(!s)return;
     const vs=vsteps(),k=vs.indexOf(s),pv=vs[k-1],nx=vs[k+1];let t=tlTime(e);
     if(drag.side==='l'){const lk=pv&&Math.abs(pv.end-s.start)<0.05;t=Math.max(lk?pv.start+0.3:pv?pv.end:0,Math.min(t,s.end-0.3));s.start=t;if(lk)pv.end=t;drag.thumbId=s.id}
     else{const lk=nx&&Math.abs(nx.start-s.end)<0.05;t=Math.min(lk?nx.end-0.3:nx?nx.start:tlDur,Math.max(t,s.start+0.3));s.end=t;if(lk){nx.start=t;drag.thumbId=nx.id}}
     drag.moved=true;const v=$('#ve');if(v){v.pause();v.currentTime=t}drawSegs();updatePH()});
-  const end=async()=>{if(!drag)return;const d=drag;drag=null;tlJust=d.moved;setTimeout(()=>tlJust=false,80);
+  const end=async()=>{if(scrub){const sc=scrub;scrub=null;if(sc.moved){tlJust=true;setTimeout(()=>tlJust=false,80);const v=$('#ve');if(v&&sc.pend!=null)v.currentTime=sc.pend;updatePH()}}
+    if(!drag)return;const d=drag;drag=null;tlJust=d.moved;setTimeout(()=>tlJust=false,80);
     if(d.moved){const s=cur.steps.find(x=>x.id===d.thumbId);if(s){await sleep(250);const v=$('#ve');if(v)s.thumb=grab(v)||s.thumb}await save();drawSegs();renderList()}};
   w.addEventListener('pointerup',end);w.addEventListener('pointercancel',end);
   w.addEventListener('click',e=>{if(tlJust||e.target.closest('.hd')||!$('#tli'))return;const t=tlTime(e),v=$('#ve');
@@ -1043,7 +1169,7 @@ function bindTL(){
     if(gp&&confirm(`この使わない部分（${fmt(+gp.dataset.ga)}〜${fmt(+gp.dataset.gb)}）を手順にしますか？`))addGap(+gp.dataset.ga,+gp.dataset.gb)})}
 function insertByTime(n){const vs=vsteps(),pv=vs.filter(x=>x.start<n.start).pop();
   if(pv)cur.steps.splice(cur.steps.indexOf(pv)+1,0,n);else{const f=vs[0];cur.steps.splice(f?cur.steps.indexOf(f):cur.steps.length,0,n)}}
-async function afterTL(msg){await save();drawSegs();renderList();updateNav();if(msg)toast(msg)}
+async function afterTL(msg){await save();drawSegs();renderList();updateNav();updatePH();if(msg)toast(msg)}
 async function addGap(a,b){const v=$('#ve');if(v){v.currentTime=a+0.2;await onceSeeked(v)}
   const n={id:uid(),start:a,end:b,thumb:v?grab(v):'',text:{ja:'',vi:'',id:''},marks:[]};insertByTime(n);selId=n.id;await afterTL('手順にしました')}
 async function splitHere(){
@@ -1830,10 +1956,12 @@ const TOURS=[
   {scr:'list',s:'#bNew',t:'新しい手順書',x:'「＋ 新しい手順書」を押します。すでに作りかけがあれば、一覧の「編集」でも大丈夫です。',a:'tap'},
   {scr:'edit',pg:'video',s:'#bCap',t:'① 撮る',x:'「📷 撮影する」で検査の様子を撮ります。撮ってある動画なら「🎞 動画を選ぶ」。',need:'手順書を開くと出ます'},
   {scr:'edit',pg:'video',s:'#bDoc',t:'① 写真・既存の手順書から',x:'写真だけで作るなら「🖼 写真で手順を追加」。Excel・Word・PDFの手順書は「📄 既存の手順書を取り込む」。パソコンではファイルをドラッグしてもOK。'},
-  {scr:'edit',pg:'cut',s:'#tlw',t:'② タイムライン',x:'動画を入れると全体が1つの手順（色の帯）になります。タップでその時間へ移動。赤い線が今の位置です。',need:'動画を入れると出ます'},
+  {scr:'edit',pg:'cut',s:'#tlw',t:'② フィルムをなぞる',x:'動画を入れると全体が1つの手順（色の帯）になります。帯を指やマウスで左右になぞると映像が動きます。赤い線が今の場面です。',need:'動画を入れると出ます'},
+  {scr:'edit',pg:'cut',s:'#trans',t:'② コマ送り',x:'「◀ 1コマ ▶」で少しずつ、「◀◀ 1秒 ▶▶」で大きく動かします。「⏮ ⏭」は前・次の区切りへ飛びます。パソコンは ← → キーでもOK。'},
   {scr:'edit',pg:'cut',s:'#bSplit',t:'② ここで分ける',x:'動画を止めて「✂ ここで分ける」を押すと、その位置で手順が2つに分かれます。これをくり返します。'},
-  {scr:'edit',pg:'cut',s:'#bFix',t:'② 一気に区切る',x:'「⏱ 一定時間で区切る」で5秒ごと・10秒ごとなどに一気に分けられます。「🎬 画面の変化で区切る」も使えます。'},
-  {scr:'edit',pg:'cut',s:'#bMerge',t:'② 調整する',x:'帯をタップして選び、両端の黄色い●をドラッグで長さ調整（隣とくっついている境目は、両方が一緒に動きます）。「🔗 前とつなぐ」で1つに、「使わない」で外せます。'},
+  {scr:'edit',pg:'cut',s:'.cutmore',t:'② 一気に区切る',x:'「自動で区切る・まとめて直す」を開くと、「⏱ 一定時間で区切る」で5秒ごと・10秒ごとなどに一気に分けられます。「🎬 画面の変化で区切る」も使えます。'},
+  {scr:'edit',pg:'cut',s:'#bEdgeL',t:'② 始まり・終わりを直す',x:'赤い線がある手順が「今の手順」です。場面を合わせて「⇤ 始まりをここに」「終わりをここに ⇥」を押すだけで長さが直ります（黄色いつまみのドラッグでもOK）。'},
+  {scr:'edit',pg:'cut',s:'#bMerge',t:'② つなぐ・外す',x:'「🔗 前の手順とつなぐ」で1つに、「🚫 この部分は使わない」で字幕動画から外せます。'},
   {scr:'edit',pg:'cut',s:'#stepList',t:'区間の調整',x:'行を押すと道具が出ます。「開始＝今の位置」などで直したり、↑↓で並べ替え、削除ができます。'},
   {scr:'edit',pg:'text',s:'#bPts',t:'③ ポイント（○ □ × ➡）',x:'「🎯 ポイントを入れる」で専用画面が開きます。見せたい場面で止めて、形を選んでなぞるだけ。文字や表示する時間も付けられます。',need:'手順を作ると出ます'},
   {scr:'edit',pg:'text',s:'#tAi',t:'③ AIで説明を書く',x:'AIが動画の画像を見て説明を下書きします。先にメモ（例：バリ確認 指で）を書いてから押すと、それを整えてくれます。必ず人が確認します。'},
@@ -1932,7 +2060,10 @@ const HELP=[
  {s:'#bCamPh',t:'カメラで写真を撮る',x:'スマホはカメラアプリ、パソコンは内蔵カメラ・USBカメラで写真を撮って、手順に追加します。',a:'torikomi'},
  {s:'#bPhoto',t:'写真で手順を追加',x:'写真を選ぶと、1枚＝1手順で追加されます（複数選択OK・ファイル名順）。',a:'torikomi'},
  {s:'#bDoc',t:'既存の手順書を取り込む',x:'Excel（.xlsx）・Word（.docx）・PDFから、文字と画像を読み取って手順にします。AIがあれば手順に整理します。',a:'torikomi'},
- {s:'#bSplit',t:'ここで分ける',x:'動画を止めた位置（赤い線）で、今の手順を2つに分けます。',a:'kiru'},
+ {s:'#bSplit',t:'ここで分ける',x:'赤い線（今の場面）の位置で、今の手順を2つに分けます。キーボードは Enter。',a:'kiru'},
+ {s:'#trans',t:'コマ送り',x:'◀ ▶ で1コマ（約0.03秒）、◀◀ ▶▶ で1秒、⏮ ⏭ で前・次の区切りへ。キーボードは ← →（Shift で1秒）。',a:'kiru'},
+ {s:'#bEdgeL',t:'始まりをここに',x:'今の手順の始まりを、赤い線の場面に合わせます。前の手順とくっついていれば、前の手順の終わりも一緒に動きます。',a:'kiru'},
+ {s:'#bEdgeR',t:'終わりをここに',x:'今の手順の終わりを、赤い線の場面に合わせます。',a:'kiru'},
  {s:'#bMerge',t:'前とつなぐ',x:'選んだ手順を、1つ前の手順とつなげて1つにします。説明文もつながります。',a:'kiru'},
  {s:'#bSegDel',t:'使わない',x:'選んだ部分を使わない部分（しま模様）にします。字幕動画にも入りません。しま模様をタップすると戻せます。',a:'kiru'},
  {s:'#bFix',t:'一定時間で区切る',x:'3〜30秒ごとに、動画全体をすき間なく区切ります。',a:'kiru'},
