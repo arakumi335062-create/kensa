@@ -105,11 +105,17 @@ a.kw-big{background:#e8f0fe;color:#1a56c4;border:1px solid #b6ccf5;border-radius
 .pe-cols button span{position:absolute;inset:auto 0 -1px 0;font-size:9px;color:#fff;text-shadow:0 0 2px #000,0 0 2px #000}.pe-cols button.on{box-shadow:0 0 0 3px var(--card),0 0 0 5px #1f5fbf;border-color:#fff}
 .pe-sel textarea,.pe-sel input{font-size:16px}
 .stamps{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.stamps button{font-size:30px;min-height:58px;padding:0}
-@media (min-width:1000px){.pe-body{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:12px;align-items:start}.pe-side{position:sticky;top:60px}.pe-side .pe-sel{margin-top:8px;max-height:calc(100vh - 150px);overflow:auto}
-  .pe-shapes{grid-template-columns:repeat(10,minmax(0,1fr))}}
+.pe-body{display:flex;flex-direction:column}.pe-main{order:1}.pe-ins{order:2}.pe-side{order:3}
+.pe-shapes button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1.1}.pe-shapes button i{font-style:normal;font-size:18px}.pe-shapes button span{font-size:11.5px}
+@media (min-width:1000px){.pe{padding-bottom:10px}.pe-body{display:grid;grid-template-columns:118px minmax(0,1fr) 330px;gap:12px;align-items:start}
+  .pe-ins,.pe-main,.pe-side{order:0}.pe-ins{position:sticky;top:64px;margin-top:8px;padding:4px 6px 8px}
+  .pe-shapes{grid-template-columns:1fr 1fr!important;gap:5px!important}.pe-shapes button{min-height:58px!important}.pe-shapes button i{font-size:22px}
+  .pe-side{position:sticky;top:64px}.pe-side .pe-sel{max-height:calc(100vh - 150px);overflow:auto}
+  .pe-stage{margin-top:8px}.pe-stage .vwrap{margin:0 auto}}
 @media (max-width:420px){.pe-shapes button{font-size:12.5px!important}}
 .verb{display:inline-block;font-size:11px;font-weight:700;color:var(--sub);border:1px solid var(--line);border-radius:10px;padding:0 7px;margin-left:6px;vertical-align:middle;white-space:nowrap}
 .appupd{position:fixed;left:10px;right:10px;top:calc(env(safe-area-inset-top) + 8px);z-index:65;max-width:620px;margin:0 auto;background:#1f5fbf;color:#fff;border-radius:12px;padding:8px 10px;display:flex;gap:8px;align-items:center;box-shadow:0 6px 20px rgba(0,0,0,.3);font-size:14px}.appupd button{background:#fff;color:#1f5fbf;border:0}
+.cutedge button,.cutbig{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.25}.cutedge button small,.cutbig small{font-size:11.5px;font-weight:600;opacity:.8;margin-top:2px}.cutedge button.ng{background:#fff6e5;border-color:#e8c07a}.cutedge button.ng small{color:#8a5a00;opacity:1}
 .mbox{background:var(--card);color:var(--ink);border-radius:14px;padding:16px;width:100%;max-width:480px;max-height:90vh;overflow:auto}
 .mbox video{width:100%;max-height:48vh;border-radius:8px;background:#000;margin-top:8px}
 .modal.sheet{align-items:flex-end;padding:0}
@@ -309,8 +315,8 @@ const ALLSEC=['#sCap','#sPlayer','#sCut','#sList','#sText','#sInfo','#sFin'];
   else if(q.get('error'))lsSet('kensa-gerr',q.get('error'));
   history.replaceState(null,'',location.pathname+lsGet('kensa-gsearch',''))}catch(e){}})();
 const forceView=/[?&]view\b/.test(location.search);
-const APP_VER='1.8',APP_DATE='2026-09-28';
-const APP_LOG=[['1.8','📷 カメラのズーム（カメラ本体のズーム／デジタルズーム・2本指・ホイール）'],['1.7','ポイント編集に 💬吹き出し・🔤文字・①番号・─線・🖼画像・⭐スタンプ、色・線の太さ・文字の大きさ・塗り'],['1.6','🖨 紙の手順書（QR付き・印刷／PDF）'],['1.5','📦 現場に配る（QR・リンク・ファイルから選ぶ）'],['1.4','🏷 QRラベル・字幕入り動画のQR'],['1.3','② 切る（コマ送り）・③ 説明（画像を見ながら入力）'],['1.2','APIキーの「🔰 かんたん設定」'],['1.1','☁ Googleドライブ連携']];
+const APP_VER='1.10',APP_DATE='2026-09-28';
+const APP_LOG=[['1.10','🎯 ポイント編集をパソコンで大きく：左に挿入メニュー（縦）、真ん中に大きい画像、右に書式'],['1.9','② 切る：ボタンに「何が起きるか」（手順番号・長さ）を表示、注意の文をわかりやすく'],['1.8','📷 カメラのズーム（カメラ本体のズーム／デジタルズーム・2本指・ホイール）'],['1.7','ポイント編集に 💬吹き出し・🔤文字・①番号・─線・🖼画像・⭐スタンプ、色・線の太さ・文字の大きさ・塗り'],['1.6','🖨 紙の手順書（QR付き・印刷／PDF）'],['1.5','📦 現場に配る（QR・リンク・ファイルから選ぶ）'],['1.4','🏷 QRラベル・字幕入り動画のQR'],['1.3','② 切る（コマ送り）・③ 説明（画像を見ながら入力）'],['1.2','APIキーの「🔰 かんたん設定」'],['1.1','☁ Googleドライブ連携']];
 function verBadge(){return`<span class="verb">v${APP_VER}</span>`}
 async function checkAppUpdate(manual){if(location.protocol==='file:')return;
   try{const r=await fetch(location.pathname+'?chk='+Date.now(),{cache:'no-store'});const t=await r.text(),m=t.match(/APP_VER='([\d.]+)'/);if(!m)return;
@@ -463,13 +469,13 @@ function openPts(o){
   const d=document.createElement('div');d.className='pe';
   d.innerHTML=`<div class="pe-top"><b class="grow">🎯 ${esc(o.title)}</b><button class="pri" id="peDone">✔ 完了</button></div>
     <div class="pe-guide" id="peG"></div>
-    <div class="pe-body"><div class="pe-main">
+    <div class="pe-body"><div class="pe-ins"><div class="pe-cap">挿入</div>
+      <div class="pe-shapes">${['c','r','x','a','l','b','t','n'].map(k=>`<button data-tool="${k}" class="${k===tool?'on':''}"><i>${PTN[k]}</i><span>${PTL[k].split(' ')[1]}</span></button>`).join('')}
+        <button data-ins="img"><i>🖼</i><span>画像</span></button><button data-ins="stamp"><i>⭐</i><span>スタンプ</span></button></div></div>
+    <div class="pe-main">
     <div class="pe-stage"><div class="vwrap pe-wrap" id="peW">${V0?'<video id="peV" playsinline muted preload="auto"></video>':`<img src="${o.src}" alt="">`}<div class="marks"></div></div></div>
     ${V0?`<div class="pe-bars" id="peBars"></div><input type="range" class="pe-seek" id="peSeek" min="${V0.start}" max="${V0.end}" step="0.05" value="${V0.start}">
       <div class="row pe-ctl"><button data-mv="-0.5">◀◀0.5</button><button data-mv="-0.1">◀0.1</button><button class="pri" id="pePP">▶ 再生</button><button data-mv="0.1">0.1▶</button><button data-mv="0.5">0.5▶▶</button></div>`:''}
-    <div class="pe-ins"><div class="pe-cap">挿入（選んで画像をなぞる・タップ）</div>
-      <div class="pe-shapes">${['c','r','x','a','l','b','t','n'].map(k=>`<button data-tool="${k}" class="${k===tool?'on':''}">${PTL[k]}</button>`).join('')}
-        <button data-ins="img">🖼 画像</button><button data-ins="stamp">⭐ スタンプ</button></div></div>
     <div class="pe-list" id="peList"></div></div>
     <div class="pe-side"><div class="pe-sel" id="peSel"></div></div></div>
     <input type="file" id="peFile" accept="image/*" hidden>`;
@@ -583,8 +589,13 @@ function openPts(o){
     d.querySelectorAll('[data-mv]').forEach(b=>b.onclick=()=>{V.pause();V.currentTime=Math.max(S,Math.min(E,V.currentTime+ +b.dataset.mv))});
     sk.oninput=e=>{V.pause();V.currentTime=+e.target.value}}
   else if(I&&!I.complete)I.addEventListener('load',refresh,{once:true});
+  const stage=d.querySelector('.pe-stage');
+  const fitStage=()=>{const m=media();if(!m)return;const a=arOf(m);if(!a)return;const wide=innerWidth>=1000,aw=stage.clientWidth||innerWidth-20;
+    const top=stage.getBoundingClientRect().top+d.scrollTop-d.getBoundingClientRect().top,ah=wide?Math.max(260,innerHeight-top-(V?150:40)):innerHeight*0.46;
+    let w=aw,h=w/a;if(h>ah){h=ah;w=h*a}m.style.width=Math.round(w)+'px';m.style.height=Math.round(h)+'px';m.style.maxHeight='none';m.style.maxWidth='100%';drawM()};
+  addEventListener('resize',fitStage);if(I){if(I.complete)fitStage();else I.addEventListener('load',fitStage,{once:true})}if(V)V.addEventListener('loadedmetadata',fitStage,{once:true});setTimeout(fitStage,60);
   const ro=window.ResizeObserver?new ResizeObserver(()=>drawM()):null;if(ro)ro.observe(layer);
-  d.querySelector('#peDone').onclick=()=>{clearTimeout(sT);o.save();if(V)V.pause();document.removeEventListener('keydown',onKey);if(ro)ro.disconnect();document.body.style.overflow=bodyOv;d.remove();if(o.onClose)o.onClose()};
+  d.querySelector('#peDone').onclick=()=>{clearTimeout(sT);o.save();if(V)V.pause();document.removeEventListener('keydown',onKey);removeEventListener('resize',fitStage);if(ro)ro.disconnect();document.body.style.overflow=bodyOv;d.remove();if(o.onClose)o.onClose()};
   preloadMarks(ms).then(refresh);refresh()}
 
 function progressModal(title,msg){
@@ -751,7 +762,7 @@ async function showEdit(id,pg){
     <div class="row" style="margin-top:4px"><span id="tlInfo" class="sub small grow"></span><span class="sub small">拡大</span><button class="sm" id="zOut" aria-label="縮小">－</button><button class="sm" id="zIn" aria-label="拡大">＋</button></div>
     <div class="cutact">
       <button class="pri cutbig" id="bSplit" title="Enter">✂ ここで分ける</button>
-      <div class="cutedge"><button id="bEdgeL" title="[ キー">⇤ この手順の<b>始まり</b>をここに</button><button id="bEdgeR" title="] キー">この手順の<b>終わり</b>をここに ⇥</button></div>
+      <div class="cutedge"><button id="bEdgeL" title="[ キー"><span>⇤ この手順の<b>始まり</b>をここに</span></button><button id="bEdgeR" title="] キー"><span>この手順の<b>終わり</b>をここに ⇥</span></button></div>
       <div class="row"><button id="bMerge">🔗 前の手順とつなぐ</button><button class="danger" id="bSegDel">🚫 この部分は使わない</button></div></div>
     <p class="sub small cuthow"><b>やり方：</b>① 下の帯（フィルム）を<b>指やマウスで左右になぞる</b>と映像が動きます → ② <b>◀ 1コマ ▶</b>でぴったりの場面に合わせる → ③「<b>✂ ここで分ける</b>」。赤い線がある所が「今の場面」です。黄色いつまみをドラッグしても長さを変えられます。しま模様は使わない部分。<span class="pconly"><br>⌨ キーボード：← → 1コマ／Shift+← → 1秒／スペース 再生・停止／Enter 分ける／[ ] 始まり・終わり</span></p>
     <details class="cutmore"><summary>自動で区切る・まとめて直す</summary>
@@ -1186,7 +1197,7 @@ function updatePH(){const v=$('#ve');if(!v)return;const t=v.currentTime,ph=$('#p
     $('#tcSeg').innerHTML=!tlDur?'':segLabel(sg);
     const keep=holdSel&&vs.find(x=>x.id===holdSel&&x.id===selId&&t>=x.start-0.001&&t<=x.end+0.001);if(keep&&sg!==keep){sg=keep;$('#tcSeg').innerHTML=segLabel(sg)}
     if(!drag){if(sg&&sg.id!==selId){selId=sg.id;drawSegs()}else if(!sg&&selId&&vs.some(x=>x.id===selId)){selId=null;drawSegs()}}}
-  const pb=$('#bPlay');if(pb)pb.innerHTML=v.paused?'▶<small>再生</small>':'⏸<small>停止</small>'}
+  const pb=$('#bPlay');if(pb)pb.innerHTML=v.paused?'▶<small>再生</small>':'⏸<small>停止</small>';if(v.paused)edgeLabels()}
 function segLabel(sg){return sg?`今の場面は <b class="segc" style="background:hsla(${(cur.steps.indexOf(sg)*67)%360},75%,40%,.95)">手順${cur.steps.indexOf(sg)+1}</b> <span class="sub">${fmt(sg.start)}〜${fmt(sg.end)}</span>`:'今の場面は <b class="segc" style="background:#555">使わない部分</b>'}
 function updatePHfast(t){const ph=$('#ph');if(ph&&pps)ph.style.left=t*pps+'px';const n=$('#tcNow');if(n)n.textContent=fmt(t)}
 function jog(k){holdSel=null;const v=$('#ve');if(!v)return noVideo();const D=tlDur||(isFinite(v.duration)?v.duration:0);
@@ -1196,20 +1207,36 @@ function jog(k){holdSel=null;const v=$('#ve');if(!v)return noVideo();const D=tlD
     t=k==='pb'?(bs.filter(x=>x<t-0.04).pop()??0):(bs.find(x=>x>t+0.04)??D)}
   else t+=({'-1':-1,'+1':1,'-f':-FRAME,'+f':FRAME})[k]||0;
   v.currentTime=Math.max(0,Math.min(D,t));updatePH()}
-async function setEdge(side){const v=$('#ve');if(!v)return noVideo();v.pause();const t=v.currentTime,vs=vsteps();
-  let sg=vs.find(x=>t>=x.start&&t<x.end);if(!sg&&side==='r'&&tlDur&&t>=tlDur-0.05)sg=vs[vs.length-1];
+function edgePlan(side){const v=$('#ve');if(!v||!tlDur)return null;const t=v.currentTime,vs=vsteps(),N=x=>cur.steps.indexOf(x)+1;
+  let sg=vs.find(x=>x.id===selId&&t>=x.start-0.001&&t<=x.end+0.001)||vs.find(x=>t>=x.start&&t<x.end);
+  if(!sg&&side==='r'&&t>=tlDur-0.05)sg=vs[vs.length-1];
   if(!sg)sg=side==='l'?vs.find(x=>x.start>t):vs.filter(x=>x.end<=t).pop();
-  if(!sg){toast('近くに手順がありません');return}
-  const k=vs.indexOf(sg),pv=vs[k-1],nx=vs[k+1],no=()=>cur.steps.indexOf(sg)+1;
-  if(side==='l'){if(t>sg.end-0.3){toast('終わりに近すぎます。もう少し前の場面で押してください',3000);return}
-    const lk=pv&&Math.abs(pv.end-sg.start)<0.05;
-    if(pv&&(lk||t<pv.end)){if(t<pv.start+0.3){toast('前の手順が短くなりすぎます',3000);return}pv.end=t}
-    sg.start=t;sg.thumb=grab(v)||sg.thumb}
-  else{if(t<sg.start+0.3){toast('始まりに近すぎます。もう少し後の場面で押してください',3000);return}
-    const lk=nx&&Math.abs(nx.start-sg.end)<0.05;
-    if(nx&&(lk||t>nx.start)){if(t>nx.end-0.3){toast('次の手順が短くなりすぎます',3000);return}nx.start=t;nx.thumb=grab(v)||nx.thumb}
-    sg.end=t}
-  selId=sg.id;holdSel=sg.id;await afterTL(`手順${no()}の${side==='l'?'始まり':'終わり'}を ${fmt(t)} にしました`)}
+  if(!sg)return{t,err:'近くに手順がありません。',short:'近くに手順がありません'};
+  const n=N(sg),k=vs.indexOf(sg),pv=vs[k-1],nx=vs[k+1],len0=sg.end-sg.start;
+  if(side==='l'){if(t>sg.end-0.3)return{sg,n,t,short:`赤い線が手順${n}の終わりにあります`,
+      err:`今の赤い線（${fmt(t)}）は、手順${n}の終わり（${fmt(sg.end)}）の位置です。\nここを「始まり」にすると、手順${n}の長さが0秒になってしまいます。\n\n→ 赤い線を、手順${n}で残したい最初の場面（${fmt(sg.start)}〜${fmt(sg.end)}の間）に動かしてから押してください。`};
+    const pa=pv&&(Math.abs(pv.end-sg.start)<0.05||t<pv.end);
+    if(pa&&t<pv.start+0.3)return{sg,n,t,short:`手順${N(pv)}が0秒になります`,err:`ここを始まりにすると、前の手順${N(pv)}の長さが0秒になってしまいます。\n手順${N(pv)}が要らないときは、手順${N(pv)}を選んで「🚫 この部分は使わない」を押してください。`};
+    return{sg,n,t,pv:pa?pv:null,len0,len1:sg.end-t}}
+  if(t<sg.start+0.3)return{sg,n,t,short:`赤い線が手順${n}の始まりにあります`,
+    err:`今の赤い線（${fmt(t)}）は、手順${n}の始まり（${fmt(sg.start)}）の位置です。\nここを「終わり」にすると、手順${n}の長さが0秒になってしまいます。\n\n→ 赤い線を、手順${n}で残したい最後の場面（${fmt(sg.start)}〜${fmt(sg.end)}の間）に動かしてから押してください。`};
+  const na=nx&&(Math.abs(nx.start-sg.end)<0.05||t>nx.start);
+  if(na&&t>nx.end-0.3)return{sg,n,t,short:`手順${N(nx)}が0秒になります`,err:`ここを終わりにすると、次の手順${N(nx)}の長さが0秒になってしまいます。\n手順${N(nx)}が要らないときは、手順${N(nx)}を選んで「🚫 この部分は使わない」を押してください。`};
+  return{sg,n,t,nx:na?nx:null,len0,len1:t-sg.start}}
+function edgeLabels(){const L=$('#bEdgeL'),R=$('#bEdgeR'),S=$('#bSplit');if(!L||!R)return;
+  const f=(side,b)=>{const p=edgePlan(side);if(!p){b.innerHTML=side==='l'?'<span>⇤ この手順の<b>始まり</b>をここに</span>':'<span>この手順の<b>終わり</b>をここに ⇥</span>';b.classList.remove('ng');return}
+    b.classList.toggle('ng',!!p.err);
+    b.innerHTML='<span>'+(side==='l'?`⇤ 手順${p.n||''}の<b>始まり</b>をここに`:`手順${p.n||''}の<b>終わり</b>をここに ⇥`)+'</span>'+
+      `<small>${p.err?'⚠ '+esc(p.short):`長さ ${p.len0.toFixed(1)}秒 → ${p.len1.toFixed(1)}秒`}</small>`};
+  f('l',L);f('r',R);
+  const v=$('#ve');if(S&&v&&tlDur){const t=v.currentTime,vs=vsteps(),sg=vs.find(x=>t>x.start+0.3&&t<x.end-0.3),inn=vs.find(x=>t>=x.start&&t<=x.end);
+    S.innerHTML=`<span>✂ ここで分ける</span><small>${sg?`手順${cur.steps.indexOf(sg)+1}を ${fmt(t)} で2つに`:inn?'⚠ 手順の端（区切り）の上です。少し動かしてから':'⚠ 使わない部分（しま模様）の上です'}</small>`}}
+async function setEdge(side){const v=$('#ve');if(!v)return noVideo();v.pause();const p=edgePlan(side);if(!p)return;
+  if(p.err){alert(p.err);return}
+  const{sg,t}=p;
+  if(side==='l'){if(p.pv)p.pv.end=t;sg.start=t;sg.thumb=grab(v)||sg.thumb}
+  else{if(p.nx){p.nx.start=t;p.nx.thumb=grab(v)||p.nx.thumb}sg.end=t}
+  selId=sg.id;holdSel=sg.id;await afterTL(`手順${p.n}の${side==='l'?'始まり':'終わり'}を ${fmt(t)} にしました（長さ ${p.len1.toFixed(1)}秒）`)}
 addEventListener('keydown',e=>{if(view!=='edit'||page!=='cut'||!onePage&&!$('#sCut'))return;
   if(e.target.closest&&e.target.closest('input,textarea,select,[contenteditable]')||document.querySelector('.modal,.pe')||e.ctrlKey||e.metaKey||e.altKey)return;
   const m={ArrowLeft:e.shiftKey?'-1':'-f',ArrowRight:e.shiftKey?'+1':'+f',' ':'play',Home:'pb',End:'nb'}[e.key];
@@ -1253,7 +1280,7 @@ async function splitHere(){
   const v=$('#ve');if(!v)return noVideo();v.pause();const t=v.currentTime;let vs=vsteps();
   if(!vs.length&&tlDur){const n0={id:uid(),start:0,end:tlDur,thumb:'',text:{ja:'',vi:'',id:''},marks:[]};cur.steps.unshift(n0);vs=[n0]}
   const s=vs.find(x=>t>x.start+0.3&&t<x.end-0.3);
-  if(!s){toast(vs.some(x=>t>=x.start&&t<=x.end)?'手順の端に近すぎます。少し動かしてから押してください':'ここは使わない部分です。タップすると手順にできます',3200);return}
+  if(!s){alert(vs.some(x=>t>=x.start&&t<=x.end)?'赤い線が、手順と手順の区切り（または手順の端）の上にあります。\nここで分けると0秒の手順ができてしまうので、◀ 1コマ ▶ で少し動かしてから押してください。':'赤い線が「使わない部分」（しま模様）の上にあります。\nしま模様をタップすると、その部分を手順に戻せます。');return}
   const n={id:uid(),start:t,end:s.end,thumb:grab(v),text:{ja:'',vi:'',id:''},marks:[]};s.end=t;
   cur.steps.splice(cur.steps.indexOf(s)+1,0,n);selId=n.id;await afterTL(`分けました（手順${cur.steps.indexOf(s)+1}｜手順${cur.steps.indexOf(n)+1}）`)}
 async function mergePrev(){const s=cur.steps.find(x=>x.id===selId);if(!s||isPhoto(s))return;const vs=vsteps(),pv=vs[vs.indexOf(s)-1];
