@@ -108,6 +108,8 @@ a.kw-big{background:#e8f0fe;color:#1a56c4;border:1px solid #b6ccf5;border-radius
 @media (min-width:1000px){.pe-body{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:12px;align-items:start}.pe-side{position:sticky;top:60px}.pe-side .pe-sel{margin-top:8px;max-height:calc(100vh - 150px);overflow:auto}
   .pe-shapes{grid-template-columns:repeat(10,minmax(0,1fr))}}
 @media (max-width:420px){.pe-shapes button{font-size:12.5px!important}}
+.verb{display:inline-block;font-size:11px;font-weight:700;color:var(--sub);border:1px solid var(--line);border-radius:10px;padding:0 7px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+.appupd{position:fixed;left:10px;right:10px;top:calc(env(safe-area-inset-top) + 8px);z-index:65;max-width:620px;margin:0 auto;background:#1f5fbf;color:#fff;border-radius:12px;padding:8px 10px;display:flex;gap:8px;align-items:center;box-shadow:0 6px 20px rgba(0,0,0,.3);font-size:14px}.appupd button{background:#fff;color:#1f5fbf;border:0}
 .mbox{background:var(--card);color:var(--ink);border-radius:14px;padding:16px;width:100%;max-width:480px;max-height:90vh;overflow:auto}
 .mbox video{width:100%;max-height:48vh;border-radius:8px;background:#000;margin-top:8px}
 .modal.sheet{align-items:flex-end;padding:0}
@@ -261,7 +263,7 @@ main.textpage,main.cutpage{max-width:1280px}
 <body>
 <div class="top">
   <header>
-    <h1 id="hTitle">検査手順ムービー</h1>
+    <h1 id="hTitle">検査手順ムービー</h1><span class="verb hv" id="hVer"></span>
     <button id="hRole" class="role">🔓 編集</button>
     <button id="hNav" aria-label="手順ナビ">🧭</button>
     <button id="hHelp" aria-label="使い方">？</button>
@@ -304,6 +306,17 @@ const ALLSEC=['#sCap','#sPlayer','#sCut','#sList','#sText','#sInfo','#sFin'];
   else if(q.get('error'))lsSet('kensa-gerr',q.get('error'));
   history.replaceState(null,'',location.pathname+lsGet('kensa-gsearch',''))}catch(e){}})();
 const forceView=/[?&]view\b/.test(location.search);
+const APP_VER='1.7',APP_DATE='2026-09-28';
+const APP_LOG=[['1.7','ポイント編集に 💬吹き出し・🔤文字・①番号・─線・🖼画像・⭐スタンプ、色・線の太さ・文字の大きさ・塗り'],['1.6','🖨 紙の手順書（QR付き・印刷／PDF）'],['1.5','📦 現場に配る（QR・リンク・ファイルから選ぶ）'],['1.4','🏷 QRラベル・字幕入り動画のQR'],['1.3','② 切る（コマ送り）・③ 説明（画像を見ながら入力）'],['1.2','APIキーの「🔰 かんたん設定」'],['1.1','☁ Googleドライブ連携']];
+function verBadge(){return`<span class="verb">v${APP_VER}</span>`}
+async function checkAppUpdate(manual){if(location.protocol==='file:')return;
+  try{const r=await fetch(location.pathname+'?chk='+Date.now(),{cache:'no-store'});const t=await r.text(),m=t.match(/APP_VER='([\d.]+)'/);if(!m)return;
+    const nv=m[1],newer=nv.split('.').map(Number).reduce((a,x,i)=>a||(x>(+APP_VER.split('.')[i]||0)?1:x<(+APP_VER.split('.')[i]||0)?-1:0),0)>0;
+    if(!newer){if(manual)toast(`最新版です（v${APP_VER}）`);return}
+    if(document.getElementById('appUpd'))return;const d=document.createElement('div');d.id='appUpd';d.className='appupd';
+    d.innerHTML=`<span class="grow">🆕 アプリの新しい版 <b>v${esc(nv)}</b> があります（今は v${APP_VER}）</span><button class="sm pri">更新する</button>`;
+    document.body.appendChild(d);d.querySelector('button').onclick=async()=>{if(view==='edit')await persist();const q=new URLSearchParams(location.search);q.set('r',Date.now());location.replace(location.pathname+'?'+q.toString().replace(/view=(&|$)/,'view$1'))}}
+  catch(e){if(manual)toast('更新の確認ができませんでした（ネット接続を確認）')}}
 let settings={apiKey:'',model:'claude-sonnet-5',glossary:[],ttsKey:'',ttsVoice:'coral'},lock=null,unlocked=false;
 let cur=null,curURL=null,view='list',page='video',tIdx=0,openRow=-1,lastId=null;
 let inPt=null,outPt=null,inThumb='',segEnd=null,saveTimer=null,vIdx=0,lang='ja',listCount=0;
@@ -2201,6 +2214,9 @@ async function showSettings(){
   <div class="card" id="sBk"><h3>💾 バックアップ</h3>
     <p class="sub small">全部の手順書と動画を1つのファイルに書き出します。機種変更や万一のときに「📥 共有ファイルを読み込む」で戻せます。</p>
     <div class="row"><button id="bkOut">全データを書き出す</button></div></div>
+  <div class="card" id="sVer"><h3>ℹ アプリのバージョン</h3><div class="row"><span class="grow">今の版：<b style="font-size:20px">v${APP_VER}</b>（${APP_DATE}）</span><button class="sm" id="vChk">🔄 新しい版を確認</button></div>
+    <details class="mt"><summary class="sub">これまでの更新内容</summary><ul class="sub small">${APP_LOG.map(([v,t])=>`<li><b>v${v}</b>：${esc(t)}</li>`).join('')}</ul></details>
+    <p class="sub small">画面が古いまま（新しいボタンが出ない）ときは、パソコンは <b>Ctrl + F5</b>、スマホは画面を下に引っぱって再読み込みします。</p></div>
   <div class="card"><h3>この端末の保存容量</h3><div id="quota" class="sub">確認中…</div></div>`;
   const gInfo=()=>{const g=settings.glossary;$('#gInfo').innerHTML=g.length?`登録 ${g.length} 語　例：`+g.slice(0,3).map(e=>esc(e.ja)+' → '+esc(e.vi)+' / '+esc(e.id)).join('、'):'未登録'};gInfo();
   $('#pinSt').textContent=lock?'PIN：設定済み（この端末と配布先は、PINで編集モードになります）':'PIN：未設定（この端末はいつでも編集できます）';
@@ -2225,6 +2241,7 @@ async function showSettings(){
     const b=$('#sTest');b.disabled=true;b.textContent='テスト中…';
     try{const r=await translate('成形品のゲート部にバリがないか、目視で確認する。');await idb.put('kv',settings,'settings');alert('成功しました\n\nベトナム語：'+r.vi+'\n\nインドネシア語：'+r.id)}
     catch(e){alert(e.message==='NOKEY'?'APIキーを入れてください':e.message)}b.disabled=false;b.textContent='翻訳テスト'};
+  $('#vChk').onclick=()=>checkAppUpdate(true);
   $('#gImp').onclick=()=>$('#gFile').click();
   $('#gFile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
     const buf=await f.arrayBuffer();let text=new TextDecoder('utf-8').decode(buf);
@@ -2451,6 +2468,8 @@ window.addEventListener('pagehide',()=>{if(view==='edit')persist()});
   if(after.startsWith('qr:')){const m=await idb.get('manuals',after.slice(3));if(m)manualQR(m)}
   if(after==='capup')capResume();else if(await idb.get('kv','capPending').catch(()=>null)&&!after){await idb.del('kv','capPending');await idb.del('videos','__cap')}
   await openFromQR();
+  {const hv=$('#hVer');if(hv)hv.textContent='v'+APP_VER}setTimeout(()=>checkAppUpdate(false),2500);
+  if(location.search.includes('r=')){const q=new URLSearchParams(location.search);q.delete('r');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q.toString().replace(/view=(&|$)/,'view$1'):''))}
   if(!lsGet('kensa-hello','')){lsSet('kensa-hello','1');const h=document.createElement('div');h.id='hello';
     h.innerHTML='<span class="grow">はじめての方は右上の「？」→ ガイドへ。ボタンを<b>長押し</b>すると説明が出ます。</span><button>OK</button>';
     document.body.appendChild(h);h.querySelector('button').onclick=()=>h.remove();setTimeout(()=>h.remove(),15000)}
