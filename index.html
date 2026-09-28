@@ -698,6 +698,7 @@ async function showEdit(id,pg){
     <button id="bCapV">🎬 字幕入り動画を作る（LINEなどで送る）</button>
     <button id="bExp">📦 現場に配る（共有ファイルを書き出す）</button>
     <button id="bDrive">☁ Googleドライブに保存（他の端末と共有）</button>
+    <button id="bQR">🏷 QRラベルを作る（現場に貼る・読み取ると最新版が開く）</button>
     <button class="danger" id="bDelM">🗑 この手順書を削除</button></div></div>`;
   main.querySelectorAll('[data-meta]').forEach(el=>el.oninput=()=>{cur[el.dataset.meta]=el.value;saveSoon();if(el.dataset.meta==='title')setTitle(el.value||'新しい手順書');updateNav()});
   $('#bCap').onclick=()=>{if(IS_MOBILE)$('#fCap').click();else openCam('video',b=>setVideo(b))};$('#bPick').onclick=()=>$('#fPick').click();
@@ -719,6 +720,7 @@ async function showEdit(id,pg){
   $('#bPrev').onclick=async()=>{await persist();showView(cur.id)};
   $('#bCapV').onclick=async()=>{await persist();openCapDialog()};
   $('#bDrive').onclick=async()=>{await persist();driveSaveUI(cur)};
+  $('#bQR').onclick=async()=>{await persist();manualQR(cur)};
   $('#bExp').onclick=async()=>{await persist();exportPkg(cur)};
   $('#bDelM').onclick=async()=>{if(!confirm('この手順書と動画を削除します。元に戻せません。よろしいですか？'))return;
     if(cur.videoId)await idb.del('videos',cur.videoId);await idb.del('manuals',cur.id);cur=null;lastId=null;lsSet('kensa-last','');showList()};
@@ -1454,8 +1456,8 @@ function openCapDialog(){
       const name=safeName(`${cur.partNo||''}_${cur.title||'手順書'}_${key}_第${cur.version||'1'}版.${ext}`);
       outURL=URL.createObjectURL(blob);
       d.querySelector('#capP').textContent=`できました（約${(blob.size/1048576).toFixed(1)}MB・${ext.toUpperCase()}・音声${blob.hasAu?'あり':'なし'}）。再生して確認してください。`+(!blob.hasAu&&(orig||narrL)?'　※音声を入れられませんでした。元の動画に音が入っているか確認するか、パソコンのChromeで作ってください。':'');
-      d.querySelector('#capOut').innerHTML=`<video controls playsinline src="${outURL}"></video><div class="row mt"><button class="pri" id="capSave">📤 保存・共有（LINEなど）</button></div>`;
-      d.querySelector('#capSave').onclick=()=>shareOrDownload(blob,name);
+      d.querySelector('#capOut').innerHTML=`<video controls playsinline src="${outURL}"></video><div class="row mt"><button class="pri" id="capSave">📤 保存・共有（LINEなど）</button>${isEditor()?'<button id="capQR">📱 ドライブに上げてQRで見せる</button>':''}</div>`;
+      d.querySelector('#capSave').onclick=()=>shareOrDownload(blob,name);if(d.querySelector('#capQR'))d.querySelector('#capQR').onclick=()=>capToDrive(blob,name,key);
     }catch(e){if(e.message!=='CANCEL'){d.querySelector('#capP').textContent='作成できませんでした：'+e.message;bar.hidden=true}}
     try{if(ac)ac.close()}catch(e){}
     busy=false;gb.disabled=false;gb.textContent='作り直す'}}
@@ -1696,6 +1698,135 @@ async function importDoc(file){
     d.querySelector('#dmOut').innerHTML=`<p class="sub small mt">${result.title?`手順書名：<b>${esc(result.title)}</b>　`:''}${result.partNo?`品番：<b>${esc(result.partNo)}</b>`:''}<br>${result.steps.length}個の手順ができました。確認して「追加する」を押します（あとで直せます）。</p>
       <div class="dprev">${result.steps.map((st,i)=>`<div>${st.im?`<img src="${st.im.thumb}" alt="">`:'<span class="ni"></span>'}<span><b>${i+1}.</b> ${esc(st.text||'（説明なし）')}</span></div>`).join('')}</div>`;
     d.querySelectorAll('input[name=dm]').forEach(x=>x.disabled=true);bt.disabled=false;bt.textContent='✔ 追加する'}}
+
+/* ---------- QRコード（誤り訂正M・バイトモード・外部ライブラリなし） ---------- */
+const QR_ECC=[-1,10,16,26,18,24,16,18,22,22,26,30,22,22,24,24,28,28,26,26,26,26,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28];
+const QR_BLK=[-1,1,1,1,2,2,4,4,4,5,5,5,8,9,9,10,10,11,13,14,16,17,17,18,20,21,23,25,26,28,29,31,33,35,37,38,40,43,45,47,49];
+function qrMake(text){
+  const data=[...new TextEncoder().encode(text)];
+  const rawMods=v=>{let r=(16*v+128)*v+64;if(v>=2){const n=Math.floor(v/7)+2;r-=(25*n-10)*n-55;if(v>=7)r-=36}return r};
+  const dataCw=v=>Math.floor(rawMods(v)/8)-QR_ECC[v]*QR_BLK[v];
+  let ver=1;for(;ver<=40;ver++)if(4+(ver<10?8:16)+data.length*8<=dataCw(ver)*8)break;
+  if(ver>40)throw new Error('QRにするには長すぎます');
+  const bits=[],put=(v,n)=>{for(let i=n-1;i>=0;i--)bits.push((v>>>i)&1)};
+  put(4,4);put(data.length,ver<10?8:16);data.forEach(b=>put(b,8));
+  const cap=dataCw(ver)*8;put(0,Math.min(4,cap-bits.length));put(0,(8-bits.length%8)%8);
+  for(let p=0xEC;bits.length<cap;p^=0xEC^0x11)put(p,8);
+  const cw=[];for(let i=0;i<bits.length;i+=8){let b=0;for(let j=0;j<8;j++)b=b<<1|bits[i+j];cw.push(b)}
+  const mul=(x,y)=>{let z=0;for(let i=7;i>=0;i--){z=(z<<1)^((z>>>7)*0x11D);z^=((y>>>i)&1)*x}return z&255};
+  const eccLen=QR_ECC[ver],nb=QR_BLK[ver],raw=Math.floor(rawMods(ver)/8),nShort=nb-raw%nb,shortLen=Math.floor(raw/nb);
+  const div=[];for(let i=0;i<eccLen-1;i++)div.push(0);div.push(1);
+  let root=1;for(let i=0;i<eccLen;i++){for(let j=0;j<div.length;j++){div[j]=mul(div[j],root);if(j+1<div.length)div[j]^=div[j+1]}root=mul(root,2)}
+  const blocks=[];for(let i=0,k=0;i<nb;i++){const len=shortLen-eccLen+(i<nShort?0:1),dat=cw.slice(k,k+len);k+=len;
+    const rem=div.map(()=>0);for(const b of dat){const f=b^rem.shift();rem.push(0);div.forEach((c,j)=>rem[j]^=mul(c,f))}
+    if(i<nShort)dat.push(0);blocks.push(dat.concat(rem))}
+  const all=[];for(let i=0;i<blocks[0].length;i++)for(let j=0;j<blocks.length;j++)if(i!==shortLen-eccLen||j>=nShort)all.push(blocks[j][i]);
+  const N=ver*4+17,M=[],F=[];for(let y=0;y<N;y++){M.push(new Array(N).fill(false));F.push(new Array(N).fill(false))}
+  const sf=(x,y,d)=>{M[y][x]=d;F[y][x]=true};
+  for(let i=0;i<N;i++){sf(6,i,i%2===0);sf(i,6,i%2===0)}
+  const finder=(x,y)=>{for(let dy=-4;dy<=4;dy++)for(let dx=-4;dx<=4;dx++){const d=Math.max(Math.abs(dx),Math.abs(dy)),xx=x+dx,yy=y+dy;if(xx>=0&&xx<N&&yy>=0&&yy<N)sf(xx,yy,d!==2&&d!==4)}};
+  finder(3,3);finder(N-4,3);finder(3,N-4);
+  if(ver>1){const n=Math.floor(ver/7)+2,step=ver===32?26:Math.ceil((ver*4+4)/(n*2-2))*2,pos=[6];for(let p=N-7;pos.length<n;p-=step)pos.splice(1,0,p);
+    for(let i=0;i<n;i++)for(let j=0;j<n;j++){if(i===0&&j===0||i===0&&j===n-1||i===n-1&&j===0)continue;
+      for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)sf(pos[i]+dx,pos[j]+dy,Math.max(Math.abs(dx),Math.abs(dy))!==1)}}
+  const fmt=mask=>{const d=0<<3|mask;let r=d;for(let i=0;i<10;i++)r=(r<<1)^((r>>>9)*0x537);const b=(d<<10|r)^0x5412,g=i=>((b>>>i)&1)===1;
+    for(let i=0;i<=5;i++)sf(8,i,g(i));sf(8,7,g(6));sf(8,8,g(7));sf(7,8,g(8));for(let i=9;i<15;i++)sf(14-i,8,g(i));
+    for(let i=0;i<8;i++)sf(N-1-i,8,g(i));for(let i=8;i<15;i++)sf(8,N-15+i,g(i));sf(8,N-8,true)};
+  fmt(0);
+  if(ver>=7){let r=ver;for(let i=0;i<12;i++)r=(r<<1)^((r>>>11)*0x1F25);const b=ver<<12|r;
+    for(let i=0;i<18;i++){const bt=((b>>>i)&1)===1,a=N-11+i%3,c=Math.floor(i/3);sf(a,c,bt);sf(c,a,bt)}}
+  let i=0;for(let right=N-1;right>=1;right-=2){if(right===6)right=5;
+    for(let vert=0;vert<N;vert++)for(let j=0;j<2;j++){const x=right-j,up=((right+1)&2)===0,y=up?N-1-vert:vert;
+      if(!F[y][x]&&i<all.length*8){M[y][x]=((all[i>>>3]>>>(7-(i&7)))&1)===1;i++}}}
+  const mk=[(x,y)=>(x+y)%2===0,(x,y)=>y%2===0,(x,y)=>x%3===0,(x,y)=>(x+y)%3===0,(x,y)=>(Math.floor(x/3)+Math.floor(y/2))%2===0,(x,y)=>x*y%2+x*y%3===0,(x,y)=>(x*y%2+x*y%3)%2===0,(x,y)=>((x+y)%2+x*y%3)%2===0];
+  const apply=m=>{for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(!F[y][x]&&mk[m](x,y))M[y][x]=!M[y][x]};
+  const score=()=>{let s=0,dark=0;
+    for(let a=0;a<2;a++)for(let p=0;p<N;p++){let run=1;for(let q=1;q<N;q++){const c=a?M[q][p]:M[p][q],pr=a?M[q-1][p]:M[p][q-1];if(c===pr){run++;if(run===5)s+=3;else if(run>5)s++}else run=1}}
+    for(let y=0;y<N-1;y++)for(let x=0;x<N-1;x++){const c=M[y][x];if(c===M[y][x+1]&&c===M[y+1][x]&&c===M[y+1][x+1])s+=3}
+    for(let y=0;y<N;y++)for(let x=0;x<N;x++)if(M[y][x])dark++;
+    return s+Math.floor(Math.abs(dark*20-N*N*10)/(N*N))*10};
+  let best=0,bs=1e9;for(let m=0;m<8;m++){apply(m);fmt(m);const sc=score();if(sc<bs){bs=sc;best=m}apply(m)}
+  apply(best);fmt(best);return M}
+function qrCanvas(text,px){const M=qrMake(text),N=M.length,q=4,s=Math.max(2,Math.floor((px||320)/(N+q*2))),c=document.createElement('canvas');
+  c.width=c.height=(N+q*2)*s;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.fillStyle='#000';
+  for(let y=0;y<N;y++)for(let i=0;i<N;i++)if(M[y][i])x.fillRect((i+q)*s,(y+q)*s,s,s);return c}
+
+function qrLabel(o){const qc=qrCanvas(o.url,420),W=1000,H=Math.max(qc.height+40,470),c=document.createElement('canvas');c.width=W;c.height=H;
+  const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,W,H);x.strokeStyle='#222';x.lineWidth=4;x.strokeRect(2,2,W-4,H-4);
+  x.drawImage(qc,20,(H-qc.height)/2);const L=qc.width+50,F='"Hiragino Sans","Yu Gothic","Meiryo","Noto Sans JP",sans-serif';
+  const wrap=(t,y,size,wt,col,maxL)=>{x.font=`${wt} ${size}px ${F}`;x.fillStyle=col;let line='',n=0;for(const ch of String(t||'')){if(x.measureText(line+ch).width>W-L-30){x.fillText(line,L,y);y+=size*1.3;line=ch;if(++n>=maxL-1)break}else line+=ch}if(line)x.fillText(line,L,y);return y+size*1.45};
+  let y=70;x.fillStyle=o.badgeColor||'#1f5fbf';x.fillRect(L,y-44,W-L-30,56);x.font=`800 32px ${F}`;x.fillStyle='#fff';x.fillText(o.badge||'検査手順',L+14,y-5);y+=50;
+  y=wrap(o.title,y,40,'800','#111',2);(o.lines||[]).forEach(l=>{y=wrap(l,y,28,'600','#333',2)});
+  x.font=`700 26px ${F}`;x.fillStyle='#1f5fbf';x.fillText('📱 スマホのカメラで読み取る',L,H-60);x.font=`500 22px ${F}`;x.fillStyle='#555';x.fillText(o.foot||'',L,H-26);
+  return c}
+function qrDialog(o){const lab=qrLabel(o),png=lab.toDataURL('image/png');
+  const d=document.createElement('div');d.className='modal';
+  d.innerHTML=`<div class="mbox"><h3>${esc(o.head||'📱 QRコード')}</h3><p class="sub small">${o.note||''}</p>
+    <img src="${png}" alt="QRラベル" style="width:100%;border:1px solid var(--line);border-radius:8px;background:#fff">
+    <label class="f">印刷する大きさ（ラベルの横幅）</label><select id="qrW"><option value="60">小（6cm）</option><option value="90" selected>中（9cm）</option><option value="130">大（13cm）</option><option value="180">特大（18cm・A4横いっぱい）</option></select>
+    <div class="row mt"><button class="pri" id="qrPrint">🖨 印刷する</button><button id="qrSave">💾 画像で保存</button><button id="qrCopy">📋 リンクをコピー</button></div>
+    <div class="row mt"><button id="qrX" class="grow">閉じる</button></div></div>`;
+  document.body.appendChild(d);const q=k=>d.querySelector(k);
+  q('#qrX').onclick=()=>d.remove();
+  q('#qrSave').onclick=()=>lab.toBlob(b=>shareOrDownload(b,safeName((o.fileName||'QRラベル')+'.png')),'image/png');
+  q('#qrCopy').onclick=async()=>{try{await navigator.clipboard.writeText(o.url);toast('リンクをコピーしました')}catch(e){prompt('このリンクをコピーしてください',o.url)}};
+  q('#qrPrint').onclick=()=>{const w=window.open('','_blank');if(!w){alert('印刷画面を開けませんでした。ポップアップを許可するか、「💾 画像で保存」から印刷してください。');return}
+    const mm=+q('#qrW').value;w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${esc(o.fileName||'QRラベル')}</title><style>@page{margin:10mm}body{margin:0}img{width:${mm}mm;display:block}</style></head><body><img src="${png}"><script>window.onload=()=>{setTimeout(()=>{window.print()},300)}<\/script></body></html>`);w.document.close()}}
+/* 手順書のQR（現場に貼る：読み取ると最新版が開く） */
+async function manualQR(m){
+  if(!settings.gClientId){alert('QRコードで開くには、Googleドライブ連携が必要です。\n「⚙ 設定」→「☁ Googleドライブ連携」を先に設定してください。');return}
+  if(!(m.sync&&m.sync.json)||m.updatedAt>(m.sync.remoteUp||0)+1){
+    if(!confirm(m.sync&&m.sync.json?'ドライブに保存していない変更があります。先にドライブに保存してからQRを作りますか？\n（QRで開くのは、ドライブに保存した版です）':'QRコードで開けるように、先にこの手順書をGoogleドライブに保存します。よろしいですか？'))return;
+    if(!gToken())return driveErr(new Error('GAUTH'),'qr:'+m.id);
+    const pm=progressModal('☁ ドライブに保存中',m.title||'');try{await driveSave(m,pm);pm.close()}catch(e){pm.close();return driveErr(e,'qr:'+m.id)}}
+  const url=fieldLink()+'&m='+encodeURIComponent(m.id);
+  qrDialog({url,head:'🏷 QRラベル（現場に貼る）',badge:'検査手順',title:m.title||'（無題）',lines:[`品番 ${m.partNo||'-'}`,'いつでも最新版が開きます'],foot:'Googleアカウントでログインして見ます',fileName:`QR_${m.partNo||''}_${m.title||'手順書'}`,
+    note:'印刷して検査台・成形機・製品の箱などに貼ります。スマホやタブレットのカメラで読み取ると、この手順書が<b>いつでも最新版</b>で開きます（手順書を直して「☁ ドライブに保存」すれば、QRを貼り替える必要はありません）。見る人は、共有フォルダのメンバー（Googleアカウント）である必要があります。'})}
+/* QRで開かれたとき */
+async function openFromQR(){const id=lsGet('kensa-openm','');if(!id)return;
+  const local=await idb.get('manuals',id);
+  if(!gToken()){
+    if(!settings.gClientId){lsSet('kensa-openm','');if(local)showView(id);else alert('QRコードの手順書を開けませんでした（ドライブ連携の設定がありません）。');return}
+    if(confirm(local?'QRコードの手順書を開きます。\n最新版か確認するため、Googleドライブに接続しますか？\n（「キャンセル」＝この端末にある版を見る）':'QRコードの手順書を開きます。\nGoogleドライブに接続してよろしいですか？'))return gLogin('open');
+    lsSet('kensa-openm','');if(local)showView(id);return}
+  lsSet('kensa-openm','');const pm=progressModal('📱 手順書を開いています','');
+  try{const fs=await driveList(true),f=fs.find(x=>x.appProperties&&x.appProperties.kmId===id);
+    if(!f){pm.close();if(local){showView(id);toast('ドライブに見つからないため、この端末の版を表示しています',3600)}else alert('この手順書がドライブに見つかりません。削除されたか、共有されていない可能性があります。事務所に確認してください。');return}
+    const st=dStatus(local,f);let get=!local||st.act==='get'||st.act==='both';
+    if(st.act==='both'&&isEditor())get=confirm('この端末で変更した内容があります。ドライブの最新版で置き換えますか？\n（「キャンセル」＝この端末の版を見る）');
+    if(get)await driveGet(f,pm);pm.close();await showView(id)}
+  catch(e){pm.close();if(e.message==='GAUTH'){lsSet('kensa-openm',id);driveErr(e,'open');return}if(local)showView(id);driveErr(e,'open')}}
+/* 字幕入り動画をドライブに上げてQRで見せる */
+async function capToDrive(blob,name,key){
+  if(!settings.gClientId){alert('Googleドライブ連携が必要です（⚙ 設定 →「☁ Googleドライブ連携」）。');return}
+  const who=await new Promise(res=>{const d=document.createElement('div');d.className='modal';
+    d.innerHTML=`<div class="mbox"><h3>📱 動画をQRで見せる</h3><p class="sub small">この動画をGoogleドライブの共有フォルダに上げて、読み取ると再生できるQRコードを作ります。同じ手順書・同じ言語で作り直した動画は<b>同じQRのまま</b>差し替わります。</p>
+      <label class="opt"><input type="radio" name="qa" value="team" checked><span><b>共有フォルダのメンバーだけ</b>（おすすめ）<br><span class="sub small">見る人はGoogleアカウントでログインします。社外に出ても見られません。</span></span></label>
+      <label class="opt"><input type="radio" name="qa" value="anyone"><span><b>リンクを知っている人は誰でも</b><br><span class="sub small">ログイン不要で見られます。QRやリンクが社外に渡ると、誰でも見られるので注意。</span></span></label>
+      <div class="row mt"><button class="pri" id="qaGo">上げてQRを作る</button><button id="qaX">やめる</button></div></div>`;
+    document.body.appendChild(d);d.querySelector('#qaX').onclick=()=>{d.remove();res(null)};
+    d.querySelector('#qaGo').onclick=()=>{const v=d.querySelector('[name=qa]:checked').value;d.remove();res(v)}});
+  if(!who)return;
+  const job={name,key,kmId:cur.id,who,type:blob.type};
+  if(!gToken()){await idb.put('videos',blob,'__cap');await idb.put('kv',job,'capPending');
+    if(confirm('Googleドライブへの接続が必要です。接続しますか？\n（作った動画は一時保存してあるので、接続後にそのまま上がります）'))gLogin('capup');return}
+  await capUpload(blob,job)}
+async function capUpload(blob,job){
+  const m=await idb.get('manuals',job.kmId)||cur;const pm=progressModal('☁ 動画をドライブに上げています',job.name);
+  try{const folder=await ensureFolder();m.sync=m.sync||{};m.sync.cap=m.sync.cap||{};
+    const r=await gUploadSafe(m.sync.cap[job.key],{name:job.name,appProperties:{kind:'capvideo',kmId:m.id,capKey:job.key}},[folder],blob,p=>pm.set(p*0.95,`アップロード中… ${Math.round(p*100)}%`));
+    m.sync.cap[job.key]=r.id;await idb.put('manuals',m);if(cur&&cur.id===m.id){cur.sync=cur.sync||{};cur.sync.cap=m.sync.cap}
+    if(job.who==='anyone'){try{await gfetch(`${GAPI}/${r.id}/permissions?supportsAllDrives=true`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({role:'reader',type:'anyone'})})}
+      catch(e){alert('「誰でも見られる」の設定ができませんでした（会社のGoogle設定で禁止されている可能性）。共有フォルダのメンバーだけが見られます。\n'+e.message)}}
+    pm.close();
+    const LN={ja:'日本語',vi:'ベトナム語',id:'インドネシア語'},ln=String(job.key).split('+').map(k=>LN[k]||k).join('＋');
+    qrDialog({url:`https://drive.google.com/file/d/${r.id}/view`,head:'📱 動画のQRコード',badge:'🎬 字幕入り動画',badgeColor:'#b3261e',title:m.title||'（無題）',lines:[`品番 ${m.partNo||'-'}・${ln}の字幕`,`第${m.version||'1'}版`],
+      foot:job.who==='anyone'?'ログインなしで再生できます':'Googleアカウントでログインして再生',fileName:`QR動画_${m.partNo||''}_${m.title||''}_${job.key}`,
+      note:`読み取ると、Googleドライブで動画が再生されます。${job.who==='anyone'?'<b>リンクを知っている人は誰でも</b>見られます。':'共有フォルダのメンバーだけが見られます。'}上げた直後は「処理中」と出て、再生できるまで数分かかることがあります。`})}
+  catch(e){pm.close();driveErr(e,'list')}}
+async function capResume(){const job=await idb.get('kv','capPending'),blob=await idb.get('videos','__cap');
+  await idb.del('kv','capPending');await idb.del('videos','__cap');if(!job||!blob)return;
+  if(!gToken()){toast('ドライブに接続できなかったため、動画を上げられませんでした');return}await capUpload(blob,job)}
 
 /* ---------- Googleドライブ連携 ---------- */
 const GAPI='https://www.googleapis.com/drive/v3/files',GUP='https://www.googleapis.com/upload/drive/v3/files',DSCOPE='https://www.googleapis.com/auth/drive';
@@ -2060,6 +2191,7 @@ const HELP=[
  {s:'#bCamPh',t:'カメラで写真を撮る',x:'スマホはカメラアプリ、パソコンは内蔵カメラ・USBカメラで写真を撮って、手順に追加します。',a:'torikomi'},
  {s:'#bPhoto',t:'写真で手順を追加',x:'写真を選ぶと、1枚＝1手順で追加されます（複数選択OK・ファイル名順）。',a:'torikomi'},
  {s:'#bDoc',t:'既存の手順書を取り込む',x:'Excel（.xlsx）・Word（.docx）・PDFから、文字と画像を読み取って手順にします。AIがあれば手順に整理します。',a:'torikomi'},
+ {s:'#bQR',t:'QRラベル',x:'印刷して現場に貼るQRコードを作ります。スマホのカメラで読み取ると、この手順書の最新版が開きます。改訂してもQRはそのまま使えます（ドライブ連携が必要）。',a:'kubaru'},
  {s:'#bSplit',t:'ここで分ける',x:'赤い線（今の場面）の位置で、今の手順を2つに分けます。キーボードは Enter。',a:'kiru'},
  {s:'#trans',t:'コマ送り',x:'◀ ▶ で1コマ（約0.03秒）、◀◀ ▶▶ で1秒、⏮ ⏭ で前・次の区切りへ。キーボードは ← →（Shift で1秒）。',a:'kiru'},
  {s:'#bEdgeL',t:'始まりをここに',x:'今の手順の始まりを、赤い線の場面に合わせます。前の手順とくっついていれば、前の手順の終わりも一緒に動きます。',a:'kiru'},
@@ -2128,8 +2260,8 @@ window.addEventListener('pagehide',()=>{if(view==='edit')persist()});
   navOn=lsGet('kensa-nav','1')==='1';onePage=lsGet('kensa-onepage','1')==='1';lastId=lsGet('kensa-last','')||null;
   try{await openDB()}catch(e){main.innerHTML='<div class="card">この端末（またはプライベートブラウズ）では保存機能が使えません。</div>';return}
   const s=await idb.get('kv','settings');if(s)settings={...settings,...s};
-  {const up=new URLSearchParams(location.search);let ch=false;if(up.get('g')){settings.gClientId=up.get('g');ch=true}if(up.get('f')){settings.gFolder=up.get('f');ch=true}
-   if(ch){await idb.put('kv',settings,'settings');history.replaceState(null,'',location.pathname+(forceView?'?view':''));setTimeout(()=>toast('ドライブ連携の設定を読み込みました。「☁ 接続する」を押してください',4000),800)}}
+  {const up=new URLSearchParams(location.search);let ch=false;if(up.get('g')){settings.gClientId=up.get('g');ch=true}if(up.get('f')){settings.gFolder=up.get('f');ch=true}if(up.get('m'))lsSet('kensa-openm',up.get('m'));
+   if(ch){await idb.put('kv',settings,'settings');history.replaceState(null,'',location.pathname+(forceView?'?view':''));if(!up.get('m'))setTimeout(()=>toast('ドライブ連携の設定を読み込みました。「☁ 接続する」を押してください',4000),800)}}
   lock=(await idb.get('kv','lock'))||null;unlocked=ssGet('kensa-unlocked')==='1';
   try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
   const gerr=lsGet('kensa-gerr','');if(gerr){lsSet('kensa-gerr','');setTimeout(()=>alert('Googleへの接続ができませんでした（'+gerr+'）。もう一度「☁ 接続する」を押してください。'),500)}
@@ -2137,6 +2269,9 @@ window.addEventListener('pagehide',()=>{if(view==='edit')persist()});
   if(after==='settings'&&isEditor())await showSettings();else await showList();
   if(after)toast('☁ Googleドライブに接続しました');
   if(after.startsWith('save:')){const m=await idb.get('manuals',after.slice(5));if(m)driveSaveUI(m)}
+  if(after.startsWith('qr:')){const m=await idb.get('manuals',after.slice(3));if(m)manualQR(m)}
+  if(after==='capup')capResume();else if(await idb.get('kv','capPending').catch(()=>null)&&!after){await idb.del('kv','capPending');await idb.del('videos','__cap')}
+  await openFromQR();
   if(!lsGet('kensa-hello','')){lsSet('kensa-hello','1');const h=document.createElement('div');h.id='hello';
     h.innerHTML='<span class="grow">はじめての方は右上の「？」→ ガイドへ。ボタンを<b>長押し</b>すると説明が出ます。</span><button>OK</button>';
     document.body.appendChild(h);h.querySelector('button').onclick=()=>h.remove();setTimeout(()=>h.remove(),15000)}
