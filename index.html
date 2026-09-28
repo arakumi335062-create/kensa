@@ -88,6 +88,13 @@ textarea{min-height:58px;resize:vertical}
 #pnext{position:fixed;left:0;right:0;bottom:calc(56px + env(safe-area-inset-bottom));z-index:24;display:flex;gap:8px;padding:6px 12px;background:linear-gradient(rgba(0,0,0,0),var(--bg) 35%)}
 #pnext button{flex:1;min-height:42px}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:40;display:flex;align-items:center;justify-content:center;padding:16px}
+.kw h4{margin:12px 0 6px;font-size:17px}.kw-x{line-height:1.8;font-size:15px}
+.kw-dots{display:flex;gap:6px;margin-top:6px}.kw-dots i{font-style:normal;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--line);font-size:13px;font-weight:700}
+.kw-dots i.on{background:var(--pri);color:var(--pri-ink)}.kw-dots i.done{background:#2e7d32;color:#fff}
+.kw-big{display:block;width:100%;text-align:center;font-size:17px;font-weight:700;padding:14px;min-height:54px;box-sizing:border-box}
+a.kw-big{background:#e8f0fe;color:#1a56c4;border:1px solid #b6ccf5;border-radius:10px;text-decoration:none;margin-top:8px}
+.kw-msg{margin-top:10px;line-height:1.6;font-size:15px}.kw-msg.ok{color:#2e7d32}.kw-msg.ng{color:#c62828}
+.kst{font-size:14px;font-weight:700;margin:6px 0;padding:6px 10px;border-radius:8px}.kst.ok{background:#e8f5e9;color:#2e7d32}.kst.ng{background:#fff3e0;color:#b45309}
 .mbox{background:var(--card);color:var(--ink);border-radius:14px;padding:16px;width:100%;max-width:480px;max-height:90vh;overflow:auto}
 .mbox video{width:100%;max-height:48vh;border-radius:8px;background:#000;margin-top:8px}
 .modal.sheet{align-items:flex-end;padding:0}
@@ -791,8 +798,61 @@ async function claude(content,max=1500){
     body:JSON.stringify({model:settings.model,max_tokens:max,messages:[{role:'user',content}]})})}catch(e){throw new Error(NETMSG)}
   if(!r.ok){const t=await r.text();throw new Error(apiMsg(r.status,t,'Claude（AI）'))}
   const j=await r.json();return(j.content||[]).map(c=>c.text||'').join('')}
+/* ---------- APIキー かんたん設定ガイド ---------- */
+const KEYW={
+  claude:{t:'🤖 Claude APIキーの作り方（約5分）',f:'apiKey',pre:'sk-ant-',steps:[
+    {h:'管理画面を開く',x:'下のボタンで Anthropic（Claudeの会社）の管理画面を開きます。初めてなら「Continue with Google」で会社のGoogleアカウントでログインできます。<br>※ 画面が英語でも大丈夫。押す場所はこの案内に書いてあります。',l:['管理画面を開く','https://console.anthropic.com/']},
+    {h:'クレジット（前払い）を入れる',x:'左のメニュー「<b>Billing</b>」→「<b>Buy credits</b>」。まずは <b>$5（約750円）</b>で十分です（説明・翻訳なら数百回分）。<br>カード番号はご自身で入力してください。「<b>Auto reload（自動チャージ）</b>」は<b>オフ</b>のままにします。',l:['支払い画面を開く','https://console.anthropic.com/settings/billing']},
+    {h:'キーを作る',x:'左のメニュー「<b>API keys</b>」→ 右上「<b>Create Key</b>」→ 名前に「<b>kensa</b>」と入れて「<b>Add</b>」。',l:['キーの画面を開く','https://console.anthropic.com/settings/keys']},
+    {h:'キーをコピーする',x:'「<b>sk-ant-</b>」で始まる長い文字が出ます。横の「<b>Copy</b>」を押します。<br>⚠ この文字は<b>一度しか表示されません</b>。閉じてしまったら、もう一度「Create Key」で作ればOK（無料）。<br>⚠ キーは<b>人に見せない・写真を送らない</b>。'},
+    {h:'このアプリに貼り付ける',paste:1}]},
+  openai:{t:'🔊 OpenAI APIキーの作り方（AI音声用・約5分）',f:'ttsKey',pre:'sk-',steps:[
+    {h:'管理画面を開く',x:'下のボタンで OpenAI の管理画面を開きます。ChatGPTと<b>同じアカウント</b>でログインできます。<br>※ ChatGPTの有料プラン（Plus）と、この「API」は<b>別の財布</b>です。Plusに入っていても、APIのクレジットは別に入れます。',l:['管理画面を開く','https://platform.openai.com/']},
+    {h:'クレジット（前払い）を入れる',x:'「<b>Billing</b>」→「<b>Add to credit balance</b>」。まずは <b>$5（約750円）</b>で十分です（1分の音声で数円）。<br>カード番号はご自身で入力してください。「<b>Auto recharge（自動チャージ）</b>」は<b>オフ</b>のままにします。',l:['支払い画面を開く','https://platform.openai.com/settings/organization/billing/overview']},
+    {h:'キーを作る',x:'「<b>+ Create new secret key</b>」→ 名前に「<b>kensa</b>」→「<b>Create secret key</b>」。',l:['キーの画面を開く','https://platform.openai.com/api-keys']},
+    {h:'キーをコピーする',x:'「<b>sk-proj-</b>」などで始まる長い文字が出ます。「<b>Copy</b>」を押します。<br>⚠ この文字は<b>一度しか表示されません</b>。閉じたら作り直せばOK。<br>⚠ キーは<b>人に見せない・写真を送らない</b>。'},
+    {h:'このアプリに貼り付ける',paste:1}]}};
+function cleanKey(v){return String(v||'').replace(/[\s　"'「」]/g,'').replace(/[Ａ-Ｚａ-ｚ０-９－＿]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0))}
+function keyProblem(kind,v){
+  if(!v)return'まだ何も入っていません。管理画面で「Copy」を押してから、もう一度貼り付けてください。';
+  if(kind==='claude'&&/^sk-(proj|svcacct|admin)-/.test(v))return'これは OpenAI（AI音声）のキーです。下の「AI音声」の欄に入れるものです。Claudeのキーは「sk-ant-」で始まります。';
+  if(kind==='openai'&&v.startsWith('sk-ant-'))return'これは Claude（説明・翻訳）のキーです。上の「AI」の欄に入れるものです。OpenAIのキーは「sk-proj-」などで始まります。';
+  if(!v.startsWith(KEYW[kind].pre))return`キーは「${KEYW[kind].pre}」で始まる文字です。別の文字（メールやURLなど）がコピーされているようです。管理画面でもう一度「Copy」を押してください。`;
+  if(v.length<40)return'キーが途中で切れているようです。管理画面の「Copy」ボタンで、全部コピーしてください。';
+  return''}
+function keyMask(v){return v?v.slice(0,7)+'…'+v.slice(-4):''}
+function keyWizard(kind,onDone){
+  const W=KEYW[kind];let i=0;const d=document.createElement('div');d.className='modal';
+  const paint=()=>{const s=W.steps[i],n=W.steps.length;
+    d.innerHTML=`<div class="mbox kw"><h3>${W.t}</h3>
+      <div class="kw-dots">${W.steps.map((_,k)=>`<i class="${k<i?'done':k===i?'on':''}">${k<i?'✓':k+1}</i>`).join('')}</div>
+      <h4>手順 ${i+1}／${n}　${s.h}</h4>
+      ${s.paste?`<p class="sub">管理画面で「Copy」を押したら、下の大きいボタンを押します。<br>うまくいかない時は、下の欄を<b>長押し（パソコンは右クリック）→「貼り付け」</b>でもOK。</p>
+        <button class="pri kw-big" id="kwPaste">📋 コピーしたキーを貼り付ける</button>
+        <input type="password" id="kwIn" placeholder="${W.pre}…" autocomplete="off" style="margin-top:10px">
+        <div id="kwMsg" class="kw-msg"></div>
+        <div class="row mt"><button class="pri grow" id="kwOk">✔ 確認して保存</button></div>`
+      :`<p class="kw-x">${s.x}</p>${s.l?`<a class="btn kw-big" href="${s.l[1]}" target="_blank" rel="noopener">🌐 ${s.l[0]}（別の画面で開きます）</a>`:''}`}
+      <div class="row mt">${i?'<button id="kwBack">← 戻る</button>':''}<span class="grow"></span>${s.paste?'':'<button class="pri" id="kwNext">できた → 次へ</button>'}<button id="kwX">閉じる</button></div></div>`;
+    const q=x=>d.querySelector(x);
+    q('#kwX').onclick=()=>d.remove();if(q('#kwBack'))q('#kwBack').onclick=()=>{i--;paint()};if(q('#kwNext'))q('#kwNext').onclick=()=>{i++;paint()};
+    if(s.paste){const inp=q('#kwIn'),msg=q('#kwMsg');
+      const say=(t,ok)=>{msg.className='kw-msg '+(ok===1?'ok':ok===0?'ng':'');msg.innerHTML=t};
+      q('#kwPaste').onclick=async()=>{try{const t=await navigator.clipboard.readText();inp.value=cleanKey(t);const p=keyProblem(kind,inp.value);
+          if(p)say('⚠ '+esc(p),0);else{say('貼り付けました（'+esc(keyMask(inp.value))+'）。「✔ 確認して保存」を押してください。')}}
+        catch(e){say('このブラウザでは自動で貼り付けできませんでした。下の欄を長押し（パソコンは右クリック）→「貼り付け」してください。');inp.focus()}};
+      q('#kwOk').onclick=async()=>{const v=cleanKey(inp.value),p=keyProblem(kind,v);if(p){say('⚠ '+esc(p),0);return}
+        const b=q('#kwOk'),old=settings[W.f];settings[W.f]=v;b.disabled=true;b.textContent='AIに試しにつないでいます…';say('');
+        try{if(kind==='claude'){const r=await claude('「OK」とだけ返事してください。',10);if(!r)throw new Error('返事がありませんでした')}
+          else{const a=await tts('音声のテストです。','ja');playVoice(a)}
+          settings[W.f+'Ok']=today();await idb.put('kv',settings,'settings');
+          say(`✅ <b>使えます！</b>キーを保存しました（${esc(keyMask(v))}）。${kind==='openai'?'テストの声が流れます。':''}`,1);
+          b.textContent='完了（閉じる）';b.disabled=false;b.onclick=()=>{d.remove();onDone&&onDone()}}
+        catch(e){settings[W.f]=old;b.disabled=false;b.textContent='✔ 確認して保存';say('⚠ '+esc(e.message)+(/クレジット|残高/.test(e.message)?'<br>→ 手順2に戻ってクレジットを入れてください。入れた直後は反映に数分かかることがあります。':''),0)}}}};
+  paint();document.body.appendChild(d)}
+function keyStatus(kind){const v=settings[KEYW[kind].f];return v?`<div class="kst ok">✅ 設定済み（${esc(keyMask(v))}）${settings[KEYW[kind].f+'Ok']?'・'+esc(settings[KEYW[kind].f+'Ok'])+' 動作確認OK':''}</div>`:`<div class="kst ng">⚠ まだ入っていません → 下の「🔰 かんたん設定」を押してください</div>`}
 function aiErr(err){
-  if(err.message==='NOKEY'){if(confirm('AIを使うにはAPIキーの設定が必要です。設定画面を開きますか？\n（キーがなくても、説明は手で書け、訳は「Google翻訳で確認」から貼り付けられます）'))showSettings()}
+  if(err.message==='NOKEY'){if(confirm('AIを使うにはAPIキーが必要です。\n「🔰 かんたん設定」で作り方を1つずつ案内します。開きますか？\n（キーがなくても、説明は手で書け、訳は「Google翻訳で確認」から貼り付けられます）'))keyWizard('claude')}
   else if(err.message!=='CANCEL')alert(err.message)}
 async function translate(text){
   const g=settings.glossary.filter(e=>e.ja&&text.includes(e.ja)).slice(0,200);
@@ -907,7 +967,7 @@ async function tts(text,L){
   if(!r.ok){const t=await r.text();throw new Error(apiMsg(r.status,t,'AI音声（OpenAI）'))}
   return blobToDataURL(new Blob([await r.arrayBuffer()],{type:'audio/mpeg'}))}
 function ttsErr(err){
-  if(err.message==='NOTTS'){if(confirm('AI音声を使うには「⚙ 設定」でAI音声のキーを入れる必要があります。設定を開きますか？\n（キーがなくても「● 録音」で自分の声を入れられます）'))showSettings()}
+  if(err.message==='NOTTS'){if(confirm('AI音声を使うにはOpenAIのキーが必要です。\n「🔰 かんたん設定」で作り方を1つずつ案内します。開きますか？\n（キーがなくても「● 録音」で自分の声を入れられます）'))keyWizard('openai')}
   else alert(err.message)}
 function ttsAllDialog(){
   if(!cur.steps.length){toast('手順がありません');return}
@@ -1675,14 +1735,16 @@ async function showSettings(){
     <div class="row"><input type="text" id="gMail" placeholder="example@gmail.com" style="flex:1" autocomplete="off"><select id="gRole" style="width:auto"><option value="reader">見るだけ</option><option value="writer">編集もできる</option></select><button class="sm" id="gShare">追加</button></div></div>
   <div class="card" id="sAi"><h3>🤖 AI（説明の下書き・自動翻訳）</h3>
     <p class="sub small">APIキーは事務所の作成用端末にだけ入れます。現場の端末には不要です。キーはこの端末の中だけに保存され、配布ファイルには入りません。</p>
-    <label class="f">Claude APIキー</label><input type="password" id="sKey" value="${esc(settings.apiKey)}" placeholder="sk-ant-…" autocomplete="off">
+    ${keyStatus('claude')}<button class="${settings.apiKey?'':'pri '}kw-big" id="sWiz">${settings.apiKey?'🔰 キーを入れ直す（案内つき）':'🔰 かんたん設定（キーの作り方を1つずつ案内）'}</button>
+    <label class="f">Claude APIキー（わかる人は直接貼り付けでもOK）</label><input type="password" id="sKey" value="${esc(settings.apiKey)}" placeholder="sk-ant-…" autocomplete="off">
     <label class="f">AIの種類</label><select id="sModel">
       <option value="claude-sonnet-5" ${settings.model==='claude-sonnet-5'?'selected':''}>高精度（Claude Sonnet 5）おすすめ</option>
       <option value="claude-haiku-4-5-20251001" ${settings.model==='claude-haiku-4-5-20251001'?'selected':''}>低コスト・高速（Claude Haiku 4.5）</option></select>
     <div class="row mt"><button class="pri" id="sSave">保存</button><button id="sTest">翻訳テスト</button></div></div>
   <div class="card" id="sTts"><h3>🔊 AI音声（読み上げ・任意）</h3>
     <p class="sub small">説明文を日本語・ベトナム語・インドネシア語の声で読み上げる音声を作ります（OpenAIの音声API）。platform.openai.com でキーを作り、クレジットを入れて貼り付けます。料金は1分の音声で数円程度。キーがなくても「● 録音」で自分の声を入れられます。</p>
-    <label class="f">OpenAI APIキー</label><input type="password" id="tKey" value="${esc(settings.ttsKey||'')}" placeholder="sk-…" autocomplete="off">
+    ${keyStatus('openai')}<button class="${settings.ttsKey?'':'pri '}kw-big" id="tWiz">${settings.ttsKey?'🔰 キーを入れ直す（案内つき）':'🔰 かんたん設定（キーの作り方を1つずつ案内）'}</button>
+    <label class="f">OpenAI APIキー（わかる人は直接貼り付けでもOK）</label><input type="password" id="tKey" value="${esc(settings.ttsKey||'')}" placeholder="sk-…" autocomplete="off">
     <label class="f">声の種類</label><select id="tVoice">${[['coral','coral（女性・明るい）'],['sage','sage（女性・落ち着き）'],['nova','nova（女性）'],['ash','ash（男性）'],['onyx','onyx（男性・低め）'],['alloy','alloy（中性）']].map(([k,l])=>`<option value="${k}" ${settings.ttsVoice===k?'selected':''}>${l}</option>`).join('')}</select>
     <div class="row mt"><button class="pri" id="tSave">保存</button><button id="tTest">声のテスト</button></div></div>
   <div class="card" id="sGl"><h3>📖 用語集（3言語辞書）</h3>
@@ -1713,11 +1775,12 @@ async function showSettings(){
   $('#gShare').onclick=async()=>{const em=$('#gMail').value.trim();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){alert('メールアドレスを確認してください');return}
     try{const fid=await ensureFolder();await gfetch(`https://www.googleapis.com/drive/v3/files/${fid}/permissions?supportsAllDrives=true&sendNotificationEmail=true`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({role:$('#gRole').value,type:'user',emailAddress:em})});
       $('#gMail').value='';toast(`${em} に共有しました`,3200)}catch(e){driveErr(e,'settings')}};
-  $('#tSave').onclick=async()=>{settings.ttsKey=$('#tKey').value.trim();settings.ttsVoice=$('#tVoice').value;await idb.put('kv',settings,'settings');toast('保存しました')};
+  $('#sWiz').onclick=()=>keyWizard('claude',showSettings);$('#tWiz').onclick=()=>keyWizard('openai',showSettings);
+  $('#tSave').onclick=async()=>{const k=cleanKey($('#tKey').value);if(k){const p=keyProblem('openai',k);if(p){alert(p);return}}settings.ttsKey=k;settings.ttsVoice=$('#tVoice').value;await idb.put('kv',settings,'settings');toast('保存しました')};
   $('#tTest').onclick=async()=>{settings.ttsKey=$('#tKey').value.trim();settings.ttsVoice=$('#tVoice').value;const b=$('#tTest');b.disabled=true;b.textContent='作成中…';
     try{const d=await tts('Kiểm tra xem có ba via ở cổng không.','vi');await idb.put('kv',settings,'settings');playVoice(d);toast('ベトナム語のテスト音声を再生します')}
     catch(e){alert(e.message==='NOTTS'?'キーを入れてください':e.message)}b.disabled=false;b.textContent='声のテスト'};
-  $('#sSave').onclick=async()=>{settings.apiKey=$('#sKey').value.trim();settings.model=$('#sModel').value;await idb.put('kv',settings,'settings');toast('保存しました')};
+  $('#sSave').onclick=async()=>{const k=cleanKey($('#sKey').value);if(k){const p=keyProblem('claude',k);if(p){alert(p);return}}settings.apiKey=k;settings.model=$('#sModel').value;await idb.put('kv',settings,'settings');toast('保存しました')};
   $('#sTest').onclick=async()=>{settings.apiKey=$('#sKey').value.trim();settings.model=$('#sModel').value;
     const b=$('#sTest');b.disabled=true;b.textContent='テスト中…';
     try{const r=await translate('成形品のゲート部にバリがないか、目視で確認する。');await idb.put('kv',settings,'settings');alert('成功しました\n\nベトナム語：'+r.vi+'\n\nインドネシア語：'+r.id)}
