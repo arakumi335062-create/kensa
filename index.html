@@ -117,6 +117,8 @@ a.kw-big{background:#e8f0fe;color:#1a56c4;border:1px solid #b6ccf5;border-radius
 .appupd{position:fixed;left:10px;right:10px;top:calc(env(safe-area-inset-top) + 8px);z-index:65;max-width:620px;margin:0 auto;background:#1f5fbf;color:#fff;border-radius:12px;padding:8px 10px;display:flex;gap:8px;align-items:center;box-shadow:0 6px 20px rgba(0,0,0,.3);font-size:14px}.appupd button{background:#fff;color:#1f5fbf;border:0}
 .cutedge button,.cutbig{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.25}.cutedge button small,.cutbig small{font-size:11.5px;font-weight:600;opacity:.8;margin-top:2px}.cutedge button.ng{background:#fff6e5;border-color:#e8c07a}.cutedge button.ng small{color:#8a5a00;opacity:1}
 .lsdel{padding:8px 10px}
+.tray{margin-top:10px;border:2px dashed #9dbdf0;border-radius:12px;padding:8px;background:#f3f7ff}.trayl{display:flex;gap:8px;overflow-x:auto;padding:6px 0}.trayi{flex:0 0 120px;text-align:center;font-size:12px}.trayi img,.trayi .nothumb{width:120px;height:68px;object-fit:cover;border-radius:6px;background:#000;display:block}.trayi .row{justify-content:center;gap:3px;margin-top:3px}.trayi .row button{min-height:32px;padding:2px 8px}
+@media (prefers-color-scheme:dark){.tray{background:#18233a}}
 .mbox{background:var(--card);color:var(--ink);border-radius:14px;padding:16px;width:100%;max-width:480px;max-height:90vh;overflow:auto}
 .mbox video{width:100%;max-height:48vh;border-radius:8px;background:#000;margin-top:8px}
 .modal.sheet{align-items:flex-end;padding:0}
@@ -316,8 +318,8 @@ const ALLSEC=['#sCap','#sPlayer','#sCut','#sList','#sText','#sInfo','#sFin'];
   else if(q.get('error'))lsSet('kensa-gerr',q.get('error'));
   history.replaceState(null,'',location.pathname+lsGet('kensa-gsearch',''))}catch(e){}})();
 const forceView=/[?&]view\b/.test(location.search);
-const APP_VER='1.11',APP_DATE='2026-09-28';
-const APP_LOG=[['1.11','一覧から 🗑 削除（この端末だけ／ドライブからも）'],['1.10','🎯 ポイント編集をパソコンで大きく：左に挿入メニュー（縦）、真ん中に大きい画像、右に書式'],['1.9','② 切る：ボタンに「何が起きるか」（手順番号・長さ）を表示、注意の文をわかりやすく'],['1.8','📷 カメラのズーム（カメラ本体のズーム／デジタルズーム・2本指・ホイール）'],['1.7','ポイント編集に 💬吹き出し・🔤文字・①番号・─線・🖼画像・⭐スタンプ、色・線の太さ・文字の大きさ・塗り'],['1.6','🖨 紙の手順書（QR付き・印刷／PDF）'],['1.5','📦 現場に配る（QR・リンク・ファイルから選ぶ）'],['1.4','🏷 QRラベル・字幕入り動画のQR'],['1.3','② 切る（コマ送り）・③ 説明（画像を見ながら入力）'],['1.2','APIキーの「🔰 かんたん設定」'],['1.1','☁ Googleドライブ連携']];
+const APP_VER='1.13',APP_DATE='2026-09-28';
+const APP_LOG=[['1.13','🎞 分割撮影：撮っては止めて…が、そのまま手順に（パソコン＝⏸区切る、スマホ＝撮影トレイ、動画の複数選択・続きに足す）'],['1.12','▦ マスク（モザイク・ぼかし・塗りつぶしで見せない所を隠す）'],['1.11','一覧から 🗑 削除（この端末だけ／ドライブからも）'],['1.10','🎯 ポイント編集をパソコンで大きく：左に挿入メニュー（縦）、真ん中に大きい画像、右に書式'],['1.9','② 切る：ボタンに「何が起きるか」（手順番号・長さ）を表示、注意の文をわかりやすく'],['1.8','📷 カメラのズーム（カメラ本体のズーム／デジタルズーム・2本指・ホイール）'],['1.7','ポイント編集に 💬吹き出し・🔤文字・①番号・─線・🖼画像・⭐スタンプ、色・線の太さ・文字の大きさ・塗り'],['1.6','🖨 紙の手順書（QR付き・印刷／PDF）'],['1.5','📦 現場に配る（QR・リンク・ファイルから選ぶ）'],['1.4','🏷 QRラベル・字幕入り動画のQR'],['1.3','② 切る（コマ送り）・③ 説明（画像を見ながら入力）'],['1.2','APIキーの「🔰 かんたん設定」'],['1.1','☁ Googleドライブ連携']];
 function verBadge(){return`<span class="verb">v${APP_VER}</span>`}
 async function checkAppUpdate(manual){if(location.protocol==='file:')return;
   try{const r=await fetch(location.pathname+'?chk='+Date.now(),{cache:'no-store'});const t=await r.text(),m=t.match(/APP_VER='([\d.]+)'/);if(!m)return;
@@ -374,7 +376,7 @@ function boxBg(k){const col=k.col||'#e53935',f=k.fill??(k.s==='b'?0:null);return
 function drawMarks(ctx,W,H,marks,ox=0,oy=0,t=null,opt={}){
   (marks||[]).forEach((k,i)=>{const on=opt.sel===i;if(!visAt(k,t)&&!on)return;
     const col=k.col||'#e53935',halo=lightCol(col)?'rgba(0,0,0,.55)':'rgba(255,255,255,.82)';
-    ctx.save();ctx.globalAlpha=opt.still&&k.t0!=null?0.5:1;ctx.lineCap='round';ctx.lineJoin='round';
+    ctx.save();ctx.globalAlpha=opt.still&&k.t0!=null&&k.s!=='m'?0.5:1;ctx.lineCap='round';ctx.lineJoin='round';
     const P=(px,py)=>[ox+px/100*W,oy+py/100*H];
     if(isLine(k)){const[x1,y1]=P(k.x1,k.y1),[x2,y2]=P(k.x2,k.y2),an=Math.atan2(y2-y1,x2-x1),lw=mLw(k,W,0.01),hs=Math.max(lw*3.2,Math.max(W,H)*0.04*(LWK[(k.lw||2)-1]**0.5));
       const shaft=()=>{ctx.beginPath();ctx.moveTo(x1,y1);if(k.s==='a')ctx.lineTo(x2-Math.cos(an)*hs*0.6,y2-Math.sin(an)*hs*0.6);else ctx.lineTo(x2,y2)};
@@ -383,7 +385,8 @@ function drawMarks(ctx,W,H,marks,ox=0,oy=0,t=null,opt={}){
       ctx.lineWidth=lw;ctx.strokeStyle=col;shaft();ctx.stroke();if(k.s==='a'){ctx.fillStyle=col;head();ctx.fill()}
       if(k.label)drawLabel(ctx,k.label,x1,y1+lw*2,W,col,k)}
     else{const[cx,cy]=P(k.x,k.y),w=(k.w||13)/100*W,h=k.h?k.h/100*H:w,lw=mLw(k,W,k.s==='x'?0.012:0.008),L=cx-w/2,T=cy-h/2;
-      if(k.s==='c'||k.s==='r'||k.s==='x'){
+      if(k.s==='m'){drawMask(ctx,k,L,T,w,h,W,H,ox,oy,opt.src)}
+      else if(k.s==='c'||k.s==='r'||k.s==='x'){
         const path=()=>{ctx.beginPath();if(k.s==='x'){const a=0.44;ctx.moveTo(cx-w*a,cy-h*a);ctx.lineTo(cx+w*a,cy+h*a);ctx.moveTo(cx+w*a,cy-h*a);ctx.lineTo(cx-w*a,cy+h*a)}
           else if(k.s==='r'){if(ctx.roundRect)ctx.roundRect(L,T,w,h,Math.min(w,h)*0.06);else ctx.rect(L,T,w,h)}else ctx.ellipse(cx,cy,Math.max(1,w/2),Math.max(1,h/2),0,0,Math.PI*2)};
         if(k.s!=='x'&&k.fill){ctx.fillStyle=k.fill===2?col:col+'40';path();ctx.fill()}
@@ -414,11 +417,31 @@ function drawMarks(ctx,W,H,marks,ox=0,oy=0,t=null,opt={}){
       if(isLine(k)){const[x1,y1]=P(k.x1,k.y1),[x2,y2]=P(k.x2,k.y2);ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.setLineDash([]);hd(x1,y1);hd(x2,y2)}
       else{const[cx,cy]=P(k.x,k.y),w=(k.w||13)/100*W,h=k.h?k.h/100*H:w;ctx.strokeRect(cx-w/2-3,cy-h/2-3,w+6,h+6);ctx.setLineDash([]);hd(cx+w/2,cy+h/2);if(k.s==='b'){const[tx,ty]=P(k.x2,k.y2);hd(tx,ty)}}
       ctx.restore()}})}
+
+const mTmp=document.createElement('canvas'),mTmp2=document.createElement('canvas');
+function drawMask(ctx,k,L,T,w,h,W,H,ox,oy,src){const mk=k.mk||'mo';if(w<2||h<2)return;
+  if(mk==='fi'){ctx.fillStyle=k.col||'#555555';rrect(ctx,L,T,w,h,Math.min(w,h)*0.06);ctx.fill();return}
+  let S=src||ctx.canvas,sx,sy,sw,sh;
+  if(src){const nw=src.videoWidth||src.naturalWidth,nh=src.videoHeight||src.naturalHeight;if(!nw||!nh)return;sx=(L-ox)/W*nw;sy=(T-oy)/H*nh;sw=w/W*nw;sh=h/H*nh}
+  else{sx=L;sy=T;sw=w;sh=h}
+  const st=[0.6,1,1.6][(k.lw||2)-1],bs=Math.max(3,W*(mk==='bl'?0.03:0.018)*st),tw=Math.max(1,Math.round(w/bs)),th=Math.max(1,Math.round(h/bs));
+  try{mTmp.width=tw;mTmp.height=th;const t=mTmp.getContext('2d');t.imageSmoothingEnabled=true;t.drawImage(S,sx,sy,sw,sh,0,0,tw,th);
+    ctx.save();ctx.beginPath();ctx.rect(L,T,w,h);ctx.clip();
+    if(mk==='bl'){mTmp2.width=Math.max(1,tw*3);mTmp2.height=Math.max(1,th*3);const t2=mTmp2.getContext('2d');t2.imageSmoothingEnabled=true;t2.drawImage(mTmp,0,0,mTmp2.width,mTmp2.height);ctx.imageSmoothingEnabled=true;ctx.drawImage(mTmp2,L,T,w,h)}
+    else{ctx.imageSmoothingEnabled=false;ctx.drawImage(mTmp,L,T,w,h);ctx.imageSmoothingEnabled=true}
+    ctx.restore()}catch(e){}}
+
+const hasMask=s=>(s.marks||[]).some(m=>m.s==='m');const mtCache=new Map();
+function thumbImg(s,i){return s.thumb?(hasMask(s)?`<img data-mt="${i}" alt="">`:`<img src="${s.thumb}" alt="">`):''}
+async function fillMaskThumbs(root,steps){if(!root)return;for(const im of root.querySelectorAll('img[data-mt]')){const s=steps[+im.dataset.mt];if(!s||!s.thumb)continue;
+  const ms=s.marks.filter(m=>m.s==='m'),key=s.thumb.length+':'+s.thumb.slice(-40)+JSON.stringify(ms);let u=mtCache.get(key);
+  if(!u){try{const b=await loadImage(s.thumb),c=document.createElement('canvas');c.width=b.width;c.height=b.height;const x=c.getContext('2d');x.drawImage(b,0,0);drawMarks(x,c.width,c.height,ms);u=c.toDataURL('image/jpeg',0.8);mtCache.set(key,u)}catch(e){continue}}
+  if(im.isConnected)im.src=u}}
 function renderMarks(layer,ms,sel=-1,t=null,still=false){if(!layer)return;
   let c=layer.querySelector('canvas.mkc');if(!c){layer.innerHTML='<canvas class="mkc"></canvas>';c=layer.firstChild}
   const w=layer.clientWidth,h=layer.clientHeight;if(!w||!h){if(!layer._rt||layer._rt<8){layer._rt=(layer._rt||0)+1;setTimeout(()=>renderMarks(layer,ms,sel,t,still),120)}return}layer._rt=0;
   const dpr=Math.min(2.5,window.devicePixelRatio||1),W=Math.round(w*dpr),H=Math.round(h*dpr);if(c.width!==W||c.height!==H){c.width=W;c.height=H}
-  const x=c.getContext('2d');x.clearRect(0,0,W,H);drawMarks(x,W,H,ms,0,0,t,{sel,still,hr:11*dpr,redraw:()=>renderMarks(layer,ms,sel,t,still)})}
+  const x=c.getContext('2d');x.clearRect(0,0,W,H);const med=layer.parentNode&&[...layer.parentNode.querySelectorAll('img,video')].find(e=>!e.hidden);drawMarks(x,W,H,ms,0,0,t,{sel,still,src:med,hr:11*dpr,redraw:()=>renderMarks(layer,ms,sel,t,still)})}
 function arOf(el){if(!el)return 16/9;return(el.videoWidth&&el.videoWidth/el.videoHeight)||(el.naturalWidth&&el.naturalWidth/el.naturalHeight)||16/9}
 function paintMarks(layer,media,ms,t,still){if(!layer)return;const go=()=>renderMarks(layer,ms,-1,t,still);layer._go=go;go();
   if(window.ResizeObserver&&!layer._ro){layer._ro=new ResizeObserver(()=>layer._go&&layer._go());layer._ro.observe(layer)}
@@ -462,7 +485,7 @@ async function withHiddenVideo(fn){
 let markTool=lsGet('kensa-mtool','c');
 let markDur=+lsGet('kensa-mdur','3')||3;
 /* ---------- 🎯 ポイント編集（専用画面：挿入・書式） ---------- */
-const PTN={c:'○',r:'□',x:'×',a:'➡',l:'─',b:'💬',t:'🔤',n:'①',i:'🖼'},PTL={c:'○ 丸',r:'□ 四角',x:'× バツ',a:'➡ 矢印',l:'─ 線',b:'💬 吹き出し',t:'🔤 文字',n:'① 番号',i:'🖼 画像'};
+const PTN={c:'○',r:'□',x:'×',a:'➡',l:'─',b:'💬',t:'🔤',n:'①',i:'🖼',m:'▦'},PTL={c:'○ 丸',r:'□ 四角',x:'× バツ',a:'➡ 矢印',l:'─ 線',b:'💬 吹き出し',t:'🔤 文字',n:'① 番号',i:'🖼 画像',m:'▦ マスク'};
 const ptCol=i=>`hsl(${(i*67+350)%360} 75% 48%)`;
 let mStyle=(()=>{try{return JSON.parse(lsGet('kensa-mstyle','{}'))||{}}catch(e){return{}}})();
 function openPts(o){
@@ -471,7 +494,7 @@ function openPts(o){
   d.innerHTML=`<div class="pe-top"><b class="grow">🎯 ${esc(o.title)}</b><button class="pri" id="peDone">✔ 完了</button></div>
     <div class="pe-guide" id="peG"></div>
     <div class="pe-body"><div class="pe-ins"><div class="pe-cap">挿入</div>
-      <div class="pe-shapes">${['c','r','x','a','l','b','t','n'].map(k=>`<button data-tool="${k}" class="${k===tool?'on':''}"><i>${PTN[k]}</i><span>${PTL[k].split(' ')[1]}</span></button>`).join('')}
+      <div class="pe-shapes">${['c','r','x','a','l','b','t','n','m'].map(k=>`<button data-tool="${k}" class="${k===tool?'on':''}"><i>${PTN[k]}</i><span>${PTL[k].split(' ')[1]}</span></button>`).join('')}
         <button data-ins="img"><i>🖼</i><span>画像</span></button><button data-ins="stamp"><i>⭐</i><span>スタンプ</span></button></div></div>
     <div class="pe-main">
     <div class="pe-stage"><div class="vwrap pe-wrap" id="peW">${V0?'<video id="peV" playsinline muted preload="auto"></video>':`<img src="${o.src}" alt="">`}<div class="marks"></div></div></div>
@@ -496,11 +519,24 @@ function openPts(o){
     :`② 「挿入」で形（今は <b>${PTL[tool]}</b>）を選び、画面の見せたい所を<b>なぞる</b>（タップでも置けます）`+(V?'。場面を変えるときは ▶ や ◀◀ ▶▶':'')};
   const bars=()=>{if(!V)return;const S=V0.start,L=(V0.end-S)||1;d.querySelector('#peBars').innerHTML=ms.map((m,i)=>{const a=m.t0==null?S:m.t0,z=m.t0==null?V0.end:m.t1;
     return`<i style="left:${(a-S)/L*100}%;width:${Math.max(1.5,(z-a)/L*100)}%;background:${ptCol(i)};top:${m.t0==null?7:2}px;height:${m.t0==null?4:14}px"></i>`}).join('')+'<b></b>'};
-  const nm=m=>m.s==='i'&&m.emo?m.emo:PTN[m.s]||'○';
+  const nm=m=>m.s==='i'&&m.emo?m.emo:m.s==='m'?'▦マスク':PTN[m.s]||'○';
   const list=()=>{d.querySelector('#peList').innerHTML=ms.length?ms.map((m,i)=>`<button class="${i===sel?'on':''}" data-i="${i}" style="border-left:6px solid ${ptCol(i)}">${i+1}. ${nm(m)} ${V?(m.t0!=null?fmt(m.t0):'ずっと'):''}${m.label?' '+esc(String(m.label).split('\n')[0].slice(0,12)):''}</button>`).join(''):'<span class="sub small">まだポイントはありません</span>'};
   const setStyle=(k,v)=>{mStyle[k]=v;lsSet('kensa-mstyle',JSON.stringify(mStyle))};
   const selPanel=()=>{const p=d.querySelector('#peSel'),m=ms[sel];
     if(!m){p.innerHTML=`<div class="pe-cap">書式</div><span class="sub small">ポイント（印）を押して選ぶと、ここで<b>色・線の太さ・文字の大きさ・塗り・文字</b>${V?'・表示する時間':''}を変えられます。</span>`;return}
+    if(m.s==='m'){p.innerHTML=`<div class="row"><b class="grow">書式：${sel+1}. ▦ マスク（見せない所を隠す）</b></div>
+      <div class="pe-cap">隠し方</div><div class="row chips">${[['mo','▦ モザイク'],['bl','🌫 ぼかし'],['fi','■ 塗りつぶし']].map(([v,n])=>`<button class="sm ${(m.mk||'mo')===v?'on':''}" data-mk="${v}">${n}</button>`).join('')}</div>
+      ${(m.mk||'mo')==='fi'?`<div class="pe-cap">色</div><div class="pe-cols">${[['#555555','灰'],...MCOL].map(([c,n])=>`<button data-col="${c}" title="${n}" class="${(m.col||'#555555')===c?'on':''}" style="background:${c}"><span>${n}</span></button>`).join('')}</div>`
+        :`<div class="pe-cap">強さ</div><div class="row chips">${['弱','中','強'].map((n,j)=>`<button class="sm ${(m.lw||2)===j+1?'on':''}" data-lw="${j+1}">${n}</button>`).join('')}</div>`}
+      <p class="sub small">見る画面・字幕入り動画・紙の手順書で、この範囲が隠れます。黄色い●で大きさ、中を引っぱって移動。動画では手順の間ずっと隠れます。</p>
+      ${V?`<div class="row chips"><button class="sm ${m.t0==null?'on':''}" data-d="all">ずっと隠す</button><button class="sm" data-d="here">今の場面から</button></div>`:''}
+      <div class="row chips mt"><button class="sm" id="peDup">⧉ 複製</button><button class="sm danger" id="peDel">🗑 消す</button></div>`;
+      p.querySelectorAll('[data-mk]').forEach(b=>b.onclick=()=>{m.mk=b.dataset.mk;setStyle('mk',m.mk);changed()});
+      p.querySelectorAll('[data-col]').forEach(b=>b.onclick=()=>{m.col=b.dataset.col;changed()});
+      p.querySelectorAll('[data-lw]').forEach(b=>b.onclick=()=>{m.lw=+b.dataset.lw;changed()});
+      p.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{if(b.dataset.d==='all'){delete m.t0;delete m.t1}else{const now=r2(V.currentTime);m.t0=now;m.t1=V0.end}changed()});
+      p.querySelector('#peDel').onclick=()=>{ms.splice(sel,1);sel=-1;changed()};
+      p.querySelector('#peDup').onclick=()=>{const c=JSON.parse(JSON.stringify(m));c.x=cl(c.x+4);c.y=cl(c.y+4);ms.splice(sel+1,0,c);sel++;changed()};return}
     const txt=m.s==='b'||m.s==='t',hasLw=!['t','n','i'].includes(m.s),hasFill=['c','r','b','t'].includes(m.s),hasFs=m.s!=='n'&&!(m.s==='i'&&!m.label&&false);
     p.innerHTML=`<div class="row"><b class="grow">書式：${sel+1}. ${m.s==='i'&&m.emo?m.emo+' スタンプ':PTL[m.s]}</b></div>
       <label class="f">${txt?'文字（改行もOK）':m.s==='n'?'番号・記号':'文字（任意）例：ここを見る／ゲート／NG'}</label>
@@ -541,8 +577,8 @@ function openPts(o){
   const onHandle=(m,p)=>{if(isLine(m)){if(near(p,m.x2,m.y2))return'p2';if(near(p,m.x1,m.y1))return'p1';return null}
     if(m.s==='b'&&near(p,m.x2,m.y2))return'tail';if(near(p,m.x+m.w/2,m.y+m.h/2))return'br';return null};
   const cap=e=>{try{W.setPointerCapture(e.pointerId)}catch(_){}};
-  const place=m=>{styled(m);stamp(m);ms.push(m);sel=ms.length-1;fit(m)};
-  const newBox=(k,x,y,w,h)=>{const a=ar(),m={s:k,x,y,w,h};
+  const place=m=>{if(m.s==='m'){ms.unshift(m);sel=0;return}styled(m);stamp(m);ms.push(m);sel=ms.length-1;fit(m)};
+  const newBox=(k,x,y,w,h)=>{const a=ar(),m={s:k,x,y,w,h};if(k==='m'){m.mk=mStyle.mk||'mo';m.w=Math.max(w,6);m.h=Math.max(h,6)}
     if(k==='b'){m.label='ここを見る';m.w=Math.max(w,26);m.x2=cl(x-m.w/2-4);m.y2=cl(y+h/2+12)}
     if(k==='t'){m.label='テキスト';m.w=Math.max(w,22)}
     if(k==='n'){m.label=String(ms.filter(q=>q.s==='n').length+1);m.w=Math.max(6,Math.min(w,12));m.h=m.w*a}
@@ -563,7 +599,7 @@ function openPts(o){
     drawM()};
   W.onpointerup=W.onpointercancel=e=>{if(!mode)return;let focus=false;
     if(mode==='new'&&!st.m){const p=P(e);if(p.x>=0&&p.x<=100&&p.y>=0&&p.y<=100){const a=ar();let m;
-      if(isLine({s:tool}))m={s:tool,x1:cl(p.x-14),y1:cl(p.y+14*a),x2:p.x,y2:p.y};else m=newBox(tool,p.x,p.y,tool==='b'?30:tool==='t'?26:14,14*a);place(m);focus=m.s==='b'||m.s==='t'}}
+      if(isLine({s:tool}))m={s:tool,x1:cl(p.x-14),y1:cl(p.y+14*a),x2:p.x,y2:p.y};else m=newBox(tool,p.x,p.y,tool==='b'?30:tool==='t'?26:tool==='m'?20:14,(tool==='m'?20:14)*a);place(m);focus=m.s==='b'||m.s==='t'}}
     else if(mode==='new'&&st.m)focus=st.m.s==='b'||st.m.s==='t';
     ms.forEach(m=>['x','y','w','h','x1','y1','x2','y2'].forEach(k=>{if(m[k]!=null)m[k]=+(+m[k]).toFixed(1)}));mode=null;st=null;changed();
     if(focus){const lb=d.querySelector('#peLbl');if(lb){lb.focus();lb.select()}}};
@@ -744,9 +780,10 @@ async function showEdit(id,pg){
   main.innerHTML=`
   <div class="card" id="sCap"><h3>① 撮る・取り込む</h3>
     <div class="row"><button class="pri" id="bCap">📷 撮影する</button><button id="bPick">🎞 動画を選ぶ</button></div>
+    <div id="tray" class="tray" hidden></div>
     <div class="row mt"><button id="bPhoto">🖼 写真で手順を追加</button><button id="bCamPh">📸 カメラで写真を撮る</button><button id="bDoc">📄 既存の手順書を取り込む</button></div>
-    <p class="sub small">コツ：スマホを固定し、手元を大きく・明るく。動画は1本1〜3分が目安（1080pか720p）。写真だけでも手順書を作れます。既存の手順書は Excel（.xlsx）・Word（.docx）・PDF に対応。パソコンでは、ファイルをこの画面にドラッグしても取り込めます。</p>
-    <input type="file" id="fCap" accept="video/*" capture="environment" hidden><input type="file" id="fPick" accept="video/*" hidden>
+    <p class="sub small">コツ：スマホを固定し、手元を大きく・明るく。<b>手順ごとに撮っては止めて</b>もOK（スマホは撮るたびに撮影トレイにたまり、パソコンは「⏸ 区切る」）→ 1本＝1手順になります。動画は1本1〜3分が目安（1080pか720p）。写真だけでも手順書を作れます。既存の手順書は Excel（.xlsx）・Word（.docx）・PDF に対応。パソコンでは、ファイルをこの画面にドラッグしても取り込めます。</p>
+    <input type="file" id="fCap" accept="video/*" capture="environment" hidden><input type="file" id="fPick" accept="video/*" multiple hidden>
     <input type="file" id="fPhoto" accept="image/*" multiple hidden><input type="file" id="fCamPh" accept="image/*" capture="environment" hidden><input type="file" id="fDoc" accept=".xlsx,.docx,.pdf" hidden></div>
   <div class="card" id="sPlayer"><div id="vArea"></div></div>
   <div class="card" id="sCut">
@@ -787,10 +824,12 @@ async function showEdit(id,pg){
     <button id="bQR">🏷 QRラベルを作る（現場に貼る・読み取ると最新版が開く）</button>
     <button class="danger" id="bDelM">🗑 この手順書を削除</button></div></div>`;
   main.querySelectorAll('[data-meta]').forEach(el=>el.oninput=()=>{cur[el.dataset.meta]=el.value;saveSoon();if(el.dataset.meta==='title')setTitle(el.value||'新しい手順書');updateNav()});
-  $('#bCap').onclick=()=>{if(IS_MOBILE)$('#fCap').click();else openCam('video',b=>setVideo(b))};$('#bPick').onclick=()=>$('#fPick').click();
+  $('#bCap').onclick=()=>{if(IS_MOBILE)$('#fCap').click();else openCam('video',(b,cs)=>{if(cur.videoId||(cs&&cs.length))addClips([{blob:b,cuts:cs||[]}]);else setVideo(b)})};$('#bPick').onclick=()=>$('#fPick').click();
   $('#bCamPh').onclick=()=>{if(IS_MOBILE)$('#fCamPh').click();else openCam('photo',d=>addPhotoData(d))};
   $('#fCamPh').onchange=e=>{const fs=[...e.target.files];e.target.value='';if(fs.length)addPhotos(fs)};
-  $('#fCap').onchange=$('#fPick').onchange=e=>{const f=e.target.files[0];if(f)setVideo(f);e.target.value=''};
+  $('#fCap').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)trayAdd(f)};
+  $('#fPick').onchange=e=>{const fs=[...e.target.files];e.target.value='';if(!fs.length)return;
+    if(fs.length===1&&!cur.videoId)return setVideo(fs[0]);addClips(fs.map(f=>({blob:f,cuts:[]})))};
   $('#bPhoto').onclick=()=>$('#fPhoto').click();$('#bDoc').onclick=()=>$('#fDoc').click();
   $('#fPhoto').onchange=e=>{const fs=[...e.target.files];e.target.value='';if(fs.length)addPhotos(fs)};
   $('#fDoc').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)importDoc(f)};
@@ -811,9 +850,82 @@ async function showEdit(id,pg){
   $('#bExp').onclick=async()=>{await persist();deliverDialog(cur)};
   $('#bDelM').onclick=async()=>{if(!confirm('この手順書と動画を削除します。元に戻せません。よろしいですか？'))return;
     if(cur.videoId)await idb.del('videos',cur.videoId);await idb.del('manuals',cur.id);cur=null;lastId=null;lsSet('kensa-last','');showList()};
-  renderPlayer();renderList();renderText();renderHist();applyPage();renderChrome();renderTimeline();window.scrollTo(0,0);
+  renderPlayer();renderList();renderText();renderHist();applyPage();renderChrome();renderTimeline();renderTray();window.scrollTo(0,0);
 }
 function noVideo(){toast('先に「① 撮る」で動画を入れてください')}
+
+/* ---------- 分割撮影：何本かの動画・区切りをつないで手順にする ---------- */
+async function joinVideos(blobs,pm){
+  const urls=blobs.map(b=>URL.createObjectURL(b));
+  try{const meta=[];for(const u of urls){const v=document.createElement('video');v.muted=true;v.playsInline=true;v.preload='auto';v.src=u;
+      await new Promise((res,rej)=>{v.onloadedmetadata=res;v.onerror=()=>rej(new Error('読み込めない動画があります'))});await fixDur(v);meta.push({w:v.videoWidth,h:v.videoHeight,d:v.duration});v.removeAttribute('src');v.load()}
+    const W=Math.min(1920,Math.max(...meta.map(m=>m.w))||1280),H=Math.round(W*(meta[0].h/meta[0].w||9/16))&~1;
+    const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');x.fillStyle='#000';x.fillRect(0,0,W,H);
+    let ac=null,dest=null;try{ac=new(window.AudioContext||window.webkitAudioContext)();await ac.resume();dest=ac.createMediaStreamDestination()}catch(e){ac=null}
+    const bufs=[];if(ac)for(const b of blobs){try{bufs.push(await ac.decodeAudioData(await b.arrayBuffer()))}catch(e){bufs.push(null)}}
+    const cs=c.captureStream(30);if(dest&&bufs.some(Boolean))dest.stream.getAudioTracks().forEach(t=>cs.addTrack(t));
+    const mt=pickRecMime(cs.getAudioTracks().length>0);let rec;try{rec=new MediaRecorder(cs,mt?{mimeType:mt,videoBitsPerSecond:6e6}:undefined)}catch(e){rec=new MediaRecorder(cs)}
+    const ch=[];rec.ondataavailable=e=>{if(e.data&&e.data.size)ch.push(e.data)};const done=new Promise(r=>rec.onstop=r);
+    rec.start(500);const t0=performance.now(),starts=[],total=meta.reduce((a,m)=>a+m.d,0);let before=0;
+    for(let i=0;i<urls.length;i++){if(pm&&pm.cancelled)break;const v=document.createElement('video');v.muted=true;v.playsInline=true;v.preload='auto';v.src=urls[i];
+      await new Promise(r=>{v.onloadeddata=r;v.onerror=r});starts.push((performance.now()-t0)/1000);
+      let on=true;const draw=()=>{if(!on)return;const vw=v.videoWidth||W,vh=v.videoHeight||H,sc=Math.min(W/vw,H/vh);x.fillStyle='#000';x.fillRect(0,0,W,H);try{x.drawImage(v,(W-vw*sc)/2,(H-vh*sc)/2,vw*sc,vh*sc)}catch(_){}
+        if(pm)pm.set(Math.min(0.99,(before+v.currentTime)/total),`つないでいます… ${i+1} / ${urls.length} 本目（再生と同じ時間がかかります）`);
+        if(v.requestVideoFrameCallback)v.requestVideoFrameCallback(draw);else requestAnimationFrame(draw)};
+      if(ac&&bufs[i]){const src=ac.createBufferSource();src.buffer=bufs[i];src.connect(dest);src.start()}
+      await v.play().catch(()=>{});draw();
+      await new Promise(r=>{v.onended=r;const iv=setInterval(()=>{if(pm&&pm.cancelled){clearInterval(iv);r()}if(v.ended){clearInterval(iv);r()}},200)});
+      on=false;before+=meta[i].d;v.removeAttribute('src');v.load()}
+    starts.push((performance.now()-t0)/1000);rec.stop();await done;try{ac&&ac.close()}catch(e){}
+    if(pm&&pm.cancelled)throw new Error('CANCEL');
+    const out=new Blob(ch,{type:(rec.mimeType||mt||'video/webm').split(';')[0]});return{blob:out,starts,meta}}
+  finally{urls.forEach(u=>URL.revokeObjectURL(u))}}
+async function addClips(clips){
+  if(!cur||!clips.length)return;const old=cur.videoId?await idb.get('videos',cur.videoId):null,oldVs=cur.steps.filter(s=>!isPhoto(s));
+  let mode='new';
+  if(old&&oldVs.length){mode=await new Promise(res=>{const d=document.createElement('div');d.className='modal';
+    d.innerHTML=`<div class="mbox"><h3>🎞 撮った動画をどうしますか？</h3><p class="sub small">この手順書には、もう動画（手順${oldVs.length}件）があります。</p>
+      <button class="dlv pri" data-m="add"><b>➕ 今の動画の続きに足す</b><span>今の手順と説明はそのまま。撮った分が後ろに新しい手順として加わります（つなぐのに再生と同じ時間がかかります）。</span></button>
+      <button class="dlv" data-m="new"><b>🔄 差し替える</b><span>今の動画と、動画から作った手順（説明も）を消して、撮った動画で作り直します。</span></button>
+      <div class="row mt"><button class="grow" data-m="">やめる</button></div></div>`;
+    document.body.appendChild(d);d.onclick=e=>{const b=e.target.closest('[data-m]');if(!b)return;d.remove();res(b.dataset.m||null)}});if(!mode)return}
+  const list=[];if(mode==='add')list.push({blob:old,old:true});clips.forEach(c=>list.push(c));
+  let blob,segs=[],keepScale=1,off0=0;
+  if(list.length===1){blob=list[0].blob;const d=await new Promise(r=>{const v=document.createElement('video');v.preload='metadata';v.muted=true;v.src=URL.createObjectURL(blob);v.onloadedmetadata=async()=>{await fixDur(v);r(v.duration);URL.revokeObjectURL(v.src)};v.onerror=()=>r(0)});
+    const cs=[0,...(list[0].cuts||[]),d];for(let i=0;i<cs.length-1;i++)segs.push([cs[i],cs[i+1]])}
+  else{const pm=progressModal('🎞 動画をつないでいます','準備中…');
+    try{const r=await joinVideos(list.map(c=>c.blob),pm);pm.close();blob=r.blob;
+      list.forEach((c,i)=>{const a=r.starts[i],b=r.starts[i+1],sc=(b-a)/(r.meta[i].d||1);
+        if(c.old){keepScale=sc;off0=a}else{const cs=[0,...(c.cuts||[]).map(t=>t*sc),b-a];for(let k=0;k<cs.length-1;k++)segs.push([a+cs[k],a+cs[k+1]])}})}
+    catch(e){pm.close();if(e.message!=='CANCEL')alert('動画をつなげませんでした：'+e.message);return}}
+  const vid=uid();try{await idb.put('videos',blob,vid)}catch(e){alert('保存できませんでした（端末の容量不足の可能性）：'+e);return}
+  if(cur.videoId)await idb.del('videos',cur.videoId);cur.videoId=vid;
+  if(mode==='add')oldVs.forEach(s=>{s.start=off0+s.start*keepScale;s.end=off0+s.end*keepScale;(s.marks||[]).forEach(m=>{if(m.t0!=null){m.t0=off0+m.t0*keepScale;m.t1=off0+m.t1*keepScale}})});
+  else cur.steps=cur.steps.filter(isPhoto);
+  await loadVideo(vid);
+  const news=segs.filter(([a,b])=>b-a>0.3).map(([a,b])=>({id:uid(),start:+a.toFixed(2),end:+b.toFixed(2),thumb:'',text:{ja:'',vi:'',id:''},marks:[]}));
+  try{await withHiddenVideo(async v=>{const D=v.duration;if(isFinite(D)&&D>0)[...news,...(mode==='add'?oldVs:[])].forEach(n=>{n.end=Math.min(n.end,+D.toFixed(2));n.start=Math.min(n.start,n.end-0.1)});for(const n of news){await seekTo(v,Math.min(n.start+0.3,n.end));n.thumb=grab(v)}})}catch(e){}
+  const lastV=cur.steps.map(isPhoto).lastIndexOf(false);cur.steps.splice(lastV<0?cur.steps.length:lastV+1,0,...news);
+  tIdx=0;selId=null;pps=0;delete stripCache[vid];await save();renderPlayer();renderList();renderText();setPage('cut');
+  toast(`${news.length}つの手順を${mode==='add'?'追加':'作成'}しました。「② 切る」で確認し、「③ 説明」で説明を入れます`,4200)}
+/* スマホ：撮っては止めて…を「撮影トレイ」にためる */
+async function trayAdd(file){cur.tray=cur.tray||[];const k='tray:'+uid();await idb.put('videos',file,k);
+  let th='',d=0;try{const u=URL.createObjectURL(file),v=document.createElement('video');v.muted=true;v.playsInline=true;v.preload='auto';v.src=u;
+    await new Promise((r,j)=>{v.onloadeddata=r;v.onerror=j;setTimeout(r,5000)});await fixDur(v);d=v.duration||0;await seekTo(v,Math.min(0.3,d/2));th=grab(v,240);URL.revokeObjectURL(u)}catch(e){}
+  cur.tray.push({k,d,th});await save();renderTray();toast(`${cur.tray.length}本目を追加しました。続けて撮るなら、もう一度「📷 撮影する」`,3200)}
+function renderTray(){const el=$('#tray');if(!el||!cur)return;const t=cur.tray||[];
+  if(!t.length){el.innerHTML='';el.hidden=true;return}el.hidden=false;
+  el.innerHTML=`<div class="row"><b class="grow">🎞 撮影トレイ（${t.length}本・${fmt(t.reduce((a,x)=>a+(x.d||0),0))}）</b></div>
+    <div class="trayl">${t.map((x,i)=>`<div class="trayi">${x.th?`<img src="${x.th}" alt="">`:'<div class="nothumb"></div>'}<span>${i+1}本目・${fmt(x.d)}</span>
+      <div class="row"><button class="sm" data-tu="${i}" ${i?'':'disabled'}>◀</button><button class="sm" data-td="${i}" ${i<t.length-1?'':'disabled'}>▶</button><button class="sm danger" data-tx="${i}">✕</button></div></div>`).join('')}</div>
+    <button class="pri big" id="trayGo" style="width:100%;margin-top:8px">✔ 撮り終わった → ${t.length}本を手順にする</button>
+    <p class="sub small" style="margin:4px 0 0">1本＝1つの手順になります（あとで「② 切る」で分けたり、つないだりできます）。</p>`;
+  el.onclick=async e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+    if(d.tx!=null){if(!confirm(`${+d.tx+1}本目を消しますか？`))return;const[x]=t.splice(+d.tx,1);await idb.del('videos',x.k)}
+    else if(d.tu!=null){const i=+d.tu;[t[i-1],t[i]]=[t[i],t[i-1]]}else if(d.td!=null){const i=+d.td;[t[i+1],t[i]]=[t[i],t[i+1]]}
+    else if(b.id==='trayGo'){const clips=[];for(const x of t){const bl=await idb.get('videos',x.k);if(bl)clips.push({blob:bl,cuts:[]})}
+      const before=cur.videoId;await addClips(clips);if(cur.videoId!==before){for(const x of t)await idb.del('videos',x.k);cur.tray=[];await save()}renderTray();return}
+    await save();renderTray()}}
 async function setVideo(file){
   const vs=cur.steps.filter(s=>!isPhoto(s));
   if(vs.length&&!confirm(`動画を差し替えると、動画から切り出した手順（${vs.length}件）は使えなくなるため削除されます（写真の手順は残ります）。差し替えますか？`))return;
@@ -842,13 +954,14 @@ async function addStep(){
 function renderList(){
   const el=$('#stepList');if(!el||!cur)return;$('#nSteps').textContent=cur.steps.length;
   if(!cur.steps.length){el.innerHTML='<p class="sub">まだありません。上のボタンで切り分けるか「✂ 自動で区切る」を使います。</p>';updateNav();return}
-  el.innerHTML=cur.steps.map((s,i)=>`<div class="srow"><div class="srow-m" data-open="${i}">${s.thumb?`<img src="${s.thumb}" alt="">`:'<div class="nothumb"></div>'}
+  el.innerHTML=cur.steps.map((s,i)=>`<div class="srow"><div class="srow-m" data-open="${i}">${s.thumb?thumbImg(s,i):'<div class="nothumb"></div>'}
     <div class="grow"><b>手順 ${i+1}</b> <span class="sub">${isPhoto(s)?'🖼 写真':fmt(s.start)+'〜'+fmt(s.end)}</span><div class="sub one">${esc(s.text.ja||'（説明なし）')}</div></div>
     ${isPhoto(s)?'':`<button class="sm" data-play="${i}" aria-label="区間再生">▶</button>`}<span class="chev">${openRow===i?'▲':'▼'}</span></div>
     ${openRow===i?`<div class="row tools">${isPhoto(s)?'':`<button class="sm" data-setin="${i}">開始＝今の位置</button><button class="sm" data-setout="${i}">終了＝今の位置</button>
       <button class="sm" data-setimg="${i}">画像＝今の画面</button>`}<button class="sm" data-up="${i}" ${i===0?'disabled':''}>↑</button>
       <button class="sm" data-dn="${i}" ${i===cur.steps.length-1?'disabled':''}>↓</button><button class="sm" data-gotext="${i}">✏ 説明へ</button>
       <button class="sm danger" data-del="${i}">削除</button></div>`:''}</div>`).join('');
+  fillMaskThumbs(el,cur.steps);
   updateNav()}
 async function listClick(e){
   const b=e.target.closest('button'),v=$('#ve');
@@ -868,7 +981,7 @@ function renderText(){
   if(!cur.steps.length){st.innerHTML='';b.innerHTML='<p class="sub">まだ手順がありません。「② 切る」で手順を作ってください。</p>';updateNav();return}
   tIdx=Math.max(0,Math.min(tIdx,cur.steps.length-1));const s=cur.steps[tIdx],last=tIdx===cur.steps.length-1;
   st.innerHTML=cur.steps.map((x,i)=>{const ok=x.text.ja.trim(),tr=ok&&x.text.vi.trim()&&x.text.id.trim();
-    return`<div data-t="${i}" class="${i===tIdx?'on':''} ${ok?'':'empty'}">${x.thumb?`<img src="${x.thumb}" alt="">`:''}<span>${i+1}${tr?' ✓':ok?'':' ・'}</span></div>`}).join('');
+    return`<div data-t="${i}" class="${i===tIdx?'on':''} ${ok?'':'empty'}">${thumbImg(x,i)}<span>${i+1}${tr?' ✓':ok?'':' ・'}</span></div>`}).join('');fillMaskThumbs(st,cur.steps);
   const on=st.querySelector('.on');if(on)on.scrollIntoView({block:'nearest',inline:'center'});
   const ph=isPhoto(s),src=s.img||s.thumb;
   const tr=s.text.ja.trim()&&s.text.vi.trim()&&s.text.id.trim(),vc=['ja','vi','id'].filter(L=>s.voice&&s.voice[L]).length;
@@ -1373,7 +1486,7 @@ async function showView(id){
   renderViewStep();renderChrome();window.scrollTo(0,0);checkViewUpdate();viewMarksLoop()}
 let vmRaf=0;
 function viewMarksLoop(){cancelAnimationFrame(vmRaf);let key='';const tick=()=>{if(view!=='view'||!cur)return;const s=cur.steps[vIdx],v=$('#vp');
-  if(s&&v&&!isPhoto(s)&&!v.hidden&&s.marks.length){const k=vIdx+':'+$('#vmarks').clientWidth+':'+s.marks.map(m=>visAt(m,v.currentTime)?1:0).join('');if(k!==key){key=k;renderMarks($('#vmarks'),s.marks,-1,v.currentTime,false)}}
+  if(s&&v&&!isPhoto(s)&&!v.hidden&&s.marks.length){const k=(s.marks.some(q=>q.s==='m')&&!v.paused?Math.random():'')+':'+vIdx+':'+$('#vmarks').clientWidth+':'+s.marks.map(m=>visAt(m,v.currentTime)?1:0).join('');if(k!==key){key=k;renderMarks($('#vmarks'),s.marks,-1,v.currentTime,false)}}
   vmRaf=requestAnimationFrame(tick)};tick()}
 function renderViewStep(){
   stopTTS();const s=cur.steps[vIdx],u=UI[lang],last=vIdx===cur.steps.length-1;
@@ -1391,7 +1504,7 @@ function renderViewStep(){
   $('#bPv').textContent=u.prev;$('#bPv').disabled=vIdx===0;
   $('#bNx').textContent=last?u.done:u.next;$('#bNx').disabled=last;
   $('#bSp').textContent=u.speak;$('#tlTitle').textContent=u.list;
-  $('#tl').innerHTML=cur.steps.map((x,i)=>`<div data-i="${i}" class="${i===vIdx?'on':''}">${x.thumb?`<img src="${x.thumb}" alt="">`:''}${u.step} ${i+1}</div>`).join('');
+  $('#tl').innerHTML=cur.steps.map((x,i)=>`<div data-i="${i}" class="${i===vIdx?'on':''}">${thumbImg(x,i)}${u.step} ${i+1}</div>`).join('');fillMaskThumbs($('#tl'),cur.steps);
   paintMarks($('#vmarks'),v&&!isPhoto(s)?v:$('#vimg'),s.marks,isPhoto(s)?null:s.start,false);
   updateNav()}
 function speakStep(){
@@ -1739,9 +1852,11 @@ async function openCam(kind,done){
     <div class="row camzoom" id="camZr"><b class="sub">🔍</b><button class="sm" data-z="-">－</button><input type="range" id="camZ" min="1" max="4" step="0.1" value="1"><button class="sm" data-z="+">＋</button><span id="camZl" class="camzl">1.0倍</span><button class="sm" data-z="1">等倍</button></div>
     <p class="sub small" id="camZh" style="margin:2px 0 0"></p>
     <p class="sub small" id="camMsg">カメラを準備しています…（許可を求められたら「許可」を押します）</p>
-    <div class="row mt" id="camBtns"><button class="pri big" id="camGo" disabled>${isV?'● 録画開始':'📸 撮る'}</button><span id="camT" class="sub" style="min-width:52px;text-align:center"></span></div></div>`;
+    <div class="row mt" id="camBtns"><button class="pri big" id="camGo" disabled>${isV?'● 録画開始':'📸 撮る'}</button>${isV?'<button class="big" id="camPz" hidden>⏸ 区切る</button>':''}<span id="camT" class="sub" style="min-width:52px;text-align:center"></span></div>
+    ${isV?'<p class="sub small" style="margin:4px 0 0">💡 手順ごとに「⏸ 区切る」→ 準備して「● 次を撮る」をくり返すと、区切った所で手順が自動で分かれます。最後は「■ 撮り終わる」。</p>':''}</div>`;
   document.body.appendChild(d);
   const V=d.querySelector('#camV'),sel=d.querySelector('#camSel'),msg=d.querySelector('#camMsg'),go=d.querySelector('#camGo'),out=d.querySelector('#camOut');
+  let act=0,ls=0,cuts=[];
   let stream=null,rec=null,chunks=[],t0=0,timer=0,blob=null,hw=null,zoom=1,cx=0.5,cy=0.5,drawOn=false;
   const CW=d.querySelector('#camW'),ZR=d.querySelector('#camZ'),zl=d.querySelector('#camZl'),zb=d.querySelector('#camZb');
   const zmin=()=>hw?hw.min:1,zmax=()=>hw?hw.max:4;
@@ -1793,12 +1908,17 @@ async function openCam(kind,done){
       rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
       rec.onstop=()=>{drawOn=false;V.style.transform='';d.querySelector('#camZr').hidden=true;d.querySelector('#camZh').hidden=true;zb.hidden=true;blob=new Blob(chunks,{type:(rec.mimeType||mt||'video/webm').split(';')[0]});const u=URL.createObjectURL(blob);
         stream&&stream.getTracks().forEach(t=>t.stop());V.hidden=true;out.innerHTML=`<video src="${u}" controls playsinline style="width:100%;max-height:52vh;border-radius:10px;background:#000"></video>`;
-        msg.textContent=`録画しました（${((Date.now()-t0)/1000).toFixed(1)}秒・約${(blob.size/1048576).toFixed(1)}MB）。確認して「この動画を使う」を押します。`;
+        const tot=act/1000,cs=cuts.filter(c=>c>0.4&&c<tot-0.4);
+        msg.textContent=`録画しました（${tot.toFixed(1)}秒・約${(blob.size/1048576).toFixed(1)}MB${cs.length?`・${cs.length+1}つの手順に区切り済み`:''}）。確認して「この動画を使う」を押します。`;
         d.querySelector('#camBtns').innerHTML='<button class="pri big" id="camUse">✔ この動画を使う</button><button class="big" id="camRe">↺ 撮り直す</button>';
-        d.querySelector('#camUse').onclick=()=>{close();done(blob)};d.querySelector('#camRe').onclick=()=>{close();openCam(kind,done)}};
-      rec.start(1000);t0=Date.now();go.textContent='■ 停止';go.classList.remove('pri');go.classList.add('danger');sel.disabled=true;
-      timer=setInterval(()=>{const s=Math.floor((Date.now()-t0)/1000);d.querySelector('#camT').innerHTML=`<span class="recdot"></span>${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`},500)}
-    else{clearInterval(timer);rec.stop()}};
+        d.querySelector('#camUse').onclick=()=>{close();done(blob,cs)};d.querySelector('#camRe').onclick=()=>{close();openCam(kind,done)}};
+      rec.start(1000);t0=Date.now();act=0;ls=performance.now();cuts=[];go.textContent='■ 撮り終わる';go.classList.remove('pri');go.classList.add('danger');sel.disabled=true;
+      const pz=d.querySelector('#camPz');if(pz){pz.hidden=false;pz.textContent='⏸ 区切る';
+        pz.onclick=()=>{if(!rec)return;if(rec.state==='recording'){try{rec.pause()}catch(e){toast('このブラウザは一時停止に対応していません');return}act+=performance.now()-ls;cuts.push(act/1000);pz.textContent='● 次を撮る';pz.classList.add('pri');
+            msg.textContent=`${cuts.length}本目を撮りました（ここで手順が分かれます）。次の手順の準備ができたら「● 次を撮る」。全部終わったら「■ 撮り終わる」。`}
+          else if(rec.state==='paused'){rec.resume();ls=performance.now();pz.textContent='⏸ 区切る';pz.classList.remove('pri');msg.textContent=`${cuts.length+1}本目を撮影中…`}}}
+      timer=setInterval(()=>{const a=(act+(rec&&rec.state==='recording'?performance.now()-ls:0))/1000,s=Math.floor(a);d.querySelector('#camT').innerHTML=`${rec&&rec.state==='paused'?'⏸':'<span class="recdot"></span>'}${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}<br><small>${cuts.length+1}本目</small>`},300)}
+    else{clearInterval(timer);if(rec.state==='recording')act+=performance.now()-ls;const pz=d.querySelector('#camPz');if(pz)pz.hidden=true;rec.stop()}};
   await start()}
 
 async function addPhotos(files){
