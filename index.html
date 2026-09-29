@@ -318,8 +318,8 @@ const ALLSEC=['#sCap','#sPlayer','#sCut','#sList','#sText','#sInfo','#sFin'];
   else if(q.get('error'))lsSet('kensa-gerr',q.get('error'));
   history.replaceState(null,'',location.pathname+lsGet('kensa-gsearch',''))}catch(e){}})();
 const forceView=/[?&]view\b/.test(location.search);
-const APP_VER='1.13',APP_DATE='2026-09-28';
-const APP_LOG=[['1.13','🎞 分割撮影：撮っては止めて…が、そのまま手順に（パソコン＝⏸区切る、スマホ＝撮影トレイ、動画の複数選択・続きに足す）'],['1.12','▦ マスク（モザイク・ぼかし・塗りつぶしで見せない所を隠す）'],['1.11','一覧から 🗑 削除（この端末だけ／ドライブからも）'],['1.10','🎯 ポイント編集をパソコンで大きく：左に挿入メニュー（縦）、真ん中に大きい画像、右に書式'],['1.9','② 切る：ボタンに「何が起きるか」（手順番号・長さ）を表示、注意の文をわかりやすく'],['1.8','📷 カメラのズーム（カメラ本体のズーム／デジタルズーム・2本指・ホイール）'],['1.7','ポイント編集に 💬吹き出し・🔤文字・①番号・─線・🖼画像・⭐スタンプ、色・線の太さ・文字の大きさ・塗り'],['1.6','🖨 紙の手順書（QR付き・印刷／PDF）'],['1.5','📦 現場に配る（QR・リンク・ファイルから選ぶ）'],['1.4','🏷 QRラベル・字幕入り動画のQR'],['1.3','② 切る（コマ送り）・③ 説明（画像を見ながら入力）'],['1.2','APIキーの「🔰 かんたん設定」'],['1.1','☁ Googleドライブ連携']];
+const APP_VER='1.16',APP_DATE='2026-09-28';
+const APP_LOG=[['1.16','🏃 被写体を追いかける（動画で印・マスクが被写体の動きについていく）'],['1.15','マスクの形（□○△▽・手書きで囲む）、🪄 消す、🔦 選んだ所だけ見せる、ポイントの透明度'],['1.14','ドライブ連携のIDを最初から入れておく／🔑 設定（APIキー等）をパスワード付きで別の端末へ引き継ぐ'],['1.13','🎞 分割撮影：撮っては止めて…が、そのまま手順に（パソコン＝⏸区切る、スマホ＝撮影トレイ、動画の複数選択・続きに足す）'],['1.12','▦ マスク（モザイク・ぼかし・塗りつぶしで見せない所を隠す）'],['1.11','一覧から 🗑 削除（この端末だけ／ドライブからも）'],['1.10','🎯 ポイント編集をパソコンで大きく：左に挿入メニュー（縦）、真ん中に大きい画像、右に書式'],['1.9','② 切る：ボタンに「何が起きるか」（手順番号・長さ）を表示、注意の文をわかりやすく'],['1.8','📷 カメラのズーム（カメラ本体のズーム／デジタルズーム・2本指・ホイール）'],['1.7','ポイント編集に 💬吹き出し・🔤文字・①番号・─線・🖼画像・⭐スタンプ、色・線の太さ・文字の大きさ・塗り'],['1.6','🖨 紙の手順書（QR付き・印刷／PDF）'],['1.5','📦 現場に配る（QR・リンク・ファイルから選ぶ）'],['1.4','🏷 QRラベル・字幕入り動画のQR'],['1.3','② 切る（コマ送り）・③ 説明（画像を見ながら入力）'],['1.2','APIキーの「🔰 かんたん設定」'],['1.1','☁ Googleドライブ連携']];
 function verBadge(){return`<span class="verb">v${APP_VER}</span>`}
 async function checkAppUpdate(manual){if(location.protocol==='file:')return;
   try{const r=await fetch(location.pathname+'?chk='+Date.now(),{cache:'no-store'});const t=await r.text(),m=t.match(/APP_VER='([\d.]+)'/);if(!m)return;
@@ -329,6 +329,7 @@ async function checkAppUpdate(manual){if(location.protocol==='file:')return;
     d.innerHTML=`<span class="grow">🆕 アプリの新しい版 <b>v${esc(nv)}</b> があります（今は v${APP_VER}）</span><button class="sm pri">更新する</button>`;
     document.body.appendChild(d);d.querySelector('button').onclick=async()=>{if(view==='edit')await persist();const q=new URLSearchParams(location.search);q.set('r',Date.now());location.replace(location.pathname+'?'+q.toString().replace(/view=(&|$)/,'view$1'))}}
   catch(e){if(manual)toast('更新の確認ができませんでした（ネット接続を確認）')}}
+const DEFAULT_GCID='918004671630-ej8gjstk73oa9f5hh7fmjkj41nt1guar.apps.googleusercontent.com';
 let settings={apiKey:'',model:'claude-sonnet-5',glossary:[],ttsKey:'',ttsVoice:'coral'},lock=null,unlocked=false;
 let cur=null,curURL=null,view='list',page='video',tIdx=0,openRow=-1,lastId=null;
 let inPt=null,outPt=null,inThumb='',segEnd=null,saveTimer=null,vIdx=0,lang='ja',listCount=0;
@@ -373,10 +374,13 @@ function drawLabel(ctx,txt,x,y,W,col,k){const fs=k?mFs(k,W):Math.max(13,Math.rou
   ctx.fillStyle=lightCol(col)?'rgba(0,0,0,.6)':'rgba(255,255,255,.85)';rrect(ctx,x-tw/2-2,y-2,tw+4,fs*1.4+4,fs*0.35);ctx.fill();ctx.fillStyle=col;rrect(ctx,x-tw/2,y,tw,fs*1.4,fs*0.3);ctx.fill();
   ctx.fillStyle=lightCol(col)?'#111':'#fff';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(txt,x,y+fs*0.72);ctx.textAlign='left';ctx.textBaseline='alphabetic'}
 function boxBg(k){const col=k.col||'#e53935',f=k.fill??(k.s==='b'?0:null);return f===2?col:f===1?col+'33':f===0?'#ffffff':null}
-function drawMarks(ctx,W,H,marks,ox=0,oy=0,t=null,opt={}){
+function drawMarks(ctx,W,H,marks,ox=0,oy=0,t=null,opt={}){if(t!=null&&marks&&marks.some(k=>k.trk))marks=marks.map(k=>k.trk?trkAt(k,t):k);
+  {const P0=(px,py)=>[ox+px/100*W,oy+py/100*H];
+   (marks||[]).forEach(k=>{if(k.s==='m'&&!k.inv&&visAt(k,t)){const[cx,cy]=P0(k.x,k.y),w=(k.w||13)/100*W,h=k.h?k.h/100*H:w;drawMask(ctx,k,cx-w/2,cy-h/2,w,h,W,H,ox,oy,opt.src,P0)}});
+   drawSpot(ctx,(marks||[]).filter(k=>k.s==='m'&&k.inv&&visAt(k,t)),W,H,ox,oy,opt.src,P0)}
   (marks||[]).forEach((k,i)=>{const on=opt.sel===i;if(!visAt(k,t)&&!on)return;
     const col=k.col||'#e53935',halo=lightCol(col)?'rgba(0,0,0,.55)':'rgba(255,255,255,.82)';
-    ctx.save();ctx.globalAlpha=opt.still&&k.t0!=null&&k.s!=='m'?0.5:1;ctx.lineCap='round';ctx.lineJoin='round';
+    ctx.save();ctx.globalAlpha=(opt.still&&k.t0!=null&&k.s!=='m'?0.5:1)*(k.s!=='m'?(k.op??1):1);ctx.lineCap='round';ctx.lineJoin='round';
     const P=(px,py)=>[ox+px/100*W,oy+py/100*H];
     if(isLine(k)){const[x1,y1]=P(k.x1,k.y1),[x2,y2]=P(k.x2,k.y2),an=Math.atan2(y2-y1,x2-x1),lw=mLw(k,W,0.01),hs=Math.max(lw*3.2,Math.max(W,H)*0.04*(LWK[(k.lw||2)-1]**0.5));
       const shaft=()=>{ctx.beginPath();ctx.moveTo(x1,y1);if(k.s==='a')ctx.lineTo(x2-Math.cos(an)*hs*0.6,y2-Math.sin(an)*hs*0.6);else ctx.lineTo(x2,y2)};
@@ -385,7 +389,7 @@ function drawMarks(ctx,W,H,marks,ox=0,oy=0,t=null,opt={}){
       ctx.lineWidth=lw;ctx.strokeStyle=col;shaft();ctx.stroke();if(k.s==='a'){ctx.fillStyle=col;head();ctx.fill()}
       if(k.label)drawLabel(ctx,k.label,x1,y1+lw*2,W,col,k)}
     else{const[cx,cy]=P(k.x,k.y),w=(k.w||13)/100*W,h=k.h?k.h/100*H:w,lw=mLw(k,W,k.s==='x'?0.012:0.008),L=cx-w/2,T=cy-h/2;
-      if(k.s==='m'){drawMask(ctx,k,L,T,w,h,W,H,ox,oy,opt.src)}
+      if(k.s==='m'){}
       else if(k.s==='c'||k.s==='r'||k.s==='x'){
         const path=()=>{ctx.beginPath();if(k.s==='x'){const a=0.44;ctx.moveTo(cx-w*a,cy-h*a);ctx.lineTo(cx+w*a,cy+h*a);ctx.moveTo(cx+w*a,cy-h*a);ctx.lineTo(cx-w*a,cy+h*a)}
           else if(k.s==='r'){if(ctx.roundRect)ctx.roundRect(L,T,w,h,Math.min(w,h)*0.06);else ctx.rect(L,T,w,h)}else ctx.ellipse(cx,cy,Math.max(1,w/2),Math.max(1,h/2),0,0,Math.PI*2)};
@@ -415,21 +419,60 @@ function drawMarks(ctx,W,H,marks,ox=0,oy=0,t=null,opt={}){
     if(on){const hr=opt.hr||10,hd=(x,y)=>{ctx.beginPath();ctx.arc(x,y,hr,0,Math.PI*2);ctx.fillStyle='#ffd400';ctx.fill();ctx.lineWidth=Math.max(2,hr*0.22);ctx.strokeStyle='#000';ctx.stroke()};
       ctx.save();ctx.setLineDash([hr*0.7,hr*0.5]);ctx.lineWidth=Math.max(2,hr*0.2);ctx.strokeStyle='#ffd400';
       if(isLine(k)){const[x1,y1]=P(k.x1,k.y1),[x2,y2]=P(k.x2,k.y2);ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.setLineDash([]);hd(x1,y1);hd(x2,y2)}
-      else{const[cx,cy]=P(k.x,k.y),w=(k.w||13)/100*W,h=k.h?k.h/100*H:w;ctx.strokeRect(cx-w/2-3,cy-h/2-3,w+6,h+6);ctx.setLineDash([]);hd(cx+w/2,cy+h/2);if(k.s==='b'){const[tx,ty]=P(k.x2,k.y2);hd(tx,ty)}}
+      else{const[cx,cy]=P(k.x,k.y),w=(k.w||13)/100*W,h=k.h?k.h/100*H:w;if(k.s==='m'&&(k.sh&&k.sh!=='r')){maskPath(ctx,k,cx-w/2,cy-h/2,w,h,P);ctx.stroke()}else ctx.strokeRect(cx-w/2-3,cy-h/2-3,w+6,h+6);ctx.setLineDash([]);hd(cx+w/2,cy+h/2);if(k.s==='b'){const[tx,ty]=P(k.x2,k.y2);hd(tx,ty)}}
       ctx.restore()}})}
 
-const mTmp=document.createElement('canvas'),mTmp2=document.createElement('canvas');
-function drawMask(ctx,k,L,T,w,h,W,H,ox,oy,src){const mk=k.mk||'mo';if(w<2||h<2)return;
-  if(mk==='fi'){ctx.fillStyle=k.col||'#555555';rrect(ctx,L,T,w,h,Math.min(w,h)*0.06);ctx.fill();return}
-  let S=src||ctx.canvas,sx,sy,sw,sh;
-  if(src){const nw=src.videoWidth||src.naturalWidth,nh=src.videoHeight||src.naturalHeight;if(!nw||!nh)return;sx=(L-ox)/W*nw;sy=(T-oy)/H*nh;sw=w/W*nw;sh=h/H*nh}
-  else{sx=L;sy=T;sw=w;sh=h}
-  const st=[0.6,1,1.6][(k.lw||2)-1],bs=Math.max(3,W*(mk==='bl'?0.03:0.018)*st),tw=Math.max(1,Math.round(w/bs)),th=Math.max(1,Math.round(h/bs));
-  try{mTmp.width=tw;mTmp.height=th;const t=mTmp.getContext('2d');t.imageSmoothingEnabled=true;t.drawImage(S,sx,sy,sw,sh,0,0,tw,th);
-    ctx.save();ctx.beginPath();ctx.rect(L,T,w,h);ctx.clip();
-    if(mk==='bl'){mTmp2.width=Math.max(1,tw*3);mTmp2.height=Math.max(1,th*3);const t2=mTmp2.getContext('2d');t2.imageSmoothingEnabled=true;t2.drawImage(mTmp,0,0,mTmp2.width,mTmp2.height);ctx.imageSmoothingEnabled=true;ctx.drawImage(mTmp2,L,T,w,h)}
-    else{ctx.imageSmoothingEnabled=false;ctx.drawImage(mTmp,L,T,w,h);ctx.imageSmoothingEnabled=true}
-    ctx.restore()}catch(e){}}
+const mTmp=document.createElement('canvas'),mTmp2=document.createElement('canvas'),mEff=document.createElement('canvas'),mWork=document.createElement('canvas');
+function maskPath(ctx,k,L,T,w,h,P){const sh=k.sh||'r';ctx.beginPath();
+  if(sh==='f'&&k.pts&&k.pts.length>2){k.pts.forEach(([x,y],i)=>{const[a,b]=P(x,y);i?ctx.lineTo(a,b):ctx.moveTo(a,b)});ctx.closePath()}
+  else if(sh==='c')ctx.ellipse(L+w/2,T+h/2,Math.max(1,w/2),Math.max(1,h/2),0,0,Math.PI*2);
+  else if(sh==='tu'){ctx.moveTo(L+w/2,T);ctx.lineTo(L+w,T+h);ctx.lineTo(L,T+h);ctx.closePath()}
+  else if(sh==='td'){ctx.moveTo(L,T);ctx.lineTo(L+w,T);ctx.lineTo(L+w/2,T+h);ctx.closePath()}
+  else if(ctx.roundRect)ctx.roundRect(L,T,w,h,Math.min(w,h)*0.06);else ctx.rect(L,T,w,h)}
+function srcRect(src,ctx,L,T,w,h,W,H,ox,oy){if(src){const nw=src.videoWidth||src.naturalWidth,nh=src.videoHeight||src.naturalHeight;if(!nw||!nh)return null;
+    return{S:src,sx:(L-ox)/W*nw,sy:(T-oy)/H*nh,sw:w/W*nw,sh:h/H*nh}}return{S:ctx.canvas,sx:L,sy:T,sw:w,sh:h}}
+/* 効果画像（モザイク・ぼかし・塗り・暗く）を作る */
+function effCanvas(k,r,w,h,W){const mk=k.mk||'mo',E=mEff;E.width=Math.max(1,Math.round(w));E.height=Math.max(1,Math.round(h));const e=E.getContext('2d');e.clearRect(0,0,E.width,E.height);
+  if(mk==='fi'){e.fillStyle=k.col||'#555555';e.fillRect(0,0,E.width,E.height);return E}
+  if(mk==='wh'){e.fillStyle='rgba(255,255,255,0.88)';e.fillRect(0,0,E.width,E.height);return E}
+  if(mk==='dk'){e.fillStyle=`rgba(0,0,0,${[0.45,0.62,0.8][(k.lw||2)-1]})`;e.fillRect(0,0,E.width,E.height);return E}
+  if(!r)return null;const st=[0.6,1,1.6][(k.lw||2)-1],bs=Math.max(3,W*(mk==='bl'?0.03:0.018)*st),tw=Math.max(1,Math.round(w/bs)),th=Math.max(1,Math.round(h/bs));
+  mTmp.width=tw;mTmp.height=th;const t=mTmp.getContext('2d');t.imageSmoothingEnabled=true;t.drawImage(r.S,r.sx,r.sy,r.sw,r.sh,0,0,tw,th);
+  if(mk==='bl'){mTmp2.width=Math.max(1,tw*3);mTmp2.height=Math.max(1,th*3);const t2=mTmp2.getContext('2d');t2.imageSmoothingEnabled=true;t2.drawImage(mTmp,0,0,mTmp2.width,mTmp2.height);e.imageSmoothingEnabled=true;e.drawImage(mTmp2,0,0,E.width,E.height)}
+  else{e.imageSmoothingEnabled=false;e.drawImage(mTmp,0,0,E.width,E.height)}return E}
+/* 🪄 消す：周りの色で内側を埋める（外側から少しずつ埋めて、なめらかにする） */
+function inpaint(ctx,k,L,T,w,h,W,H,ox,oy,src,P){
+  const mx=Math.max(w,h)*0.18+W*0.01,EL=Math.max(ox,L-mx),ET=Math.max(oy,T-mx),ER=Math.min(ox+W,L+w+mx),EB=Math.min(oy+H,T+h+mx),ew=ER-EL,eh=EB-ET;if(ew<3||eh<3)return;
+  const r=srcRect(src,ctx,EL,ET,ew,eh,W,H,ox,oy);if(!r)return;
+  const sc=Math.min(1,150/Math.max(ew,eh)),cw=Math.max(4,Math.round(ew*sc)),ch=Math.max(4,Math.round(eh*sc));
+  mWork.width=cw;mWork.height=ch;const c=mWork.getContext('2d',{willReadFrequently:true});c.drawImage(r.S,r.sx,r.sy,r.sw,r.sh,0,0,cw,ch);
+  const img=c.getImageData(0,0,cw,ch),d=img.data;
+  mTmp.width=cw;mTmp.height=ch;const mc=mTmp.getContext('2d',{willReadFrequently:true});mc.clearRect(0,0,cw,ch);mc.fillStyle='#fff';
+  mc.save();mc.scale(cw/ew,ch/eh);mc.translate(-EL,-ET);maskPath(mc,k,L,T,w,h,P);mc.fill();mc.lineWidth=3/sc;mc.strokeStyle='#fff';mc.stroke();mc.restore();
+  const md=mc.getImageData(0,0,cw,ch).data,N=cw*ch,unk=new Uint8Array(N);let left=0;for(let i=0;i<N;i++)if(md[i*4+3]>20){unk[i]=1;left++}
+  const f=new Float32Array(N*3);for(let i=0;i<N;i++){f[i*3]=d[i*4];f[i*3+1]=d[i*4+1];f[i*3+2]=d[i*4+2]}
+  const known=new Uint8Array(N);for(let i=0;i<N;i++)known[i]=unk[i]?0:1;
+  let guard=0;while(left>0&&guard++<400){const nk=[];for(let y=0;y<ch;y++)for(let x=0;x<cw;x++){const i=y*cw+x;if(known[i])continue;let r2=0,g=0,b=0,n=0;
+      for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){if(!dx&&!dy)continue;const X=x+dx,Y=y+dy;if(X<0||Y<0||X>=cw||Y>=ch)continue;const j=Y*cw+X;if(known[j]){const wgt=dx&&dy?0.7:1;r2+=f[j*3]*wgt;g+=f[j*3+1]*wgt;b+=f[j*3+2]*wgt;n+=wgt}}
+      if(n>0)nk.push(i,r2/n,g/n,b/n)}
+    if(!nk.length)break;for(let q=0;q<nk.length;q+=4){const i=nk[q];f[i*3]=nk[q+1];f[i*3+1]=nk[q+2];f[i*3+2]=nk[q+3];known[i]=1;left--}}
+  for(let it=0;it<24;it++)for(let y=1;y<ch-1;y++)for(let x=1;x<cw-1;x++){const i=y*cw+x;if(!unk[i])continue;
+    for(let q=0;q<3;q++)f[i*3+q]=(f[(i-1)*3+q]+f[(i+1)*3+q]+f[(i-cw)*3+q]+f[(i+cw)*3+q])/4}
+  let seed=7;const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647-0.5};
+  for(let i=0;i<N;i++)if(unk[i]){const nz=rnd()*6;d[i*4]=f[i*3]+nz;d[i*4+1]=f[i*3+1]+nz;d[i*4+2]=f[i*3+2]+nz}
+  c.putImageData(img,0,0);
+  ctx.save();maskPath(ctx,k,L,T,w,h,P);ctx.lineWidth=Math.max(2,3/sc);ctx.clip();ctx.imageSmoothingEnabled=true;ctx.drawImage(mWork,EL,ET,ew,eh);ctx.restore()}
+function drawMask(ctx,k,L,T,w,h,W,H,ox,oy,src,P){if(w<2||h<2)return;
+  if(k.mk==='er'){try{inpaint(ctx,k,L,T,w,h,W,H,ox,oy,src,P)}catch(e){}return}
+  try{const E=effCanvas(k,srcRect(src,ctx,L,T,w,h,W,H,ox,oy),w,h,W);if(!E)return;
+    ctx.save();maskPath(ctx,k,L,T,w,h,P);ctx.clip();ctx.globalAlpha*=(k.mk==='fi'?(k.op??1):1);ctx.imageSmoothingEnabled=k.mk!=='mo';ctx.drawImage(E,L,T,w,h);ctx.imageSmoothingEnabled=true;ctx.restore()}catch(e){}}
+/* 🔦 選んだ所だけ見せる：まとめて外側に効果 */
+function drawSpot(ctx,list,W,H,ox,oy,src,P){if(!list.length)return;const k=list[0];
+  try{const E=effCanvas(k,srcRect(src,ctx,ox,oy,W,H,W,H,ox,oy),W,H,W);if(!E)return;
+    mTmp2.width=E.width;mTmp2.height=E.height;const t=mTmp2.getContext('2d');t.clearRect(0,0,E.width,E.height);t.drawImage(E,0,0);
+    t.save();t.globalCompositeOperation='destination-out';t.scale(E.width/W,E.height/H);t.translate(-ox,-oy);
+    list.forEach(m=>{const[cx,cy]=P(m.x,m.y),w=(m.w||13)/100*W,h=m.h?m.h/100*H:w;maskPath(t,m,cx-w/2,cy-h/2,w,h,P);t.fill()});t.restore();
+    ctx.save();ctx.imageSmoothingEnabled=k.mk!=='mo';ctx.drawImage(mTmp2,ox,oy,W,H);ctx.restore();}catch(e){}}
 
 const hasMask=s=>(s.marks||[]).some(m=>m.s==='m');const mtCache=new Map();
 function thumbImg(s,i){return s.thumb?(hasMask(s)?`<img data-mt="${i}" alt="">`:`<img src="${s.thumb}" alt="">`):''}
@@ -437,6 +480,28 @@ async function fillMaskThumbs(root,steps){if(!root)return;for(const im of root.q
   const ms=s.marks.filter(m=>m.s==='m'),key=s.thumb.length+':'+s.thumb.slice(-40)+JSON.stringify(ms);let u=mtCache.get(key);
   if(!u){try{const b=await loadImage(s.thumb),c=document.createElement('canvas');c.width=b.width;c.height=b.height;const x=c.getContext('2d');x.drawImage(b,0,0);drawMarks(x,c.width,c.height,ms);u=c.toDataURL('image/jpeg',0.8);mtCache.set(key,u)}catch(e){continue}}
   if(im.isConnected)im.src=u}}
+
+/* ---------- 🏃 追いかける（被写体の動きに印を合わせる） ---------- */
+function offAt(k,t){const a=k.trk;if(!a||!a.length||t==null)return{dx:0,dy:0};if(t<=a[0][0])return{dx:a[0][1],dy:a[0][2]};const z=a[a.length-1];if(t>=z[0])return{dx:z[1],dy:z[2]};
+  let lo=0,hi=a.length-1;while(hi-lo>1){const md=(lo+hi)>>1;if(a[md][0]<=t)lo=md;else hi=md}const p=a[lo],q=a[hi],u=(t-p[0])/((q[0]-p[0])||1);return{dx:p[1]+(q[1]-p[1])*u,dy:p[2]+(q[2]-p[2])*u}}
+function trkAt(k,t){const{dx,dy}=offAt(k,t);if(!dx&&!dy)return k;const m={...k};['x','x1','x2'].forEach(q=>{if(m[q]!=null)m[q]+=dx});['y','y1','y2'].forEach(q=>{if(m[q]!=null)m[q]+=dy});if(m.pts)m.pts=m.pts.map(([a,b])=>[a+dx,b+dy]);return m}
+async function trackMark(m,t0,S,E,pm){const GW=320;
+  return withHiddenVideo(async v=>{const vw=v.videoWidth,vh=v.videoHeight;if(!vw)throw new Error('動画を読めません');const GH=Math.round(GW*vh/vw),c=document.createElement('canvas');c.width=GW;c.height=GH;const x=c.getContext('2d',{willReadFrequently:true});
+    const gray=async t=>{await seekTo(v,t);x.drawImage(v,0,0,GW,GH);const d=x.getImageData(0,0,GW,GH).data,g=new Float32Array(GW*GH);for(let i=0;i<GW*GH;i++)g[i]=d[i*4]*.299+d[i*4+1]*.587+d[i*4+2]*.114;return g};
+    let cx,cy,bw,bh;if(isLine(m)){cx=m.x2;cy=m.y2;bw=bh=12}else{cx=m.x;cy=m.y;bw=m.w||13;bh=m.h||bw}
+    const tw=Math.max(10,Math.min(64,Math.round(bw/100*GW))),th=Math.max(10,Math.min(64,Math.round(bh/100*GH)));
+    const px0=cx/100*GW,py0=cy/100*GH,cut=(g,X,Y)=>{const T=new Float32Array(tw*th),x0=Math.round(X-tw/2),y0=Math.round(Y-th/2);for(let j=0;j<th;j++)for(let i=0;i<tw;i++){const xx=Math.min(GW-1,Math.max(0,x0+i)),yy=Math.min(GH-1,Math.max(0,y0+j));T[j*tw+i]=g[yy*GW+xx]}return T};
+    const sad=(g,T,X,Y,st)=>{let s=0,n=0;const x0=Math.round(X-tw/2),y0=Math.round(Y-th/2);for(let j=0;j<th;j+=st)for(let i=0;i<tw;i+=st){const xx=x0+i,yy=y0+j;if(xx<0||yy<0||xx>=GW||yy>=GH){s+=40;n++;continue}s+=Math.abs(g[yy*GW+xx]-T[j*tw+i]);n++}return s/n};
+    const g0=await gray(t0),base=cut(g0,px0,py0),R=Math.max(10,Math.round(Math.max(tw,th)*0.7)),dt=0.1,out=[[+t0.toFixed(2),0,0]];
+    const run=async dir=>{let T=base.slice(),X=px0,Y=py0,t=t0,k=0;const lim=dir>0?E:S,steps=Math.max(1,Math.ceil(Math.abs(lim-t0)/dt));
+      while(dir>0?t<lim-0.001:t>lim+0.001){if(pm&&pm.cancelled)throw new Error('CANCEL');t=dir>0?Math.min(lim,t+dt):Math.max(lim,t-dt);k++;
+        const g=await gray(t);let bx=X,by=Y,bs=1e9;
+        for(let dy=-R;dy<=R;dy+=2)for(let dx=-R;dx<=R;dx+=2){const c=sad(g,T,X+dx,Y+dy,2);if(c<bs){bs=c;bx=X+dx;by=Y+dy}}
+        const cx2=bx,cy2=by;for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++){const c=sad(g,T,cx2+dx,cy2+dy,1);if(c<bs){bs=c;bx=cx2+dx;by=cy2+dy}}
+        if(bs<38){X=bx;Y=by;const nt=cut(g,X,Y);for(let i=0;i<T.length;i++)T[i]=T[i]*0.85+nt[i]*0.15}
+        out.push([+t.toFixed(2),+((X-px0)/GW*100).toFixed(2),+((Y-py0)/GH*100).toFixed(2)]);
+        if(pm)pm.set(Math.min(0.99,(dir>0?0:0.5)+k/steps*0.5),`被写体を追いかけています… ${fmt(t)}`)}};
+    await run(1);await run(-1);out.sort((a,b)=>a[0]-b[0]);return out})}
 function renderMarks(layer,ms,sel=-1,t=null,still=false){if(!layer)return;
   let c=layer.querySelector('canvas.mkc');if(!c){layer.innerHTML='<canvas class="mkc"></canvas>';c=layer.firstChild}
   const w=layer.clientWidth,h=layer.clientHeight;if(!w||!h){if(!layer._rt||layer._rt<8){layer._rt=(layer._rt||0)+1;setTimeout(()=>renderMarks(layer,ms,sel,t,still),120)}return}layer._rt=0;
@@ -485,17 +550,18 @@ async function withHiddenVideo(fn){
 let markTool=lsGet('kensa-mtool','c');
 let markDur=+lsGet('kensa-mdur','3')||3;
 /* ---------- 🎯 ポイント編集（専用画面：挿入・書式） ---------- */
-const PTN={c:'○',r:'□',x:'×',a:'➡',l:'─',b:'💬',t:'🔤',n:'①',i:'🖼',m:'▦'},PTL={c:'○ 丸',r:'□ 四角',x:'× バツ',a:'➡ 矢印',l:'─ 線',b:'💬 吹き出し',t:'🔤 文字',n:'① 番号',i:'🖼 画像',m:'▦ マスク'};
+const PTN={c:'○',r:'□',x:'×',a:'➡',l:'─',b:'💬',t:'🔤',n:'①',i:'🖼',m:'▦'},PTL={c:'○ 丸',r:'□ 四角',x:'× バツ',a:'➡ 矢印',l:'─ 線',b:'💬 吹き出し',t:'🔤 文字',n:'① 番号',i:'🖼 画像',m:'▦ マスク',mf:'✍ 囲んで隠す',me:'🪄 消す',ms:'🔦 見せる所を囲む'};
 const ptCol=i=>`hsl(${(i*67+350)%360} 75% 48%)`;
 let mStyle=(()=>{try{return JSON.parse(lsGet('kensa-mstyle','{}'))||{}}catch(e){return{}}})();
 function openPts(o){
-  const ms=o.getMs(),V0=o.video;let sel=-1,mode=null,st=null,tool=PTL[markTool]&&markTool!=='i'?markTool:'c';
+  const ms=o.getMs(),V0=o.video;let sel=-1,mode=null,st=null,tool=PTL[markTool]&&markTool!=='i'?markTool:'c';const FH=['mf','me','ms'];
   const d=document.createElement('div');d.className='pe';
   d.innerHTML=`<div class="pe-top"><b class="grow">🎯 ${esc(o.title)}</b><button class="pri" id="peDone">✔ 完了</button></div>
     <div class="pe-guide" id="peG"></div>
     <div class="pe-body"><div class="pe-ins"><div class="pe-cap">挿入</div>
-      <div class="pe-shapes">${['c','r','x','a','l','b','t','n','m'].map(k=>`<button data-tool="${k}" class="${k===tool?'on':''}"><i>${PTN[k]}</i><span>${PTL[k].split(' ')[1]}</span></button>`).join('')}
-        <button data-ins="img"><i>🖼</i><span>画像</span></button><button data-ins="stamp"><i>⭐</i><span>スタンプ</span></button></div></div>
+      <div class="pe-shapes">${['c','r','x','a','l','b','t','n'].map(k=>`<button data-tool="${k}" class="${k===tool?'on':''}"><i>${PTN[k]}</i><span>${PTL[k].split(' ')[1]}</span></button>`).join('')}
+        <button data-ins="img"><i>🖼</i><span>画像</span></button><button data-ins="stamp"><i>⭐</i><span>スタンプ</span></button></div>
+      <div class="pe-cap">隠す・消す</div><div class="pe-shapes">${[['m','▦','マスク'],['mf','✍','囲んで隠す'],['me','🪄','消す'],['ms','🔦','見せる所']].map(([k,i,n])=>`<button data-tool="${k}" class="${k===tool?'on':''}"><i>${i}</i><span>${n}</span></button>`).join('')}</div></div>
     <div class="pe-main">
     <div class="pe-stage"><div class="vwrap pe-wrap" id="peW">${V0?'<video id="peV" playsinline muted preload="auto"></video>':`<img src="${o.src}" alt="">`}<div class="marks"></div></div></div>
     ${V0?`<div class="pe-bars" id="peBars"></div><input type="range" class="pe-seek" id="peSeek" min="${V0.start}" max="${V0.end}" step="0.05" value="${V0.start}">
@@ -519,24 +585,30 @@ function openPts(o){
     :`② 「挿入」で形（今は <b>${PTL[tool]}</b>）を選び、画面の見せたい所を<b>なぞる</b>（タップでも置けます）`+(V?'。場面を変えるときは ▶ や ◀◀ ▶▶':'')};
   const bars=()=>{if(!V)return;const S=V0.start,L=(V0.end-S)||1;d.querySelector('#peBars').innerHTML=ms.map((m,i)=>{const a=m.t0==null?S:m.t0,z=m.t0==null?V0.end:m.t1;
     return`<i style="left:${(a-S)/L*100}%;width:${Math.max(1.5,(z-a)/L*100)}%;background:${ptCol(i)};top:${m.t0==null?7:2}px;height:${m.t0==null?4:14}px"></i>`}).join('')+'<b></b>'};
-  const nm=m=>m.s==='i'&&m.emo?m.emo:m.s==='m'?'▦マスク':PTN[m.s]||'○';
+  const nm=m=>m.s==='i'&&m.emo?m.emo:m.s==='m'?(m.inv?'🔦見せる所':m.mk==='er'?'🪄消す':'▦マスク'):PTN[m.s]||'○';
   const list=()=>{d.querySelector('#peList').innerHTML=ms.length?ms.map((m,i)=>`<button class="${i===sel?'on':''}" data-i="${i}" style="border-left:6px solid ${ptCol(i)}">${i+1}. ${nm(m)} ${V?(m.t0!=null?fmt(m.t0):'ずっと'):''}${m.label?' '+esc(String(m.label).split('\n')[0].slice(0,12)):''}</button>`).join(''):'<span class="sub small">まだポイントはありません</span>'};
   const setStyle=(k,v)=>{mStyle[k]=v;lsSet('kensa-mstyle',JSON.stringify(mStyle))};
   const selPanel=()=>{const p=d.querySelector('#peSel'),m=ms[sel];
     if(!m){p.innerHTML=`<div class="pe-cap">書式</div><span class="sub small">ポイント（印）を押して選ぶと、ここで<b>色・線の太さ・文字の大きさ・塗り・文字</b>${V?'・表示する時間':''}を変えられます。</span>`;return}
-    if(m.s==='m'){p.innerHTML=`<div class="row"><b class="grow">書式：${sel+1}. ▦ マスク（見せない所を隠す）</b></div>
-      <div class="pe-cap">隠し方</div><div class="row chips">${[['mo','▦ モザイク'],['bl','🌫 ぼかし'],['fi','■ 塗りつぶし']].map(([v,n])=>`<button class="sm ${(m.mk||'mo')===v?'on':''}" data-mk="${v}">${n}</button>`).join('')}</div>
-      ${(m.mk||'mo')==='fi'?`<div class="pe-cap">色</div><div class="pe-cols">${[['#555555','灰'],...MCOL].map(([c,n])=>`<button data-col="${c}" title="${n}" class="${(m.col||'#555555')===c?'on':''}" style="background:${c}"><span>${n}</span></button>`).join('')}</div>`
-        :`<div class="pe-cap">強さ</div><div class="row chips">${['弱','中','強'].map((n,j)=>`<button class="sm ${(m.lw||2)===j+1?'on':''}" data-lw="${j+1}">${n}</button>`).join('')}</div>`}
-      <p class="sub small">見る画面・字幕入り動画・紙の手順書で、この範囲が隠れます。黄色い●で大きさ、中を引っぱって移動。動画では手順の間ずっと隠れます。</p>
-      ${V?`<div class="row chips"><button class="sm ${m.t0==null?'on':''}" data-d="all">ずっと隠す</button><button class="sm" data-d="here">今の場面から</button></div>`:''}
-      <div class="row chips mt"><button class="sm" id="peDup">⧉ 複製</button><button class="sm danger" id="peDel">🗑 消す</button></div>`;
-      p.querySelectorAll('[data-mk]').forEach(b=>b.onclick=()=>{m.mk=b.dataset.mk;setStyle('mk',m.mk);changed()});
+    if(m.s==='m'){const mk=m.mk||'mo',kinds=m.inv?[['dk','🌑 暗く'],['wh','⬜ 白く'],['bl','🌫 ぼかし'],['mo','▦ モザイク'],['fi','■ 塗りつぶし']]:[['mo','▦ モザイク'],['bl','🌫 ぼかし'],['fi','■ 塗りつぶし'],['dk','🌑 暗く'],['er','🪄 消す']];
+      p.innerHTML=`<div class="row"><b class="grow">書式：${sel+1}. ${m.inv?'🔦 見せる所':mk==='er'?'🪄 消す':'▦ マスク'}</b></div>
+      <div class="pe-cap">範囲</div><div class="row chips"><button class="sm ${m.inv?'':'on'}" data-inv="0">囲んだ所を隠す</button><button class="sm ${m.inv?'on':''}" data-inv="1">🔦 囲んだ所だけ見せる</button></div>
+      <div class="pe-cap">${m.inv?'まわりの隠し方':'隠し方'}</div><div class="row chips">${kinds.map(([v,n])=>`<button class="sm ${mk===v?'on':''}" data-mk="${v}">${n}</button>`).join('')}</div>
+      ${mk==='fi'?`<div class="pe-cap">色</div><div class="pe-cols">${[['#555555','灰'],...MCOL].map(([c,n])=>`<button data-col="${c}" title="${n}" class="${(m.col||'#555555')===c?'on':''}" style="background:${c}"><span>${n}</span></button>`).join('')}</div>`
+        :['mo','bl','dk'].includes(mk)?`<div class="pe-cap">強さ</div><div class="row chips">${['弱','中','強'].map((n,j)=>`<button class="sm ${(m.lw||2)===j+1?'on':''}" data-lw="${j+1}">${n}</button>`).join('')}</div>`:''}
+      <div class="pe-cap">形</div><div class="row chips">${[['r','□ 四角'],['c','○ 丸'],['tu','△'],['td','▽']].concat(m.pts?[['f','✍ 手書き']]:[]).map(([v,n])=>`<button class="sm ${(m.sh||'r')===v?'on':''}" data-msh="${v}">${n}</button>`).join('')}</div>
+      <p class="sub small">${mk==='er'?'🪄 周りの色でなじませて消します。床・壁・机など<b>無地に近い所</b>がきれいに消えます（模様が細かい所はぼやけます）。':m.inv?'囲んだ所以外が隠れます。見せたい物（製品・手元）を囲みます。いくつでも囲めます。':'見る画面・字幕入り動画・紙の手順書で、この範囲が隠れます。'}黄色い●で大きさ、中を引っぱって移動。</p>
+      ${V?`<div class="row chips"><button class="sm ${m.t0==null?'on':''}" data-d="all">ずっと</button><button class="sm" data-d="here">今の場面から</button></div>`:''}
+      ${V?`<div class="pe-cap">🏃 被写体を追いかける</div><div class="row chips"><button class="sm ${m.trk?'':'pri'}" data-trk="go">${m.trk?'↺ 追いかけ直す':'🏃 動きに合わせて追いかける'}</button>${m.trk?'<button class="sm" data-trk="off">解除</button>':''}</div><p class="sub small" style="margin:2px 0">${m.trk?`✔ ${fmt(m.trk[0][0])}〜${fmt(m.trk[m.trk.length-1][0])} の動きに合わせて動きます。ずれた場面では、印を引っぱって直してから「追いかけ直す」。`:'印を動かしたい被写体の上に置いて押すと、動画を解析して被写体が動いた分だけ印が動きます。'}</p>`:''}
+      <div class="row chips mt"><button class="sm" id="peDup">⧉ 複製</button><button class="sm danger" id="peDel">🗑 消す</button></div>`;bindTrk(p,m);
+      p.querySelectorAll('[data-inv]').forEach(b=>b.onclick=()=>{m.inv=b.dataset.inv==='1';if(!m.inv)delete m.inv;if(m.inv&&m.mk==='er')m.mk='dk';changed()});
+      p.querySelectorAll('[data-mk]').forEach(b=>b.onclick=()=>{m.mk=b.dataset.mk;setStyle(m.inv?'smk':'mk',m.mk==='er'?(mStyle.mk||'mo'):m.mk);changed()});
+      p.querySelectorAll('[data-msh]').forEach(b=>b.onclick=()=>{m.sh=b.dataset.msh;if(!m.pts&&m.sh!=='f')setStyle('msh',m.sh);changed()});
       p.querySelectorAll('[data-col]').forEach(b=>b.onclick=()=>{m.col=b.dataset.col;changed()});
       p.querySelectorAll('[data-lw]').forEach(b=>b.onclick=()=>{m.lw=+b.dataset.lw;changed()});
       p.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{if(b.dataset.d==='all'){delete m.t0;delete m.t1}else{const now=r2(V.currentTime);m.t0=now;m.t1=V0.end}changed()});
       p.querySelector('#peDel').onclick=()=>{ms.splice(sel,1);sel=-1;changed()};
-      p.querySelector('#peDup').onclick=()=>{const c=JSON.parse(JSON.stringify(m));c.x=cl(c.x+4);c.y=cl(c.y+4);ms.splice(sel+1,0,c);sel++;changed()};return}
+      p.querySelector('#peDup').onclick=()=>{const c=JSON.parse(JSON.stringify(m));c.x=cl(c.x+4);c.y=cl(c.y+4);if(c.pts)c.pts=c.pts.map(([a,b])=>[a+4,b+4]);ms.splice(sel+1,0,c);sel++;changed()};return}
     const txt=m.s==='b'||m.s==='t',hasLw=!['t','n','i'].includes(m.s),hasFill=['c','r','b','t'].includes(m.s),hasFs=m.s!=='n'&&!(m.s==='i'&&!m.label&&false);
     p.innerHTML=`<div class="row"><b class="grow">書式：${sel+1}. ${m.s==='i'&&m.emo?m.emo+' スタンプ':PTL[m.s]}</b></div>
       <label class="f">${txt?'文字（改行もOK）':m.s==='n'?'番号・記号':'文字（任意）例：ここを見る／ゲート／NG'}</label>
@@ -545,14 +617,18 @@ function openPts(o){
       ${hasLw?`<div class="pe-cap">線の太さ</div><div class="row chips">${['細','中','太'].map((n,j)=>`<button class="sm ${(m.lw||2)===j+1?'on':''}" data-lw="${j+1}">${n}</button>`).join('')}</div>`:''}
       ${hasFs?`<div class="pe-cap">文字の大きさ</div><div class="row chips">${['小','中','大','特大'].map((n,j)=>`<button class="sm ${(m.fs||2)===j+1?'on':''}" data-fs="${j+1}">${n}</button>`).join('')}</div>`:''}
       ${hasFill?`<div class="pe-cap">塗り</div><div class="row chips">${(m.s==='b'?[[0,'白'],[1,'うすく'],[2,'こく']]:[[null,'なし'],[1,'うすく'],[2,'こく']]).map(([v,n])=>`<button class="sm ${(m.fill??(m.s==='b'?0:null))===v?'on':''}" data-fill="${v}">${n}</button>`).join('')}${m.s==='t'?`<button class="sm ${m.fill===0?'on':''}" data-fill="0">白</button>`:''}</div>`:''}
+      <div class="pe-cap">透明度</div><div class="row chips">${[[1,'不透明'],[0.75,'少し透ける'],[0.5,'半透明'],[0.3,'うすく']].map(([v,n])=>`<button class="sm ${(m.op??1)===v?'on':''}" data-op="${v}">${n}</button>`).join('')}</div>
       ${V?`<div class="pe-cap">表示する時間：<b>${m.t0!=null?`${fmt(m.t0)} 〜 ${fmt(m.t1)}`:'手順の間ずっと'}</b></div>
       <div class="row chips">${[1,2,3,5].map(n=>`<button class="sm ${m.t0!=null&&Math.abs(m.t1-m.t0-n)<0.06?'on':''}" data-d="${n}">${n}秒</button>`).join('')}<button class="sm ${m.t0!=null&&Math.abs(m.t1-V0.end)<0.06?'on':''}" data-d="end">最後まで</button><button class="sm ${m.t0==null?'on':''}" data-d="all">ずっと</button><button class="sm" data-d="here">今の場面から</button></div>`:''}
       ${m.s!=='i'?`<div class="pe-cap">形を変える</div><div class="row chips">${(isLine(m)?['a','l']:['c','r','x','b','t','n']).map(k=>`<button class="sm ${m.s===k?'on':''}" data-sh="${k}">${PTL[k]}</button>`).join('')}</div>`:''}
+      ${V?`<div class="pe-cap">🏃 被写体を追いかける</div><div class="row chips"><button class="sm ${m.trk?'':'pri'}" data-trk="go">${m.trk?'↺ 追いかけ直す':'🏃 動きに合わせて追いかける'}</button>${m.trk?'<button class="sm" data-trk="off">解除</button>':''}</div><p class="sub small" style="margin:2px 0">${m.trk?`✔ ${fmt(m.trk[0][0])}〜${fmt(m.trk[m.trk.length-1][0])} の動きに合わせて動きます。ずれた場面では、印を引っぱって直してから「追いかけ直す」。`:'印を動かしたい被写体の上に置いて押すと、動画を解析して被写体が動いた分だけ印が動きます。'}</p>`:''}
       <div class="row chips mt"><button class="sm" id="peUp">⬆ 前面へ</button><button class="sm" id="peDn">⬇ 背面へ</button><button class="sm" id="peDup">⧉ 複製</button><button class="sm danger" id="peDel">🗑 消す</button></div>`;
     const lb=p.querySelector('#peLbl');lb.oninput=e=>{m.label=m.s==='b'||m.s==='t'?e.target.value:e.target.value.trim();fit(m);drawM();list();saveSoonP()};
     p.querySelectorAll('[data-col]').forEach(b=>b.onclick=()=>{m.col=b.dataset.col;setStyle('col',m.col);changed()});
     p.querySelectorAll('[data-lw]').forEach(b=>b.onclick=()=>{m.lw=+b.dataset.lw;setStyle('lw',m.lw);changed()});
     p.querySelectorAll('[data-fs]').forEach(b=>b.onclick=()=>{m.fs=+b.dataset.fs;setStyle('fs',m.fs);fit(m);changed()});
+    bindTrk(p,m);
+    p.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>{const v=+b.dataset.op;if(v===1)delete m.op;else m.op=v;setStyle('op',v);changed()});
     p.querySelectorAll('[data-fill]').forEach(b=>b.onclick=()=>{const v=b.dataset.fill;if(v==='null')delete m.fill;else m.fill=+v;changed()});
     p.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{const dd=b.dataset.d,now=r2(V.currentTime);
       if(dd==='all'){delete m.t0;delete m.t1}else if(dd==='here'){const len=m.t0!=null?m.t1-m.t0:(markDur||3);m.t0=now;m.t1=r2(Math.min(V0.end,now+len))}
@@ -564,11 +640,17 @@ function openPts(o){
     p.querySelector('#peDup').onclick=()=>{const c=JSON.parse(JSON.stringify(m));['x','x1','x2'].forEach(q=>{if(c[q]!=null)c[q]=cl(c[q]+4)});['y','y1','y2'].forEach(q=>{if(c[q]!=null)c[q]=cl(c[q]+4)});if(c.s==='n')c.label=String(ms.filter(x=>x.s==='n').length+1);ms.push(c);sel=ms.length-1;changed()};
     p.querySelector('#peUp').onclick=()=>{if(sel<ms.length-1){[ms[sel],ms[sel+1]]=[ms[sel+1],ms[sel]];sel++;changed()}};
     p.querySelector('#peDn').onclick=()=>{if(sel>0){[ms[sel],ms[sel-1]]=[ms[sel-1],ms[sel]];sel--;changed()}}};
+  const bindTrk=(p,m)=>{p.querySelectorAll('[data-trk]').forEach(b=>b.onclick=async()=>{if(b.dataset.trk==='off'){delete m.trk;changed();return}
+    if(!V)return;V.pause();const t0=V.currentTime;if(!visAt(m,t0)){alert('この場面では印が表示されていません。印が出ている場面で押してください');return}
+    const base=offAt(m,t0);if(base.dx||base.dy){['x','x1','x2'].forEach(q=>{if(m[q]!=null)m[q]=+(m[q]+base.dx).toFixed(1)});['y','y1','y2'].forEach(q=>{if(m[q]!=null)m[q]=+(m[q]+base.dy).toFixed(1)});if(m.pts)m.pts=m.pts.map(([a,b])=>[+(a+base.dx).toFixed(1),+(b+base.dy).toFixed(1)])}
+    delete m.trk;const S=m.t0!=null?Math.max(V0.start,m.t0):V0.start,E=m.t1!=null?Math.min(V0.end,m.t1):V0.end;
+    const pm=progressModal('🏃 被写体を追いかけています','動画を解析中…');
+    try{m.trk=await trackMark(m,t0,S,E,pm);pm.close();changed();toast('追いかけました。▶ 再生で確認してください',3000)}catch(err){pm.close();if(err.message!=='CANCEL')alert('追いかけられませんでした：'+err.message);changed()}})};
   let sT=null;const saveSoonP=()=>{clearTimeout(sT);sT=setTimeout(()=>o.save(),400)};
   const refresh=()=>{drawM();guide();selPanel();list();bars()};
   const changed=()=>{refresh();o.save()};
   const stamp=m=>{if(V){const t=r2(V.currentTime);m.t0=t;m.t1=r2(markDur?Math.min(V0.end,t+markDur):V0.end)}};
-  const styled=m=>{if(mStyle.col)m.col=mStyle.col;if(mStyle.lw)m.lw=mStyle.lw;if(mStyle.fs)m.fs=mStyle.fs;return m};
+  const styled=m=>{if(mStyle.op&&mStyle.op<1)m.op=mStyle.op;if(mStyle.col)m.col=mStyle.col;if(mStyle.lw)m.lw=mStyle.lw;if(mStyle.fs)m.fs=mStyle.fs;return m};
   const hit=(m,p)=>{if(!visAt(m,tNow()))return false;
     if(isLine(m)){const px=p.r.width/100,py=p.r.height/100,ax=m.x1*px,ay=m.y1*py,bx=m.x2*px,by=m.y2*py,qx=p.x*px,qy=p.y*py,L=(bx-ax)**2+(by-ay)**2||1;
       let u=((qx-ax)*(bx-ax)+(qy-ay)*(by-ay))/L;u=Math.max(0,Math.min(1,u));return Math.hypot(qx-(ax+u*(bx-ax)),qy-(ay+u*(by-ay)))<20}
@@ -576,28 +658,34 @@ function openPts(o){
   const near=(p,x,y)=>Math.hypot((p.x-x)*p.r.width/100,(p.y-y)*p.r.height/100)<26;
   const onHandle=(m,p)=>{if(isLine(m)){if(near(p,m.x2,m.y2))return'p2';if(near(p,m.x1,m.y1))return'p1';return null}
     if(m.s==='b'&&near(p,m.x2,m.y2))return'tail';if(near(p,m.x+m.w/2,m.y+m.h/2))return'br';return null};
+  const bboxPts=m=>{const xs=m.pts.map(q=>q[0]),ys=m.pts.map(q=>q[1]),a=Math.min(...xs),b=Math.max(...xs),c=Math.min(...ys),d2=Math.max(...ys);m.x=(a+b)/2;m.y=(c+d2)/2;m.w=Math.max(2,b-a);m.h=Math.max(2,d2-c)};
   const cap=e=>{try{W.setPointerCapture(e.pointerId)}catch(_){}};
   const place=m=>{if(m.s==='m'){ms.unshift(m);sel=0;return}styled(m);stamp(m);ms.push(m);sel=ms.length-1;fit(m)};
-  const newBox=(k,x,y,w,h)=>{const a=ar(),m={s:k,x,y,w,h};if(k==='m'){m.mk=mStyle.mk||'mo';m.w=Math.max(w,6);m.h=Math.max(h,6)}
+  const newBox=(k,x,y,w,h)=>{const a=ar();if(k==='mf'||k==='me'||k==='ms'){const m={s:'m',x,y,w:Math.max(w,20),h:Math.max(h,20*a),sh:'c'};if(k==='me')m.mk='er';else if(k==='ms'){m.inv=true;m.mk=mStyle.smk||'dk'}else m.mk=mStyle.mk||'mo';return m}
+    const m={s:k,x,y,w,h};if(k==='m'){m.mk=mStyle.mk||'mo';m.sh=mStyle.msh||'r';m.w=Math.max(w,6);m.h=Math.max(h,6)}
     if(k==='b'){m.label='ここを見る';m.w=Math.max(w,26);m.x2=cl(x-m.w/2-4);m.y2=cl(y+h/2+12)}
     if(k==='t'){m.label='テキスト';m.w=Math.max(w,22)}
     if(k==='n'){m.label=String(ms.filter(q=>q.s==='n').length+1);m.w=Math.max(6,Math.min(w,12));m.h=m.w*a}
     return m};
-  W.onpointerdown=e=>{e.preventDefault();if(V&&!V.paused){V.pause();return}const p=P(e);
-    if(sel>=0&&ms[sel]&&visAt(ms[sel],tNow())){norm(ms[sel],p.r);const hnd=onHandle(ms[sel],p);if(hnd){mode=hnd;st={m:ms[sel]};cap(e);return}}
-    for(let i=ms.length-1;i>=0;i--)if(hit(ms[i],p)){sel=i;mode='move';st={m:ms[i],p0:p,o:{...ms[i]}};cap(e);refresh();return}
+  const pOff=(m,p)=>{const o=offAt(m,tNow());return o.dx||o.dy?{...p,x:p.x-o.dx,y:p.y-o.dy}:p};
+  W.onpointerdown=e=>{e.preventDefault();if(V&&!V.paused){V.pause();return}const p0=P(e);let p=p0;
+    if(sel>=0&&ms[sel]&&visAt(ms[sel],tNow())){norm(ms[sel],p.r);const hnd=onHandle(ms[sel],pOff(ms[sel],p0));if(hnd){mode=hnd;st={m:ms[sel],off:offAt(ms[sel],tNow())};cap(e);return}}
+    for(let i=ms.length-1;i>=0;i--)if(hit(ms[i],pOff(ms[i],p0))){p=pOff(ms[i],p0);sel=i;mode='move';st={m:ms[i],p0:p,off:offAt(ms[i],tNow()),o:{...ms[i],pts:ms[i].pts?ms[i].pts.map(q=>[...q]):undefined}};cap(e);refresh();return}
     sel=-1;mode='new';st={x0:cl(p.x),y0:cl(p.y),m:null};cap(e);refresh()};
-  W.onpointermove=e=>{if(!mode)return;e.preventDefault();const p=P(e),x=cl(p.x),y=cl(p.y),m=st.m;
+  W.onpointermove=e=>{if(!mode)return;e.preventDefault();let p=P(e);if(st&&st.off&&(st.off.dx||st.off.dy))p={...p,x:p.x-st.off.dx,y:p.y-st.off.dy};const x=cl(p.x),y=cl(p.y),m=st.m;
     if(mode==='p2'){m.x2=x;m.y2=y}else if(mode==='p1'){m.x1=x;m.y1=y}else if(mode==='tail'){m.x2=x;m.y2=y}
-    else if(mode==='br'){m.w=Math.max(3,Math.abs(p.x-m.x)*2);m.h=Math.max(3,Math.abs(p.y-m.y)*2);keepAsp(m);fit(m)}
+    else if(mode==='br'){const ow=m.w,oh=m.h;m.w=Math.max(3,Math.abs(p.x-m.x)*2);m.h=Math.max(3,Math.abs(p.y-m.y)*2);keepAsp(m);fit(m);if(m.pts)m.pts=m.pts.map(([a,b])=>[+(m.x+(a-m.x)*m.w/ow).toFixed(1),+(m.y+(b-m.y)*m.h/oh).toFixed(1)])}
     else if(mode==='move'){const dx=p.x-st.p0.x,dy=p.y-st.p0.y,q=st.o;if(isLine(m)){m.x1=cl(q.x1+dx);m.y1=cl(q.y1+dy);m.x2=cl(q.x2+dx);m.y2=cl(q.y2+dy)}
-      else{m.x=cl(q.x+dx);m.y=cl(q.y+dy);if(m.s==='b'){m.x2=cl(q.x2+dx);m.y2=cl(q.y2+dy)}}}
+      else{m.x=cl(q.x+dx);m.y=cl(q.y+dy);if(m.s==='b'){m.x2=cl(q.x2+dx);m.y2=cl(q.y2+dy)}if(q.pts)m.pts=q.pts.map(([a,b])=>[+(a+(m.x-q.x)).toFixed(1),+(b+(m.y-q.y)).toFixed(1)])}}
+    else if(FH.includes(tool)){if(!st.m){if(Math.hypot(x-st.x0,y-st.y0)<1.5)return;st.m=newBox(tool,st.x0,st.y0,1,1);st.m.sh='f';st.m.pts=[[+st.x0.toFixed(1),+st.y0.toFixed(1)]];place(st.m)}
+      const q=st.m.pts,l=q[q.length-1];if(Math.hypot(x-l[0],y-l[1])>0.8)q.push([+x.toFixed(1),+y.toFixed(1)]);bboxPts(st.m)}
     else{const w=Math.abs(x-st.x0),h=Math.abs(y-st.y0);
       if(!st.m&&(w>2.5||h>2.5)){st.m=isLine({s:tool})?{s:tool,x1:st.x0,y1:st.y0,x2:x,y2:y}:newBox(tool,0,0,0,0);place(st.m)}
       const n=st.m;if(n){if(isLine(n)){n.x2=x;n.y2=y}else{n.x=(x+st.x0)/2;n.y=(y+st.y0)/2;n.w=Math.max(3,w);n.h=Math.max(3,h);
         if(n.s==='b'){n.x2=cl(n.x-n.w/2-4);n.y2=cl(n.y+n.h/2+12)}keepAsp(n);fit(n)}}}
     drawM()};
   W.onpointerup=W.onpointercancel=e=>{if(!mode)return;let focus=false;
+    if(mode==='new'&&st.m&&st.m.pts&&st.m.pts.length<4){const i=ms.indexOf(st.m);if(i>=0)ms.splice(i,1);st.m=null;sel=-1}
     if(mode==='new'&&!st.m){const p=P(e);if(p.x>=0&&p.x<=100&&p.y>=0&&p.y<=100){const a=ar();let m;
       if(isLine({s:tool}))m={s:tool,x1:cl(p.x-14),y1:cl(p.y+14*a),x2:p.x,y2:p.y};else m=newBox(tool,p.x,p.y,tool==='b'?30:tool==='t'?26:tool==='m'?20:14,(tool==='m'?20:14)*a);place(m);focus=m.s==='b'||m.s==='t'}}
     else if(mode==='new'&&st.m)focus=st.m.s==='b'||st.m.s==='t';
@@ -1486,7 +1574,7 @@ async function showView(id){
   renderViewStep();renderChrome();window.scrollTo(0,0);checkViewUpdate();viewMarksLoop()}
 let vmRaf=0;
 function viewMarksLoop(){cancelAnimationFrame(vmRaf);let key='';const tick=()=>{if(view!=='view'||!cur)return;const s=cur.steps[vIdx],v=$('#vp');
-  if(s&&v&&!isPhoto(s)&&!v.hidden&&s.marks.length){const k=(s.marks.some(q=>q.s==='m')&&!v.paused?Math.random():'')+':'+vIdx+':'+$('#vmarks').clientWidth+':'+s.marks.map(m=>visAt(m,v.currentTime)?1:0).join('');if(k!==key){key=k;renderMarks($('#vmarks'),s.marks,-1,v.currentTime,false)}}
+  if(s&&v&&!isPhoto(s)&&!v.hidden&&s.marks.length){const k=(s.marks.some(q=>q.s==='m'||q.trk)&&!v.paused?Math.random():'')+':'+vIdx+':'+$('#vmarks').clientWidth+':'+s.marks.map(m=>visAt(m,v.currentTime)?1:0).join('');if(k!==key){key=k;renderMarks($('#vmarks'),s.marks,-1,v.currentTime,false)}}
   vmRaf=requestAnimationFrame(tick)};tick()}
 function renderViewStep(){
   stopTTS();const s=cur.steps[vIdx],u=UI[lang],last=vIdx===cur.steps.length-1;
@@ -2358,6 +2446,25 @@ async function checkViewUpdate(){if(!gToken()||!cur||!cur.sync||!cur.sync.json)r
   catch(e){}}
 
 /* ---------- 設定（編集者のみ） ---------- */
+
+async function mvKey(pass,salt){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pass),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:150000,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+const b64=u=>btoa(String.fromCharCode(...new Uint8Array(u))),ub64=t=>Uint8Array.from(atob(t),c=>c.charCodeAt(0));
+async function settingsExport(){
+  const p1=prompt('引き継ぎ用のパスワードを決めてください（4文字以上。読み込むときに使います）','');if(p1==null)return;if(p1.length<4){alert('4文字以上にしてください');return}
+  const p2=prompt('確認のため、もう一度入れてください','');if(p2!==p1){alert('パスワードが一致しません');return}
+  const data={apiKey:settings.apiKey,model:settings.model,ttsKey:settings.ttsKey,ttsVoice:settings.ttsVoice,glossary:settings.glossary,gClientId:settings.gClientId,gFolder:settings.gFolder,apiKeyOk:settings.apiKeyOk,ttsKeyOk:settings.ttsKeyOk};
+  const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),key=await mvKey(p1,salt);
+  const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(JSON.stringify(data)));
+  const out={format:'kensa-settings-v1',salt:b64(salt),iv:b64(iv),data:b64(ct)};
+  await shareOrDownload(new Blob([JSON.stringify(out)],{type:'application/json'}),'【検査アプリ設定】引き継ぎ用.json');
+  alert('書き出しました。\n\nこのファイルを別の端末に送り（メール・LINE・USBなど）、その端末の「⚙ 設定」→「📥 設定を読み込む」で選んで、同じパスワードを入れます。\n\n※パスワードはファイルと別の方法で伝えてください。')}
+async function settingsImport(f){try{const o=JSON.parse(await f.text());if(o.format!=='kensa-settings-v1')throw new Error('設定のファイルではありません（手順書のファイルは一覧の「📥 共有ファイルを読み込む」から）');
+  const pw=prompt('書き出したときのパスワードを入れてください','');if(pw==null)return;
+  let data;try{const key=await mvKey(pw,ub64(o.salt));data=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:ub64(o.iv)},key,ub64(o.data))))}catch(e){alert('パスワードが違います');return}
+  Object.keys(data).forEach(k=>{if(data[k]!=null&&data[k]!=='')settings[k]=data[k]});await idb.put('kv',settings,'settings');
+  alert('設定を読み込みました（APIキー・辞書など）。「☁ 接続する」でドライブにもつないでください。');showSettings()}
+  catch(e){alert(e.message)}}
 function parseCSV(text){
   const rows=[];let row=[],f='',q=false;
   for(let i=0;i<text.length;i++){const c=text[i];
@@ -2410,6 +2517,9 @@ async function showSettings(){
   <div class="card"><h3>🖥 表示</h3>
     <label class="f" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="oNav" ${navOn?'checked':''}> 手順ナビ（画面上の黄色い帯）を出す</label>
     <label class="f">「作る・直す」画面の出し方</label><select id="oPage"><option value="1" ${onePage?'selected':''}>1画面ずつ（① 撮る〜④ 仕上げ をページで切替）</option><option value="0" ${onePage?'':'selected'}>縦に全部並べる</option></select></div>
+  <div class="card" id="sMove"><h3>🔑 設定を別のパソコン・スマホへ引き継ぐ</h3>
+    <p class="sub small">APIキー・3言語辞書・AIの種類・声などを、1つのファイルにまとめて別の端末へ移せます。キーは<b>パスワードで暗号化</b>されるので、ファイルだけでは中身を見られません。（ドライブ連携のIDは最初から入っています）</p>
+    <div class="row"><button id="mvOut">📤 設定を書き出す</button><button id="mvIn">📥 設定を読み込む</button></div><input type="file" id="mvFile" accept=".json,application/json" hidden></div>
   <div class="card" id="sBk"><h3>💾 バックアップ</h3>
     <p class="sub small">全部の手順書と動画を1つのファイルに書き出します。機種変更や万一のときに「📥 共有ファイルを読み込む」で戻せます。</p>
     <div class="row"><button id="bkOut">全データを書き出す</button></div></div>
@@ -2441,6 +2551,7 @@ async function showSettings(){
     try{const r=await translate('成形品のゲート部にバリがないか、目視で確認する。');await idb.put('kv',settings,'settings');alert('成功しました\n\nベトナム語：'+r.vi+'\n\nインドネシア語：'+r.id)}
     catch(e){alert(e.message==='NOKEY'?'APIキーを入れてください':e.message)}b.disabled=false;b.textContent='翻訳テスト'};
   $('#vChk').onclick=()=>checkAppUpdate(true);
+  $('#mvOut').onclick=settingsExport;$('#mvIn').onclick=()=>$('#mvFile').click();$('#mvFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)settingsImport(f)};
   $('#gImp').onclick=()=>$('#gFile').click();
   $('#gFile').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
     const buf=await f.arrayBuffer();let text=new TextDecoder('utf-8').decode(buf);
@@ -2654,7 +2765,7 @@ window.addEventListener('pagehide',()=>{if(view==='edit')persist()});
 (async()=>{
   navOn=lsGet('kensa-nav','1')==='1';onePage=lsGet('kensa-onepage','1')==='1';lastId=lsGet('kensa-last','')||null;
   try{await openDB()}catch(e){main.innerHTML='<div class="card">この端末（またはプライベートブラウズ）では保存機能が使えません。</div>';return}
-  const s=await idb.get('kv','settings');if(s)settings={...settings,...s};
+  const s=await idb.get('kv','settings');if(s)settings={...settings,...s};if(!settings.gClientId&&DEFAULT_GCID)settings.gClientId=DEFAULT_GCID;
   {const up=new URLSearchParams(location.search);let ch=false;if(up.get('g')){settings.gClientId=up.get('g');ch=true}if(up.get('f')){settings.gFolder=up.get('f');ch=true}if(up.get('m'))lsSet('kensa-openm',up.get('m'));
    if(ch){await idb.put('kv',settings,'settings');history.replaceState(null,'',location.pathname+(forceView?'?view':''));if(!up.get('m'))setTimeout(()=>toast('ドライブ連携の設定を読み込みました。「☁ 接続する」を押してください',4000),800)}}
   lock=(await idb.get('kv','lock'))||null;unlocked=ssGet('kensa-unlocked')==='1';
