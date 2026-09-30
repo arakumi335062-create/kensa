@@ -318,8 +318,8 @@ const ALLSEC=['#sCap','#sPlayer','#sCut','#sList','#sText','#sInfo','#sFin'];
   else if(q.get('error'))lsSet('kensa-gerr',q.get('error'));
   history.replaceState(null,'',location.pathname+lsGet('kensa-gsearch',''))}catch(e){}})();
 const forceView=/[?&]view\b/.test(location.search);
-const APP_VER='1.16',APP_DATE='2026-09-28';
-const APP_LOG=[['1.16','🏃 被写体を追いかける（動画で印・マスクが被写体の動きについていく）'],['1.15','マスクの形（□○△▽・手書きで囲む）、🪄 消す、🔦 選んだ所だけ見せる、ポイントの透明度'],['1.14','ドライブ連携のIDを最初から入れておく／🔑 設定（APIキー等）をパスワード付きで別の端末へ引き継ぐ'],['1.13','🎞 分割撮影：撮っては止めて…が、そのまま手順に（パソコン＝⏸区切る、スマホ＝撮影トレイ、動画の複数選択・続きに足す）'],['1.12','▦ マスク（モザイク・ぼかし・塗りつぶしで見せない所を隠す）'],['1.11','一覧から 🗑 削除（この端末だけ／ドライブからも）'],['1.10','🎯 ポイント編集をパソコンで大きく：左に挿入メニュー（縦）、真ん中に大きい画像、右に書式'],['1.9','② 切る：ボタンに「何が起きるか」（手順番号・長さ）を表示、注意の文をわかりやすく'],['1.8','📷 カメラのズーム（カメラ本体のズーム／デジタルズーム・2本指・ホイール）'],['1.7','ポイント編集に 💬吹き出し・🔤文字・①番号・─線・🖼画像・⭐スタンプ、色・線の太さ・文字の大きさ・塗り'],['1.6','🖨 紙の手順書（QR付き・印刷／PDF）'],['1.5','📦 現場に配る（QR・リンク・ファイルから選ぶ）'],['1.4','🏷 QRラベル・字幕入り動画のQR'],['1.3','② 切る（コマ送り）・③ 説明（画像を見ながら入力）'],['1.2','APIキーの「🔰 かんたん設定」'],['1.1','☁ Googleドライブ連携']];
+const APP_VER='1.17',APP_DATE='2026-09-28';
+const APP_LOG=[['1.17','つながらない時の表示を詳しく（会社のネットワーク・広告ブロックの可能性と確かめ方）'],['1.16','🏃 被写体を追いかける（動画で印・マスクが被写体の動きについていく）'],['1.15','マスクの形（□○△▽・手書きで囲む）、🪄 消す、🔦 選んだ所だけ見せる、ポイントの透明度'],['1.14','ドライブ連携のIDを最初から入れておく／🔑 設定（APIキー等）をパスワード付きで別の端末へ引き継ぐ'],['1.13','🎞 分割撮影：撮っては止めて…が、そのまま手順に（パソコン＝⏸区切る、スマホ＝撮影トレイ、動画の複数選択・続きに足す）'],['1.12','▦ マスク（モザイク・ぼかし・塗りつぶしで見せない所を隠す）'],['1.11','一覧から 🗑 削除（この端末だけ／ドライブからも）'],['1.10','🎯 ポイント編集をパソコンで大きく：左に挿入メニュー（縦）、真ん中に大きい画像、右に書式'],['1.9','② 切る：ボタンに「何が起きるか」（手順番号・長さ）を表示、注意の文をわかりやすく'],['1.8','📷 カメラのズーム（カメラ本体のズーム／デジタルズーム・2本指・ホイール）'],['1.7','ポイント編集に 💬吹き出し・🔤文字・①番号・─線・🖼画像・⭐スタンプ、色・線の太さ・文字の大きさ・塗り'],['1.6','🖨 紙の手順書（QR付き・印刷／PDF）'],['1.5','📦 現場に配る（QR・リンク・ファイルから選ぶ）'],['1.4','🏷 QRラベル・字幕入り動画のQR'],['1.3','② 切る（コマ送り）・③ 説明（画像を見ながら入力）'],['1.2','APIキーの「🔰 かんたん設定」'],['1.1','☁ Googleドライブ連携']];
 function verBadge(){return`<span class="verb">v${APP_VER}</span>`}
 async function checkAppUpdate(manual){if(location.protocol==='file:')return;
   try{const r=await fetch(location.pathname+'?chk='+Date.now(),{cache:'no-store'});const t=await r.text(),m=t.match(/APP_VER='([\d.]+)'/);if(!m)return;
@@ -1157,6 +1157,8 @@ async function revise(){
 
 /* ---------- AI（説明の下書き・翻訳） ---------- */
 const NETMSG='インターネットにつながっていないようです。電波・Wi-Fiを確認して、もう一度押してください。';
+function netMsg(host,svc){if(navigator.onLine===false)return NETMSG;
+  return `${svc}（${host}）につながりませんでした。\n\nインターネット自体はつながっているようなので、次のどれかが原因の可能性があります：\n・会社のネットワークやセキュリティソフトが、この接続を止めている\n・ブラウザの広告ブロック（拡張機能）が止めている\n・一時的な混雑\n\n確かめ方：新しいタブで https://${host} を開いてみてください。何か文字（英語のエラー表示でもOK）が出ればつながります。開けない場合は、社内のネットワーク担当者に「${host} への接続を許可」してもらうか、スマホのテザリングで試してください。`}
 function apiMsg(st,t,svc){
   if(st===401)return`${svc}のAPIキーが正しくありません。「⚙ 設定」でキーを貼り直してください（期限切れ・削除したキーも使えません）。`;
   if(/credit|balance|billing|quota|insufficient/i.test(t))return`${svc}のクレジット（残高）が足りません。管理画面でクレジットを追加してください。`;
@@ -1167,7 +1169,7 @@ async function claude(content,max=1500){
   if(!settings.apiKey)throw new Error('NOKEY');
   let r;try{r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{
     'content-type':'application/json','x-api-key':settings.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:settings.model,max_tokens:max,messages:[{role:'user',content}]})})}catch(e){throw new Error(NETMSG)}
+    body:JSON.stringify({model:settings.model,max_tokens:max,messages:[{role:'user',content}]})})}catch(e){throw new Error(netMsg('api.anthropic.com','Claude（AI）'))}
   if(!r.ok){const t=await r.text();throw new Error(apiMsg(r.status,t,'Claude（AI）'))}
   const j=await r.json();return(j.content||[]).map(c=>c.text||'').join('')}
 /* ---------- APIキー かんたん設定ガイド ---------- */
@@ -1338,7 +1340,7 @@ async function tts(text,L){
   let r;try{r=await fetch('https://api.openai.com/v1/audio/speech',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+settings.ttsKey},
     body:JSON.stringify({model:'gpt-4o-mini-tts',voice:settings.ttsVoice||'coral',input:text,response_format:'mp3',
       instructions:`Speak in natural ${({ja:'Japanese',vi:'Vietnamese',id:'Indonesian'})[L]}. You are explaining a work step to a factory worker: speak slowly, clearly and calmly.`})})}
-  catch(e){throw new Error(NETMSG)}
+  catch(e){throw new Error(netMsg('api.openai.com','AI音声（OpenAI）'))}
   if(!r.ok){const t=await r.text();throw new Error(apiMsg(r.status,t,'AI音声（OpenAI）'))}
   return blobToDataURL(new Blob([await r.arrayBuffer()],{type:'audio/mpeg'}))}
 function ttsErr(err){
@@ -2307,7 +2309,7 @@ function gMsg(st,t){
   if(st===429||st>=500)return'Googleが混み合っています。少し待ってからもう一度。';
   return`Googleドライブでエラーが起きました（${st}）：`+String(t).slice(0,150)}
 async function gfetch(url,opt={}){const t=gToken();if(!t)throw new Error('GAUTH');opt.headers={...(opt.headers||{}),Authorization:'Bearer '+t};
-  let r;try{r=await fetch(url,opt)}catch(e){throw new Error(NETMSG)}
+  let r;try{r=await fetch(url,opt)}catch(e){throw new Error(netMsg('www.googleapis.com','Googleドライブ'))}
   if(r.status===401){lsSet('kensa-gtok','');throw new Error('GAUTH')}
   if(!r.ok){const tx=await r.text();throw new Error(gMsg(r.status,tx))}return r}
 function driveErr(e,after){if(e.message==='GAUTH'){if(confirm('Googleドライブへの接続が必要です（1時間ごとに確認が入ります）。接続しますか？'))gLogin(after);return}if(e.message!=='CANCEL')alert(e.message)}
