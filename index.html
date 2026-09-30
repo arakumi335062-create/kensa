@@ -319,7 +319,7 @@ const ALLSEC=['#sCap','#sPlayer','#sCut','#sList','#sText','#sInfo','#sFin'];
   history.replaceState(null,'',location.pathname+lsGet('kensa-gsearch',''))}catch(e){}})();
 const forceView=/[?&]view\b/.test(location.search);
 const APP_VER='1.18',APP_DATE='2026-09-30';
-const APP_LOG=[['1.18','ドライブ：つないでいるGoogleアカウントと保存先フォルダを表示。見えないフォルダは自動で切り替え'],['1.17','つながらない時の表示を詳しく（会社のネットワーク・広告ブロックの可能性と確かめ方）'],['1.16','🏃 被写体を追いかける（動画で印・マスクが被写体の動きについていく）'],['1.15','マスクの形（□○△▽・手書きで囲む）、🪄 消す、🔦 選んだ所だけ見せる、ポイントの透明度'],['1.14','ドライブ連携のIDを最初から入れておく／🔑 設定（APIキー等）をパスワード付きで別の端末へ引き継ぐ'],['1.13','🎞 分割撮影：撮っては止めて…が、そのまま手順に（パソコン＝⏸区切る、スマホ＝撮影トレイ、動画の複数選択・続きに足す）'],['1.12','▦ マスク（モザイク・ぼかし・塗りつぶしで見せない所を隠す）'],['1.11','一覧から 🗑 削除（この端末だけ／ドライブからも）'],['1.10','🎯 ポイント編集をパソコンで大きく：左に挿入メニュー（縦）、真ん中に大きい画像、右に書式'],['1.9','② 切る：ボタンに「何が起きるか」（手順番号・長さ）を表示、注意の文をわかりやすく'],['1.8','📷 カメラのズーム（カメラ本体のズーム／デジタルズーム・2本指・ホイール）'],['1.7','ポイント編集に 💬吹き出し・🔤文字・①番号・─線・🖼画像・⭐スタンプ、色・線の太さ・文字の大きさ・塗り'],['1.6','🖨 紙の手順書（QR付き・印刷／PDF）'],['1.5','📦 現場に配る（QR・リンク・ファイルから選ぶ）'],['1.4','🏷 QRラベル・字幕入り動画のQR'],['1.3','② 切る（コマ送り）・③ 説明（画像を見ながら入力）'],['1.2','APIキーの「🔰 かんたん設定」'],['1.1','☁ Googleドライブ連携']];
+const APP_LOG=[['1.18','ドライブ：つないでいるGoogleアカウントと保存先フォルダを表示。見えないフォルダは自動で切り替え。動画の取り込みを小分け・自動再試行にして途中で止まりにくく（進み具合をMBで表示）。別アカウントに残った動画を指している手順書は、保存し直すと動画も入れ直す'],['1.17','つながらない時の表示を詳しく（会社のネットワーク・広告ブロックの可能性と確かめ方）'],['1.16','🏃 被写体を追いかける（動画で印・マスクが被写体の動きについていく）'],['1.15','マスクの形（□○△▽・手書きで囲む）、🪄 消す、🔦 選んだ所だけ見せる、ポイントの透明度'],['1.14','ドライブ連携のIDを最初から入れておく／🔑 設定（APIキー等）をパスワード付きで別の端末へ引き継ぐ'],['1.13','🎞 分割撮影：撮っては止めて…が、そのまま手順に（パソコン＝⏸区切る、スマホ＝撮影トレイ、動画の複数選択・続きに足す）'],['1.12','▦ マスク（モザイク・ぼかし・塗りつぶしで見せない所を隠す）'],['1.11','一覧から 🗑 削除（この端末だけ／ドライブからも）'],['1.10','🎯 ポイント編集をパソコンで大きく：左に挿入メニュー（縦）、真ん中に大きい画像、右に書式'],['1.9','② 切る：ボタンに「何が起きるか」（手順番号・長さ）を表示、注意の文をわかりやすく'],['1.8','📷 カメラのズーム（カメラ本体のズーム／デジタルズーム・2本指・ホイール）'],['1.7','ポイント編集に 💬吹き出し・🔤文字・①番号・─線・🖼画像・⭐スタンプ、色・線の太さ・文字の大きさ・塗り'],['1.6','🖨 紙の手順書（QR付き・印刷／PDF）'],['1.5','📦 現場に配る（QR・リンク・ファイルから選ぶ）'],['1.4','🏷 QRラベル・字幕入り動画のQR'],['1.3','② 切る（コマ送り）・③ 説明（画像を見ながら入力）'],['1.2','APIキーの「🔰 かんたん設定」'],['1.1','☁ Googleドライブ連携']];
 function verBadge(){return`<span class="verb">v${APP_VER}</span>`}
 async function checkAppUpdate(manual){if(location.protocol==='file:')return;
   try{const r=await fetch(location.pathname+'?chk='+Date.now(),{cache:'no-store'});const t=await r.text(),m=t.match(/APP_VER='([\d.]+)'/);if(!m)return;
@@ -2346,8 +2346,15 @@ async function gUpload(fileId,meta,blob,onp){
 async function gUploadSafe(fileId,meta,parents,blob,onp){
   if(fileId){try{return await gUpload(fileId,meta,blob,onp)}catch(e){if(!/見つかりません/.test(e.message))throw e}}
   return gUpload(null,{...meta,parents},blob,onp)}
+async function inFolder(id,folder){if(!id)return false;
+  const r=await fetch(`${GAPI}/${id}?fields=id,trashed,parents&supportsAllDrives=true`,{headers:{Authorization:'Bearer '+gToken()}}).catch(()=>null);
+  if(!r)throw new Error(netMsg('www.googleapis.com','Googleドライブ'));if(r.status===401){lsSet('kensa-gtok','');throw new Error('GAUTH')}
+  if(!r.ok)return false;const j=await r.json();return !j.trashed&&(!j.parents||j.parents.includes(folder))}
 async function driveSave(m,pm){
   const folder=await ensureFolder();m.sync=m.sync||{};
+  pm&&pm.set(0.01,'ドライブの状態を確認中…');
+  if(m.sync.vid&&!(await inFolder(m.sync.vid,folder))){m.sync.vid=null;m.sync.vidOf=null}
+  if(m.sync.json&&!(await inFolder(m.sync.json,folder)))m.sync.json=null;
   if(m.videoId){if(m.sync.vidOf!==m.videoId||!m.sync.vid){const vb=await idb.get('videos',m.videoId);
     if(vb){pm&&pm.set(0.02,'動画をアップロード中…（大きい動画は時間がかかります）');
       const r=await gUploadSafe(m.sync.vid,{name:`${m.id}_video`,appProperties:{kind:'video',kmId:m.id}},[folder],vb,p=>pm&&pm.set(0.02+p*0.9,`動画をアップロード中… ${Math.round(p*100)}%`));
@@ -2371,6 +2378,21 @@ async function driveList(force){
   const q=encodeURIComponent(`'${folder}' in parents and trashed=false and appProperties has { key='kind' and value='manual' }`);
   const j=await(await gfetch(`${GAPI}?q=${q}&pageSize=300&fields=files(id,name,modifiedTime,appProperties,lastModifyingUser(displayName))&supportsAllDrives=true&includeItemsFromAllDrives=true`)).json();
   dRemote=j.files||[];dTime=Date.now();return dRemote}
+async function gDownload(id,pm){
+  const meta=await(await gfetch(`${GAPI}/${id}?fields=size,mimeType&supportsAllDrives=true`)).json();
+  const size=+meta.size||0,url=`${GAPI}/${id}?alt=media&supportsAllDrives=true`,type=meta.mimeType||'video/webm';
+  if(!size)return await(await gfetch(url)).blob();
+  const CH=window.__CH||4*1048576,parts=[],MB=n=>(n/1048576).toFixed(1)+'MB';
+  for(let a=0;a<size;a+=CH){const b=Math.min(size,a+CH)-1;let tries=0;
+    for(;;){if(pm&&pm.cancelled)throw new Error('CANCEL');
+      try{const r=await gfetch(url,{headers:{Range:`bytes=${a}-${b}`}});const bl=await r.blob();
+        if(r.status===200){if(bl.size===size)return new Blob([bl],{type});throw new Error('SHORT')}
+        if(bl.size!==b-a+1)throw new Error('SHORT');parts.push(bl);break}
+      catch(e){if(e.message==='GAUTH'||e.message==='CANCEL')throw e;
+        if(++tries>=5)throw new Error(`動画のダウンロードが途中で止まりました（${MB(a)} / ${MB(size)}）。\n\n電波の良い場所（Wi-Fi）で、もう一度「取り込む」を押してください。`);
+        pm&&pm.set(0.1+0.85*a/size,`通信が切れたので再試行しています…（${tries}回目）`);await sleep(1500*tries)}}
+    pm&&pm.set(0.1+0.85*(b+1)/size,`動画をダウンロード中… ${MB(b+1)} / ${MB(size)}`)}
+  return new Blob(parts,{type})}
 async function driveGet(f,pm){
   const body=await(await gfetch(`${GAPI}/${f.id}?alt=media&supportsAllDrives=true`)).json();
   if(body.format!=='kensa-drive-v1'||!body.manual)throw new Error('手順書のファイルではありません');
@@ -2378,9 +2400,10 @@ async function driveGet(f,pm){
   m.sync={json:f.id,vid:body.videoFileId||null,remoteUp:m.updatedAt,vidMod:body.videoMod||''};
   if(body.videoFileId){
     if(ex&&ex.videoId&&ex.sync&&ex.sync.vid===body.videoFileId&&ex.sync.vidMod&&ex.sync.vidMod===body.videoMod&&await idb.get('videos',ex.videoId)){m.videoId=ex.videoId}
-    else{pm&&pm.set(0.1,'動画をダウンロード中…');const vb=await(await gfetch(`${GAPI}/${body.videoFileId}?alt=media&supportsAllDrives=true`)).blob();
+    else{pm&&pm.set(0.1,'動画をダウンロード中…');const vb=await gDownload(body.videoFileId,pm).catch(e=>{if(/見つかりません/.test(e.message))throw new Error('この手順書の動画がドライブの共有フォルダにありません（別のGoogleアカウントで保存された動画を指しています）。\n\n作った端末（PCなど）で、この手順書の「⬆ ドライブに保存」をもう一度押してください。v1.18以降なら動画も入れ直されます。');throw e});
       if(ex&&ex.videoId&&ex.videoId!==m.videoId)await idb.del('videos',ex.videoId);
-      m.videoId=m.videoId||uid();await idb.put('videos',vb,m.videoId)}
+      m.videoId=m.videoId||uid();
+      try{await idb.put('videos',vb,m.videoId)}catch(e){throw new Error(`この端末の保存領域がいっぱいで、動画（${(vb.size/1048576).toFixed(0)}MB）を保存できませんでした。\n\n・一覧から使わない手順書を削除する\n・ブラウザの「サイトデータ」を消していないか、空き容量があるか確かめる\nのどちらかをしてから、もう一度「取り込む」を押してください。`)}}
     m.sync.vidOf=m.videoId}
   else{if(ex&&ex.videoId)await idb.del('videos',ex.videoId);m.videoId=null}
   await idb.put('manuals',m);await adoptLock(body.lock);return m}
