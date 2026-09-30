@@ -191,6 +191,7 @@ a.kw-big{background:#e8f0fe;color:#1a56c4;border:1px solid #b6ccf5;border-radius
 .vch.on{background:#e7f6ec;color:#16632f;border-color:#9fd3b0}
 button.rec{background:#c0392b;color:#fff;border-color:#c0392b}
 .dline{margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}.dline:empty{display:none}
+#dMsg .warn{background:#fff1d6;color:#8a5a00;padding:6px 8px;border-radius:8px}
 .db{font-size:12px;border-radius:10px;padding:2px 9px;font-weight:700}.db.ok{background:#e7f6ec;color:#16632f}.db.new{background:#e3eeff;color:#1f5fbf}.db.warn{background:#fff1d6;color:#8a5a00}
 .upd{background:#e3eeff;color:#123a78;border:1px solid #9dbdf0;border-radius:10px;padding:8px 10px;margin-bottom:10px;display:flex;gap:8px;align-items:center}
 main.textpage,main.cutpage{max-width:1280px}
@@ -318,8 +319,8 @@ const ALLSEC=['#sCap','#sPlayer','#sCut','#sList','#sText','#sInfo','#sFin'];
   else if(q.get('error'))lsSet('kensa-gerr',q.get('error'));
   history.replaceState(null,'',location.pathname+lsGet('kensa-gsearch',''))}catch(e){}})();
 const forceView=/[?&]view\b/.test(location.search);
-const APP_VER='1.19',APP_DATE='2026-09-30';
-const APP_LOG=[['1.19','動画の取り込みを小分け・自動再試行に。別アカウントに残った動画は保存し直すと入れ直す'],['1.18','ドライブ：つないでいるGoogleアカウントと保存先フォルダを表示。見えないフォルダは自動で切り替え。動画の取り込みを小分け・自動再試行にして途中で止まりにくく（進み具合をMBで表示）。別アカウントに残った動画を指している手順書は、保存し直すと動画も入れ直す'],['1.17','つながらない時の表示を詳しく（会社のネットワーク・広告ブロックの可能性と確かめ方）'],['1.16','🏃 被写体を追いかける（動画で印・マスクが被写体の動きについていく）'],['1.15','マスクの形（□○△▽・手書きで囲む）、🪄 消す、🔦 選んだ所だけ見せる、ポイントの透明度'],['1.14','ドライブ連携のIDを最初から入れておく／🔑 設定（APIキー等）をパスワード付きで別の端末へ引き継ぐ'],['1.13','🎞 分割撮影：撮っては止めて…が、そのまま手順に（パソコン＝⏸区切る、スマホ＝撮影トレイ、動画の複数選択・続きに足す）'],['1.12','▦ マスク（モザイク・ぼかし・塗りつぶしで見せない所を隠す）'],['1.11','一覧から 🗑 削除（この端末だけ／ドライブからも）'],['1.10','🎯 ポイント編集をパソコンで大きく：左に挿入メニュー（縦）、真ん中に大きい画像、右に書式'],['1.9','② 切る：ボタンに「何が起きるか」（手順番号・長さ）を表示、注意の文をわかりやすく'],['1.8','📷 カメラのズーム（カメラ本体のズーム／デジタルズーム・2本指・ホイール）'],['1.7','ポイント編集に 💬吹き出し・🔤文字・①番号・─線・🖼画像・⭐スタンプ、色・線の太さ・文字の大きさ・塗り'],['1.6','🖨 紙の手順書（QR付き・印刷／PDF）'],['1.5','📦 現場に配る（QR・リンク・ファイルから選ぶ）'],['1.4','🏷 QRラベル・字幕入り動画のQR'],['1.3','② 切る（コマ送り）・③ 説明（画像を見ながら入力）'],['1.2','APIキーの「🔰 かんたん設定」'],['1.1','☁ Googleドライブ連携']];
+const APP_VER='1.21',APP_DATE='2026-09-30';
+const APP_LOG=[['1.21','右上の版数（v○○）を押すと、新しい版を確かめて更新できる。アプリを開いたままでも、画面に戻るたびに自動で確かめる'],['1.20','🔄 おまかせ同期：一覧を開くだけで、作った・直した手順書は自動でドライブへ送り、他の端末の新しい手順書は自動で受け取る'],['1.19','動画の取り込みを小分け・自動再試行に。別アカウントに残った動画は保存し直すと入れ直す'],['1.18','ドライブ：つないでいるGoogleアカウントと保存先フォルダを表示。見えないフォルダは自動で切り替え。動画の取り込みを小分け・自動再試行にして途中で止まりにくく（進み具合をMBで表示）。別アカウントに残った動画を指している手順書は、保存し直すと動画も入れ直す'],['1.17','つながらない時の表示を詳しく（会社のネットワーク・広告ブロックの可能性と確かめ方）'],['1.16','🏃 被写体を追いかける（動画で印・マスクが被写体の動きについていく）'],['1.15','マスクの形（□○△▽・手書きで囲む）、🪄 消す、🔦 選んだ所だけ見せる、ポイントの透明度'],['1.14','ドライブ連携のIDを最初から入れておく／🔑 設定（APIキー等）をパスワード付きで別の端末へ引き継ぐ'],['1.13','🎞 分割撮影：撮っては止めて…が、そのまま手順に（パソコン＝⏸区切る、スマホ＝撮影トレイ、動画の複数選択・続きに足す）'],['1.12','▦ マスク（モザイク・ぼかし・塗りつぶしで見せない所を隠す）'],['1.11','一覧から 🗑 削除（この端末だけ／ドライブからも）'],['1.10','🎯 ポイント編集をパソコンで大きく：左に挿入メニュー（縦）、真ん中に大きい画像、右に書式'],['1.9','② 切る：ボタンに「何が起きるか」（手順番号・長さ）を表示、注意の文をわかりやすく'],['1.8','📷 カメラのズーム（カメラ本体のズーム／デジタルズーム・2本指・ホイール）'],['1.7','ポイント編集に 💬吹き出し・🔤文字・①番号・─線・🖼画像・⭐スタンプ、色・線の太さ・文字の大きさ・塗り'],['1.6','🖨 紙の手順書（QR付き・印刷／PDF）'],['1.5','📦 現場に配る（QR・リンク・ファイルから選ぶ）'],['1.4','🏷 QRラベル・字幕入り動画のQR'],['1.3','② 切る（コマ送り）・③ 説明（画像を見ながら入力）'],['1.2','APIキーの「🔰 かんたん設定」'],['1.1','☁ Googleドライブ連携']];
 function verBadge(){return`<span class="verb">v${APP_VER}</span>`}
 async function checkAppUpdate(manual){if(location.protocol==='file:')return;
   try{const r=await fetch(location.pathname+'?chk='+Date.now(),{cache:'no-store'});const t=await r.text(),m=t.match(/APP_VER='([\d.]+)'/);if(!m)return;
@@ -830,7 +831,7 @@ $('#hNav').onclick=()=>{navOn=!navOn;lsSet('kensa-nav',navOn?'1':'0');renderChro
 
 /* ---------- 一覧 ---------- */
 async function showList(){
-  if(view==='edit')await persist();
+  if(view==='edit'){await persist();justEdited=true}
   view='list';stopTTS();setTitle('検査手順ムービー');
   const ms=(await idb.all('manuals')).sort((a,b)=>b.updatedAt-a.updatedAt);listCount=ms.length;const ed=isEditor();
   main.innerHTML=`<div class="card"><div class="row">${ed?'<button class="pri" id="bNew">＋ 新しい手順書</button>':''}
@@ -2425,10 +2426,31 @@ function driveCardHTML(){
 let dLocal=[];
 function bindDriveCard(){const c=$('#drv');if(!c)return;
   if($('#dCon'))$('#dCon').onclick=()=>gLogin('list');
-  if($('#dSync'))$('#dSync').onclick=()=>driveRefresh(true);
+  if($('#dSync'))$('#dSync').onclick=()=>{if(settings.autoSync!==false)autoSync();else driveRefresh(true)};
   if($('#dUpAll'))$('#dUpAll').onclick=driveUpAll;
   c.onclick=dActClick;$('#ml').addEventListener('click',dActClick);
-  if(gToken())driveRefresh(false)}
+  if(!gToken())return;
+  if(settings.autoSync!==false&&(justEdited||Date.now()-lastAuto>15000)){justEdited=false;autoSync()}else driveRefresh(false)}
+let syncing=false,lastAuto=0,justEdited=false;
+async function autoSync(){if(syncing||!gToken())return;syncing=true;lastAuto=Date.now();
+  const say=t=>{const e=$('#dMsg');if(e)e.textContent=t};let up=0,down=0,both=0;const fail=[];
+  try{say('🔄 自動で同期しています…');
+    let fs=await driveList(true);dLocal=await idb.all('manuals');
+    const byId=id=>fs.find(x=>x.appProperties&&x.appProperties.kmId===id);
+    if(isEditor())for(const m of dLocal){const f=byId(m.id),st=dStatus(m,f),never=!f&&!(m.sync&&m.sync.json);
+      if(st.act==='put'&&(f||never)){say(`⬆ ドライブへ送っています（${up+1}）：${m.title||'（無題）'}`);
+        try{await driveSave(m,{set:(p,t)=>t&&say(`⬆ ${m.title||'（無題）'}：${t}`)});up++}catch(e){if(e.message==='GAUTH')throw e;fail.push((m.title||'（無題）')+'：'+e.message.split('\n')[0])}}}
+    if(up){fs=await driveList(true);dLocal=await idb.all('manuals')}
+    for(const f of fs){if(!f.appProperties)continue;const m=dLocal.find(x=>x.id===f.appProperties.kmId),st=dStatus(m,f),nm=f.appProperties.kmTitle||'（無題）';
+      if(st.act==='get'){say(`⬇ 受け取っています（${down+1}）：${nm}`);
+        try{await driveGet(f,{cancelled:false,set:(p,t)=>t&&say(`⬇ ${nm}：${t}`)});down++}catch(e){if(e.message==='GAUTH')throw e;fail.push(nm+'：'+e.message.split('\n')[0])}}
+      else if(st.act==='both')both++}
+    syncing=false;lastAuto=Date.now();
+    if(up||down)toast(`🔄 同期しました（送った ${up}件・受け取った ${down}件）`,3500);
+    if(down&&view==='list'){lastAuto=Date.now();await showList();}else await driveRefresh(false);
+    const e=$('#dMsg');if(e&&(fail.length||both))e.insertAdjacentHTML('beforeend',`${fail.length?`<div class="warn mt">⚠ うまくいかなかったもの：<br>${fail.map(esc).join('<br>')}<br>電波の良い所で「🔄 同期する」を押すと、もう一度試します。</div>`:''}${both?`<div class="warn mt">⚠ ${both}件は、この端末とドライブの両方で直されています。下の一覧で、どちらの版にするか選んでください。</div>`:''}`)}
+  catch(e){syncing=false;if(e.message==='GAUTH'){say('Googleドライブの接続が切れました（約1時間で切れます）。上の「☁ 接続する」を押すと続きをします。');const b=$('#dSync');if(b){b.textContent='☁ 接続する';b.classList.add('pri');b.onclick=()=>gLogin('list')}}
+    else say('自動同期できませんでした：'+e.message.split('\n')[0])}}
 async function driveRefresh(force){const msg=$('#dMsg');if(!msg)return;
   try{if(force)msg.textContent='確認中…';const fs=await driveList(force);dLocal=await idb.all('manuals');paintDrive();
     const d=new Date(dTime);let who='';try{const w=await gAbout();who=w.email}catch(e){}
@@ -2526,6 +2548,7 @@ async function showSettings(){
     <p class="sub small">スマホ・タブレット・パソコンで同じ手順書を使えます。最初に一度だけGoogle側の準備が必要です（取扱説明書「☁ ドライブ連携の準備」）。</p>
     <label class="f">クライアントID</label><input type="text" id="gId" value="${esc(settings.gClientId||'')}" placeholder="xxxx.apps.googleusercontent.com" autocomplete="off">
     <label class="f">共有フォルダ（ドライブのフォルダのリンク。空なら「検査手順ムービー」フォルダを自動で作ります）</label><input type="text" id="gFol" value="${esc(settings.gFolder?'https://drive.google.com/drive/folders/'+settings.gFolder:'')}" autocomplete="off">
+    <label class="opt mt"><input type="checkbox" id="gAuto" ${settings.autoSync===false?'':'checked'}><span><b>🔄 おまかせ同期（おすすめ）</b><br><span class="sub small">一覧を開くだけで、この端末で作った・直した手順書をドライブへ送り、他の端末の新しい手順書を受け取ります。</span></span></label>
     <div class="row mt"><button class="pri" id="gSave">保存</button><button id="gCon">${gToken()?'✓ 接続中（切断する）':'☁ 接続する'}</button></div>
     <label class="f">現場の端末用リンク（開くだけで、ドライブの設定と閲覧モードが入ります）</label>
     <div class="row"><input type="text" id="gLink" readonly value="${esc(fieldLink())}" style="flex:1"><button class="sm" id="gCopy">コピー</button></div>
@@ -2571,6 +2594,7 @@ async function showSettings(){
   const gInfo=()=>{const g=settings.glossary;$('#gInfo').innerHTML=g.length?`登録 ${g.length} 語　例：`+g.slice(0,3).map(e=>esc(e.ja)+' → '+esc(e.vi)+' / '+esc(e.id)).join('、'):'未登録'};gInfo();
   $('#pinSt').textContent=lock?'PIN：設定済み（この端末と配布先は、PINで編集モードになります）':'PIN：未設定（この端末はいつでも編集できます）';
   const parseFol=v=>{v=v.trim();const m=v.match(/folders\/([\w-]{10,})/);return m?m[1]:(/^[\w-]{10,}$/.test(v)?v:'')};
+  $('#gAuto').onchange=async e=>{settings.autoSync=e.target.checked;await idb.put('kv',settings,'settings');toast(e.target.checked?'おまかせ同期をオンにしました':'おまかせ同期をオフにしました')};
   $('#gSave').onclick=async()=>{settings.gClientId=$('#gId').value.trim();const f=$('#gFol').value.trim();settings.gFolder=f?parseFol(f):'';
     if(f&&!settings.gFolder){alert('フォルダのリンクを読み取れませんでした。ドライブでフォルダを開いた時のアドレスを貼ってください');return}
     await idb.put('kv',settings,'settings');$('#gLink').value=fieldLink();toast('保存しました')};
@@ -2819,7 +2843,8 @@ window.addEventListener('pagehide',()=>{if(view==='edit')persist()});
   if(after.startsWith('qr:')){const m=await idb.get('manuals',after.slice(3));if(m)manualQR(m)}
   if(after==='capup')capResume();else if(await idb.get('kv','capPending').catch(()=>null)&&!after){await idb.del('kv','capPending');await idb.del('videos','__cap')}
   await openFromQR();
-  {const hv=$('#hVer');if(hv)hv.textContent='v'+APP_VER}setTimeout(()=>checkAppUpdate(false),2500);
+  {const hv=$('#hVer');if(hv){hv.textContent='v'+APP_VER+' 🔄';hv.title='押すと新しい版を確かめます';hv.style.cursor='pointer';hv.onclick=()=>{toast('新しい版を確かめています…');checkAppUpdate(true)}}}setTimeout(()=>checkAppUpdate(false),2500);
+  {let lastChk=Date.now();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&Date.now()-lastChk>10*60000){lastChk=Date.now();checkAppUpdate(false)}})}
   if(location.search.includes('r=')){const q=new URLSearchParams(location.search);q.delete('r');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q.toString().replace(/view=(&|$)/,'view$1'):''))}
   if(!lsGet('kensa-hello','')){lsSet('kensa-hello','1');const h=document.createElement('div');h.id='hello';
     h.innerHTML='<span class="grow">はじめての方は右上の「？」→ ガイドへ。ボタンを<b>長押し</b>すると説明が出ます。</span><button>OK</button>';
